@@ -273,11 +273,11 @@
         );
 
         // Input component
-        const Input = ({ label, error, className = '', ...props }) => (
+        const Input = ({ label, error, required, helpText, className = '', ...props }) => (
             <div className={className}>
                 {label && (
                     <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                        {label}
+                        {label} {required && <span className="text-red-500">*</span>}
                     </label>
                 )}
                 <input
@@ -287,9 +287,12 @@
                         focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none
                         ${error ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-slate-200'}
                     `}
+                    aria-invalid={error ? 'true' : undefined}
+                    aria-describedby={error ? `${props.id || label}-error` : undefined}
                     {...props}
                 />
-                {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+                {error && <p id={`${props.id || label}-error`} className="mt-1 text-xs text-red-600" role="alert">{error}</p>}
+                {helpText && !error && <p className="mt-1 text-xs text-slate-500">{helpText}</p>}
             </div>
         );
 
@@ -713,15 +716,32 @@
             );
 
             const ProjectsGallery = () => {
+                const [searchQuery, setSearchQuery] = useState('');
+                const [statusFilter, setStatusFilter] = useState('all');
+                const [usageFilter, setUsageFilter] = useState('all');
+
                 const handleProjectClick = (project) => {
                     setCurrentProject(project);
                     setSidebarView('uebersicht');
                 };
 
+                // Filter projects based on search and filters
+                const filteredProjects = projects.filter(project => {
+                    const matchesSearch = searchQuery === '' ||
+                        project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        project.address.toLowerCase().includes(searchQuery.toLowerCase());
+                    const matchesStatus = statusFilter === 'all' || project.status === statusFilter;
+                    const matchesUsage = usageFilter === 'all' || project.usageType === usageFilter;
+                    return matchesSearch && matchesStatus && matchesUsage;
+                });
+
                 // Stats for the gallery
                 const totalProjects = projects.length;
                 const activeProjects = projects.filter(p => p.status === 'active').length;
                 const completedProjects = projects.filter(p => p.status === 'completed').length;
+
+                // Get unique usage types for filter
+                const usageTypes = [...new Set(projects.map(p => p.usageType))];
 
                 // View mode toggle button component
                 const ViewModeButton = ({ mode, icon, label }) => (
@@ -745,11 +765,14 @@
                         {/* Gallery Header - full width white bg, max-width content */}
                         <div className="bg-white border-b border-slate-200">
                             <div className="max-w-[1400px] mx-auto px-6 py-4">
-                                <div className="flex items-center justify-between">
+                                <div className="flex items-center justify-between mb-4">
                                     <div>
                                         <h1 className="text-2xl font-bold text-slate-900">Projekte</h1>
                                         <p className="text-sm text-slate-500 mt-1">
-                                            {totalProjects} Projekte · {activeProjects} aktiv · {completedProjects} abgeschlossen
+                                            {filteredProjects.length === totalProjects
+                                                ? `${totalProjects} Projekte · ${activeProjects} aktiv · ${completedProjects} abgeschlossen`
+                                                : `${filteredProjects.length} von ${totalProjects} Projekten`
+                                            }
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-3">
@@ -769,87 +792,175 @@
                                         </Button>
                                     </div>
                                 </div>
+
+                                {/* Search and Filters */}
+                                <div className="flex items-center gap-3">
+                                    {/* Search Input */}
+                                    <div className="relative flex-1 max-w-md">
+                                        <Icon name="search" size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                        <input
+                                            type="text"
+                                            placeholder="Projekt suchen..."
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                                        />
+                                        {searchQuery && (
+                                            <button
+                                                onClick={() => setSearchQuery('')}
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                                aria-label="Suche löschen"
+                                            >
+                                                <Icon name="close" size={16} />
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    {/* Status Filter */}
+                                    <select
+                                        value={statusFilter}
+                                        onChange={(e) => setStatusFilter(e.target.value)}
+                                        className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+                                    >
+                                        <option value="all">Alle Status</option>
+                                        <option value="active">Aktiv</option>
+                                        <option value="completed">Abgeschlossen</option>
+                                        <option value="draft">Entwurf</option>
+                                    </select>
+
+                                    {/* Usage Type Filter */}
+                                    <select
+                                        value={usageFilter}
+                                        onChange={(e) => setUsageFilter(e.target.value)}
+                                        className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+                                    >
+                                        <option value="all">Alle Nutzungen</option>
+                                        {usageTypes.map(type => (
+                                            <option key={type} value={type}>{type}</option>
+                                        ))}
+                                    </select>
+
+                                    {/* Clear Filters */}
+                                    {(searchQuery || statusFilter !== 'all' || usageFilter !== 'all') && (
+                                        <button
+                                            onClick={() => {
+                                                setSearchQuery('');
+                                                setStatusFilter('all');
+                                                setUsageFilter('all');
+                                            }}
+                                            className="px-3 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors flex items-center gap-1.5"
+                                        >
+                                            <Icon name="filter_alt_off" size={16} />
+                                            Filter zurücksetzen
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
                         {/* Gallery Content - max width */}
                         <div className="max-w-[1400px] mx-auto p-6">
-                            {galleryViewMode === 'grid' && (
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {projects.map(project => (
-                                        <ProjectCard
-                                            key={project.id}
-                                            project={project}
-                                            onClick={() => handleProjectClick(project)}
-                                        />
-                                    ))}
+                            {/* Empty state when no projects match filter */}
+                            {filteredProjects.length === 0 ? (
+                                <div className="bg-white rounded-xl border p-12 text-center">
+                                    <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <Icon name="search_off" size={32} className="text-slate-400" />
+                                    </div>
+                                    <h3 className="text-lg font-medium text-slate-900 mb-2">Keine Projekte gefunden</h3>
+                                    <p className="text-sm text-slate-500 mb-4">
+                                        Versuchen Sie, Ihre Suchkriterien anzupassen oder Filter zurückzusetzen.
+                                    </p>
+                                    <button
+                                        onClick={() => {
+                                            setSearchQuery('');
+                                            setStatusFilter('all');
+                                            setUsageFilter('all');
+                                        }}
+                                        className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium"
+                                    >
+                                        Filter zurücksetzen
+                                    </button>
                                 </div>
-                            )}
-
-                            {galleryViewMode === 'list' && (
-                                <div className="bg-white rounded-xl border overflow-hidden">
-                                    <table className="w-full">
-                                        <thead className="bg-slate-50 border-b">
-                                            <tr className="text-left text-xs font-medium text-slate-500 uppercase tracking-wide">
-                                                <th className="px-4 py-3">Projekt</th>
-                                                <th className="px-4 py-3">Nutzung</th>
-                                                <th className="px-4 py-3">Framework</th>
-                                                <th className="px-4 py-3">Phase</th>
-                                                <th className="px-4 py-3">Status</th>
-                                                <th className="px-4 py-3">Varianten</th>
-                                                <th className="px-4 py-3">Aktualisiert</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {projects.map(project => (
-                                                <ProjectListRow
+                            ) : (
+                                <>
+                                    {galleryViewMode === 'grid' && (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                            {filteredProjects.map(project => (
+                                                <ProjectCard
                                                     key={project.id}
                                                     project={project}
                                                     onClick={() => handleProjectClick(project)}
                                                 />
                                             ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            )}
+                                        </div>
+                                    )}
 
-                            {galleryViewMode === 'map' && (
-                                <div className="bg-white rounded-xl border overflow-hidden h-full min-h-96">
-                                    <div className="h-full bg-slate-200 relative">
-                                        {/* Map placeholder with project markers */}
-                                        <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
-                                            <div className="text-center">
-                                                <Icon name="map" size={48} className="text-slate-400 mx-auto mb-3" />
-                                                <div className="text-lg font-medium text-slate-600">Kartenansicht</div>
-                                                <div className="text-sm text-slate-500 mt-1">Zeigt {projects.length} Projekte in der Region Zürich</div>
+                                    {galleryViewMode === 'list' && (
+                                        <div className="bg-white rounded-xl border overflow-hidden">
+                                            <table className="w-full">
+                                                <thead className="bg-slate-50 border-b">
+                                                    <tr className="text-left text-xs font-medium text-slate-500 uppercase tracking-wide">
+                                                        <th className="px-4 py-3">Projekt</th>
+                                                        <th className="px-4 py-3">Nutzung</th>
+                                                        <th className="px-4 py-3">Framework</th>
+                                                        <th className="px-4 py-3">Phase</th>
+                                                        <th className="px-4 py-3">Status</th>
+                                                        <th className="px-4 py-3">Varianten</th>
+                                                        <th className="px-4 py-3">Aktualisiert</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {filteredProjects.map(project => (
+                                                        <ProjectListRow
+                                                            key={project.id}
+                                                            project={project}
+                                                            onClick={() => handleProjectClick(project)}
+                                                        />
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    )}
+
+                                    {galleryViewMode === 'map' && (
+                                        <div className="bg-white rounded-xl border overflow-hidden h-full min-h-96">
+                                            <div className="h-full bg-slate-200 relative">
+                                                {/* Map placeholder with project markers */}
+                                                <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+                                                    <div className="text-center">
+                                                        <Icon name="map" size={48} className="text-slate-400 mx-auto mb-3" />
+                                                        <div className="text-lg font-medium text-slate-600">Kartenansicht</div>
+                                                        <div className="text-sm text-slate-500 mt-1">Zeigt {filteredProjects.length} Projekte in der Region Zürich</div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Fake map markers */}
+                                                {filteredProjects.map((project, i) => (
+                                                    <div
+                                                        key={project.id}
+                                                        onClick={() => handleProjectClick(project)}
+                                                        className="absolute cursor-pointer group"
+                                                        style={{
+                                                            left: `${20 + (i % 3) * 25 + Math.random() * 10}%`,
+                                                            top: `${20 + Math.floor(i / 3) * 30 + Math.random() * 10}%`
+                                                        }}
+                                                    >
+                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shadow-lg transition-transform group-hover:scale-125 ${
+                                                            project.status === 'completed' ? 'bg-emerald-500' :
+                                                            project.status === 'active' ? 'bg-amber-500' : 'bg-slate-500'
+                                                        }`}>
+                                                            <Icon name="location_on" size={16} className="text-white" />
+                                                        </div>
+                                                        <div className="absolute left-10 top-0 bg-white rounded-lg shadow-lg p-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
+                                                            <div className="font-medium text-sm text-slate-900">{project.name}</div>
+                                                            <div className="text-xs text-slate-500">{project.variantCount} Varianten</div>
+                                                        </div>
+                                                    </div>
+                                                ))}
                                             </div>
                                         </div>
-
-                                        {/* Fake map markers */}
-                                        {projects.map((project, i) => (
-                                            <div
-                                                key={project.id}
-                                                onClick={() => handleProjectClick(project)}
-                                                className="absolute cursor-pointer group"
-                                                style={{
-                                                    left: `${20 + (i % 3) * 25 + Math.random() * 10}%`,
-                                                    top: `${20 + Math.floor(i / 3) * 30 + Math.random() * 10}%`
-                                                }}
-                                            >
-                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center shadow-lg transition-transform group-hover:scale-125 ${
-                                                    project.status === 'completed' ? 'bg-emerald-500' :
-                                                    project.status === 'active' ? 'bg-amber-500' : 'bg-slate-500'
-                                                }`}>
-                                                    <Icon name="location_on" size={16} className="text-white" />
-                                                </div>
-                                                <div className="absolute left-10 top-0 bg-white rounded-lg shadow-lg p-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
-                                                    <div className="font-medium text-sm text-slate-900">{project.name}</div>
-                                                    <div className="text-xs text-slate-500">{project.variantCount} Varianten</div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
+                                    )}
+                                </>
                             )}
                         </div>
                     </div>
@@ -858,17 +969,73 @@
 
             // ============ NEW PROJECT MODAL ============
             const NewProjectModal = () => {
+                const [formData, setFormData] = useState({
+                    name: '',
+                    address: '',
+                    usageType: '',
+                    framework: '',
+                    phase: ''
+                });
+                const [errors, setErrors] = useState({});
+                const [isSubmitting, setIsSubmitting] = useState(false);
+
                 if (!showNewProjectModal) return null;
 
                 const usageOptions = [
-                    'Wohnen',
-                    'Büro / Gewerbe',
-                    'Wohnen / Gewerbe',
-                    'Bildung',
-                    'Andere'
+                    { value: '', label: 'Bitte wählen...' },
+                    { value: 'Wohnen', label: 'Wohnen' },
+                    { value: 'Büro / Gewerbe', label: 'Büro / Gewerbe' },
+                    { value: 'Wohnen / Gewerbe', label: 'Wohnen / Gewerbe' },
+                    { value: 'Bildung', label: 'Bildung' },
+                    { value: 'Andere', label: 'Andere' }
                 ];
-                const frameworkOptions = ['SNAP', 'SNBS', 'Minergie-ECO', 'DGNB'];
-                const phaseOptions = ['Machbarkeit', 'Vorprojekt', 'Bauprojekt', 'Realisierung'];
+                const frameworkOptions = [
+                    { value: '', label: 'Bitte wählen...' },
+                    { value: 'SNAP', label: 'SNAP' },
+                    { value: 'SNBS', label: 'SNBS' },
+                    { value: 'Minergie-ECO', label: 'Minergie-ECO' },
+                    { value: 'DGNB', label: 'DGNB' }
+                ];
+                const phaseOptions = [
+                    { value: '', label: 'Bitte wählen...' },
+                    { value: 'Machbarkeit', label: 'Machbarkeit' },
+                    { value: 'Vorprojekt', label: 'Vorprojekt' },
+                    { value: 'Bauprojekt', label: 'Bauprojekt' },
+                    { value: 'Realisierung', label: 'Realisierung' }
+                ];
+
+                const validateForm = () => {
+                    const newErrors = {};
+                    if (!formData.name.trim()) {
+                        newErrors.name = 'Projektname ist erforderlich';
+                    }
+                    if (!formData.usageType) {
+                        newErrors.usageType = 'Bitte wählen Sie einen Nutzungstyp';
+                    }
+                    if (!formData.framework) {
+                        newErrors.framework = 'Bitte wählen Sie ein Framework';
+                    }
+                    setErrors(newErrors);
+                    return Object.keys(newErrors).length === 0;
+                };
+
+                const handleSubmit = () => {
+                    if (validateForm()) {
+                        setIsSubmitting(true);
+                        // Simulate submission
+                        setTimeout(() => {
+                            setIsSubmitting(false);
+                            setShowNewProjectModal(false);
+                            setFormData({ name: '', address: '', usageType: '', framework: '', phase: '' });
+                        }, 500);
+                    }
+                };
+
+                const handleClose = () => {
+                    setShowNewProjectModal(false);
+                    setFormData({ name: '', address: '', usageType: '', framework: '', phase: '' });
+                    setErrors({});
+                };
 
                 return (
                     <div
@@ -876,15 +1043,21 @@
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby="modal-title"
+                        onClick={(e) => e.target === e.currentTarget && handleClose()}
                     >
                         <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 animate-in fade-in zoom-in duration-200">
                             {/* Modal Header */}
                             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                                <h2 id="modal-title" className="text-lg font-semibold text-slate-900">
-                                    Neues Projekt erstellen
-                                </h2>
+                                <div>
+                                    <h2 id="modal-title" className="text-lg font-semibold text-slate-900">
+                                        Neues Projekt erstellen
+                                    </h2>
+                                    <p className="text-sm text-slate-500 mt-0.5">
+                                        Felder mit <span className="text-red-500">*</span> sind erforderlich
+                                    </p>
+                                </div>
                                 <button
-                                    onClick={() => setShowNewProjectModal(false)}
+                                    onClick={handleClose}
                                     className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500"
                                     aria-label="Modal schließen"
                                 >
@@ -895,44 +1068,113 @@
                             {/* Modal Body */}
                             <div className="p-6 space-y-4">
                                 <Input
-                                    label="Projektname *"
+                                    label="Projektname"
                                     type="text"
                                     placeholder="z.B. Musterstrasse 123"
                                     autoFocus
+                                    required
+                                    value={formData.name}
+                                    onChange={(e) => {
+                                        setFormData({...formData, name: e.target.value});
+                                        if (errors.name) setErrors({...errors, name: null});
+                                    }}
+                                    error={errors.name}
                                 />
                                 <Input
                                     label="Adresse"
                                     type="text"
                                     placeholder="Strasse, PLZ Ort"
+                                    value={formData.address}
+                                    onChange={(e) => setFormData({...formData, address: e.target.value})}
                                 />
                                 <div className="grid grid-cols-2 gap-4">
-                                    <Select
-                                        label="Nutzungstyp"
-                                        options={usageOptions}
-                                    />
-                                    <Select
-                                        label="Framework"
-                                        options={frameworkOptions}
-                                    />
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                                            Nutzungstyp <span className="text-red-500">*</span>
+                                        </label>
+                                        <select
+                                            value={formData.usageType}
+                                            onChange={(e) => {
+                                                setFormData({...formData, usageType: e.target.value});
+                                                if (errors.usageType) setErrors({...errors, usageType: null});
+                                            }}
+                                            className={`w-full px-3 py-2 border rounded-lg text-sm transition-all duration-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none ${
+                                                errors.usageType ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-slate-200'
+                                            } ${!formData.usageType ? 'text-slate-400' : 'text-slate-900'}`}
+                                        >
+                                            {usageOptions.map(opt => (
+                                                <option key={opt.value} value={opt.value} disabled={opt.value === ''}>
+                                                    {opt.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {errors.usageType && <p className="mt-1 text-xs text-red-600">{errors.usageType}</p>}
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                                            Framework <span className="text-red-500">*</span>
+                                        </label>
+                                        <select
+                                            value={formData.framework}
+                                            onChange={(e) => {
+                                                setFormData({...formData, framework: e.target.value});
+                                                if (errors.framework) setErrors({...errors, framework: null});
+                                            }}
+                                            className={`w-full px-3 py-2 border rounded-lg text-sm transition-all duration-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none ${
+                                                errors.framework ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-slate-200'
+                                            } ${!formData.framework ? 'text-slate-400' : 'text-slate-900'}`}
+                                        >
+                                            {frameworkOptions.map(opt => (
+                                                <option key={opt.value} value={opt.value} disabled={opt.value === ''}>
+                                                    {opt.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {errors.framework && <p className="mt-1 text-xs text-red-600">{errors.framework}</p>}
+                                    </div>
                                 </div>
-                                <Select
-                                    label="Bauphase SIA 102"
-                                    options={phaseOptions}
-                                />
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                                        Bauphase SIA 102
+                                    </label>
+                                    <select
+                                        value={formData.phase}
+                                        onChange={(e) => setFormData({...formData, phase: e.target.value})}
+                                        className={`w-full px-3 py-2 border border-slate-200 rounded-lg text-sm transition-all duration-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none ${
+                                            !formData.phase ? 'text-slate-400' : 'text-slate-900'
+                                        }`}
+                                    >
+                                        {phaseOptions.map(opt => (
+                                            <option key={opt.value} value={opt.value}>
+                                                {opt.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <p className="mt-1 text-xs text-slate-500">Optional - kann später festgelegt werden</p>
+                                </div>
                             </div>
 
                             {/* Modal Footer */}
                             <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 rounded-b-2xl flex justify-end gap-3">
                                 <Button
                                     variant="ghost"
-                                    onClick={() => setShowNewProjectModal(false)}
+                                    onClick={handleClose}
+                                    disabled={isSubmitting}
                                 >
                                     Abbrechen
                                 </Button>
                                 <Button
-                                    onClick={() => setShowNewProjectModal(false)}
+                                    onClick={handleSubmit}
+                                    disabled={isSubmitting}
                                 >
-                                    Projekt erstellen
+                                    {isSubmitting ? (
+                                        <>
+                                            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                            Wird erstellt...
+                                        </>
+                                    ) : (
+                                        'Projekt erstellen'
+                                    )}
                                 </Button>
                             </div>
                         </div>
@@ -994,10 +1236,10 @@
             // ============ SIDEBAR ============
             const Sidebar = () => {
                 const sidebarItems = [
-                    { id: 'uebersicht', label: 'Projekt', icon: 'dashboard' },
-                    { id: 'bewertung', label: 'Varianten', icon: 'balance' },
-                    { id: 'viewer', label: 'Modelle', icon: 'view_in_ar', requires3D: true },
-                    { id: 'dashboard', label: 'Dashboard', icon: 'leaderboard' },
+                    { id: 'uebersicht', label: 'Übersicht', icon: 'home', description: 'Projektübersicht' },
+                    { id: 'bewertung', label: 'Bewertung', icon: 'rate_review', description: 'Varianten bewerten' },
+                    { id: 'viewer', label: '3D Modell', icon: 'view_in_ar', requires3D: true, description: '3D Ansicht' },
+                    { id: 'dashboard', label: 'Vergleich', icon: 'compare', description: 'Varianten vergleichen' },
                 ];
 
                 const filteredItems = sidebarItems.filter(item => !item.requires3D || projectHas3D);
@@ -1011,6 +1253,7 @@
                                     <button
                                         key={item.id}
                                         onClick={() => setSidebarView(item.id)}
+                                        title={item.description}
                                         className={`
                                             mx-2 px-2 py-3 flex flex-col items-center gap-1.5 rounded-xl
                                             transition-all duration-150
@@ -1021,6 +1264,7 @@
                                             }
                                         `}
                                         aria-current={isActive ? 'page' : undefined}
+                                        aria-label={item.description}
                                     >
                                         <div className={`
                                             w-10 h-10 rounded-xl flex items-center justify-center transition-colors duration-150
@@ -1062,52 +1306,60 @@
                 };
 
                 return (
-                <div className="w-52 bg-white rounded-xl border border-slate-200 flex-shrink-0">
-                    <div className="px-4 py-3 border-b">
-                        <div className="text-sm font-semibold text-slate-900">Varianten</div>
+                <div className="w-60 bg-white rounded-xl border border-slate-200 flex-shrink-0 overflow-hidden">
+                    <div className="px-4 py-3 border-b bg-slate-50">
+                        <div className="flex items-center justify-between">
+                            <div className="text-sm font-semibold text-slate-900">Varianten</div>
+                            <span className="text-xs text-slate-500 bg-slate-200 px-2 py-0.5 rounded-full">{variants.length}</span>
+                        </div>
                         {isDashboard && (
-                            <div className="text-xs text-slate-400 mt-1">
-                                {selectedVariantsForCompare.length} ausgewählt
+                            <div className="text-xs text-emerald-600 mt-1 font-medium">
+                                {selectedVariantsForCompare.length} zum Vergleich ausgewählt
                             </div>
                         )}
                     </div>
-                    <div>
+                    <div className="max-h-[calc(100vh-280px)] overflow-y-auto">
                     {variants.map((v, i) => {
-                        const isSelected = isDashboard 
+                        const isSelected = isDashboard
                         ? selectedVariantsForCompare.includes(i)
                         : selectedVariant === i;
-                        
+
                         return (
                         <button
                             key={v.id}
                             onClick={() => handleVariantClick(i)}
-                            className={`w-full p-3 text-left border-b transition-all ${
+                            className={`w-full p-3 text-left border-b last:border-b-0 transition-all duration-150 ${
                             isSelected
-                                ? 'bg-emerald-50 border-l-2 border-l-emerald-600'
-                                : 'hover:bg-slate-50 border-l-2 border-l-transparent'
+                                ? 'bg-emerald-50 border-l-4 border-l-emerald-500'
+                                : 'hover:bg-slate-50 border-l-4 border-l-transparent'
                             }`}
+                            aria-pressed={isSelected}
                         >
                             <div className="flex items-start gap-3">
                             {isDashboard && (
-                                <div className={`w-4 h-4 mt-1 rounded border flex-shrink-0 flex items-center justify-center text-xs ${
-                                isSelected 
-                                    ? 'bg-emerald-600 border-emerald-600 text-white' 
-                                    : 'border-slate-300'
+                                <div className={`w-5 h-5 mt-0.5 rounded border-2 flex-shrink-0 flex items-center justify-center transition-colors ${
+                                isSelected
+                                    ? 'bg-emerald-600 border-emerald-600 text-white'
+                                    : 'border-slate-300 hover:border-slate-400'
                                 }`}>
-                                {isSelected && <Icon name="check" size={12} />}
+                                {isSelected && <Icon name="check" size={14} />}
                                 </div>
                             )}
                             <div className="flex-1 min-w-0">
-                                {/* Thumbnail */}
-                                <div className="w-full h-16 rounded-lg bg-slate-200 mb-2 overflow-hidden relative">
-                                <img 
-                                    src={v.thumbnail} 
+                                {/* Thumbnail - increased height */}
+                                <div className="w-full h-24 rounded-lg bg-slate-200 mb-2.5 overflow-hidden relative group">
+                                <img
+                                    src={v.thumbnail}
                                     alt={v.name}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
                                 />
                                 {isSelected && !isDashboard && (
-                                    <div className="absolute inset-0 border-2 border-emerald-500 rounded-lg"></div>
+                                    <div className="absolute inset-0 border-2 border-emerald-500 rounded-lg ring-2 ring-emerald-500/30"></div>
                                 )}
+                                {/* Variant code badge */}
+                                <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-1.5 py-0.5 rounded font-mono">
+                                    {v.code}
+                                </div>
                                 </div>
                                 <div className="font-medium text-sm text-slate-900 truncate">{v.name}</div>
                                 <div className="text-xs text-slate-500 truncate">{v.firm}</div>
@@ -1123,6 +1375,8 @@
 
             // ============ ÜBERSICHT / PROJECT OVERVIEW ============
             const Uebersicht = () => {
+                const [overviewTab, setOverviewTab] = useState('details');
+
                 const teamMembers = [
                     { name: 'David Rasner', email: 'david.rasner@example.ch', role: 'Projektleiter' },
                     { name: 'Matthias Spiss', email: 'matthias.spiss@allreal.ch', role: 'Admin' },
@@ -1142,6 +1396,13 @@
                     { date: '30.08.2024', label: 'Bewertung Komfort & Wirtschaftlichkeit', done: false },
                     { date: '15.09.2024', label: 'Abgabe Kosten Kalkulation', done: false },
                     { date: '30.09.2024', label: 'Jurysitzung', done: false },
+                ];
+
+                // Tab configuration
+                const overviewTabs = [
+                    { id: 'details', label: 'Details', icon: 'info' },
+                    { id: 'team', label: 'Team', icon: 'groups', badge: teamMembers.length + experts.length },
+                    { id: 'timeline', label: 'Zeitplan', icon: 'schedule', badge: milestones.filter(m => !m.done).length },
                 ];
 
                 // Team member row component
@@ -1168,8 +1429,16 @@
 
                 return (
                     <div className="flex-1">
-                        {/* Stats row using StatCard */}
-                        <div className="grid grid-cols-4 gap-4 mb-6">
+                        {/* Hero Stats Section */}
+                        <div className="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+                            <div className="flex items-start justify-between mb-6">
+                                <div>
+                                    <h2 className="text-xl font-semibold text-slate-900">{currentProject?.name || 'Badenerstrasse 501'}</h2>
+                                    <p className="text-sm text-slate-500 mt-1">{currentProject?.address || 'Badenerstrasse 501, 8048 Zürich'}</p>
+                                </div>
+                                <StatusBadge status="active" label="Bewertung läuft" />
+                            </div>
+                            <div className="grid grid-cols-4 gap-4">
                                 <StatCard
                                     icon="apartment"
                                     iconBg="bg-blue-100"
@@ -1201,217 +1470,183 @@
                                     label="Teammitglieder"
                                 />
                             </div>
+                        </div>
 
-                            <div className="grid grid-cols-3 gap-6">
-                                {/* Left column */}
-                                <div className="col-span-2 space-y-6">
-                                    {/* Project details */}
-                                    <SectionCard
-                                        title="Projektdetails"
-                                        actions={
-                                            <button
-                                                className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-                                                aria-label="Projektdetails bearbeiten"
-                                            >
-                                                <Icon name="edit" size={18} />
-                                            </button>
-                                        }
-                                    >
-                                        <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                                            <DataLabel label="Projektname">Badenerstrasse 501</DataLabel>
-                                            <DataLabel label="Adresse">Badenerstrasse 501, 8048 Zürich</DataLabel>
-                                            <DataLabel label="Nutzungstyp">Wohnen</DataLabel>
-                                            <DataLabel label="Bauphase SIA 102">Vorprojekt</DataLabel>
-                                            <DataLabel label="Framework">
-                                                <span className="flex items-center gap-2">
-                                                    SNAP
-                                                    <StatusBadge status="success" label="15 Kriterien" showDot={false} size="sm" />
+                        {/* Tabbed Content Section */}
+                        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                            {/* Tab Navigation */}
+                            <div className="border-b border-slate-200 bg-slate-50">
+                                <div className="flex">
+                                    {overviewTabs.map(tab => (
+                                        <button
+                                            key={tab.id}
+                                            onClick={() => setOverviewTab(tab.id)}
+                                            className={`px-6 py-3 text-sm font-medium transition-all flex items-center gap-2 border-b-2 -mb-px ${
+                                                overviewTab === tab.id
+                                                    ? 'border-emerald-600 text-emerald-700 bg-white'
+                                                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100'
+                                            }`}
+                                        >
+                                            <Icon name={tab.icon} size={18} />
+                                            {tab.label}
+                                            {tab.badge !== undefined && tab.badge > 0 && (
+                                                <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+                                                    overviewTab === tab.id ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'
+                                                }`}>
+                                                    {tab.badge}
                                                 </span>
-                                            </DataLabel>
-                                            <DataLabel label="Status">
-                                                <span className="flex items-center gap-2">
-                                                    <span className="w-2 h-2 bg-amber-400 rounded-full" />
-                                                    Bewertung läuft
-                                                </span>
-                                            </DataLabel>
-                                        </div>
-                                    </SectionCard>
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
 
-                                    {/* Evaluation progress */}
-                                    <SectionCard title="Bewertungsfortschritt">
-                                        <div className="space-y-4">
-                                            {Object.values(themes).map(theme => {
-                                                const progress = theme.id === 'funk' ? 100 :
-                                                    theme.id === 'komfort' ? 75 :
-                                                    theme.id === 'wirt' ? 40 : 20;
-                                                return (
-                                                    <div key={theme.id}>
-                                                        <div className="flex justify-between text-sm mb-1.5">
-                                                            <span className="font-medium text-slate-700">{theme.name}</span>
-                                                            <span className="text-slate-500">{progress}%</span>
-                                                        </div>
-                                                        <ProgressBar
-                                                            value={progress}
-                                                            color={progress === 100 ? 'emerald' : 'amber'}
-                                                        />
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    </SectionCard>
-
-                                    {/* Team */}
-                                    <SectionCard
-                                        title="Team"
-                                        actions={
-                                            <Button variant="ghost" size="sm" icon="person_add">
-                                                Einladen
-                                            </Button>
-                                        }
-                                        noPadding
-                                    >
-                                        <div className="divide-y divide-slate-100">
-                                            <div className="px-5 py-2.5 bg-slate-50">
-                                                <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">
-                                                    Projektteam
-                                                </div>
+                            {/* Tab Content */}
+                            <div className="p-6">
+                                {/* Details Tab */}
+                                {overviewTab === 'details' && (
+                                    <div className="space-y-6">
+                                        {/* Project details */}
+                                        <div>
+                                            <div className="flex items-center justify-between mb-4">
+                                                <h3 className="font-semibold text-slate-900">Projektdetails</h3>
+                                                <button
+                                                    className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                                                    aria-label="Projektdetails bearbeiten"
+                                                >
+                                                    <Icon name="edit" size={18} />
+                                                </button>
                                             </div>
+                                            <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4">
+                                                <DataLabel label="Nutzungstyp">Wohnen</DataLabel>
+                                                <DataLabel label="Bauphase SIA 102">Vorprojekt</DataLabel>
+                                                <DataLabel label="Framework">
+                                                    <span className="flex items-center gap-2">
+                                                        SNAP
+                                                        <StatusBadge status="success" label="15 Kriterien" showDot={false} size="sm" />
+                                                    </span>
+                                                </DataLabel>
+                                            </div>
+                                        </div>
+
+                                        <hr className="border-slate-200" />
+
+                                        {/* Evaluation progress */}
+                                        <div>
+                                            <h3 className="font-semibold text-slate-900 mb-4">Bewertungsfortschritt</h3>
+                                            <div className="grid grid-cols-2 gap-6">
+                                                {Object.values(themes).map(theme => {
+                                                    const progress = theme.id === 'funk' ? 100 :
+                                                        theme.id === 'komfort' ? 75 :
+                                                        theme.id === 'wirt' ? 40 : 20;
+                                                    return (
+                                                        <div key={theme.id}>
+                                                            <div className="flex justify-between text-sm mb-1.5">
+                                                                <span className="font-medium text-slate-700">{theme.name}</span>
+                                                                <span className="text-slate-500">{progress}%</span>
+                                                            </div>
+                                                            <ProgressBar
+                                                                value={progress}
+                                                                color={progress === 100 ? 'emerald' : 'amber'}
+                                                            />
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+
+                                        <hr className="border-slate-200" />
+
+                                        {/* Quick Actions */}
+                                        <div>
+                                            <h3 className="font-semibold text-slate-900 mb-4">Schnellaktionen</h3>
+                                            <div className="flex flex-wrap gap-2">
+                                                <Button variant="secondary" size="sm" icon="download">Bericht exportieren</Button>
+                                                <Button variant="secondary" size="sm" icon="share">Projekt teilen</Button>
+                                                <Button variant="secondary" size="sm" icon="archive">Archivieren</Button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Team Tab */}
+                                {overviewTab === 'team' && (
+                                    <div className="space-y-6">
+                                        <div className="flex items-center justify-between">
+                                            <h3 className="font-semibold text-slate-900">Projektteam</h3>
+                                            <Button variant="ghost" size="sm" icon="person_add">Einladen</Button>
+                                        </div>
+                                        <div className="divide-y divide-slate-100 -mx-6 px-6">
                                             {teamMembers.map((m, i) => (
                                                 <TeamMemberRow key={i} member={m} />
                                             ))}
-                                            <div className="px-5 py-2.5 bg-slate-50">
-                                                <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">
-                                                    Experten
-                                                </div>
-                                            </div>
+                                        </div>
+
+                                        <hr className="border-slate-200" />
+
+                                        <h3 className="font-semibold text-slate-900">Experten</h3>
+                                        <div className="divide-y divide-slate-100 -mx-6 px-6">
                                             {experts.map((m, i) => (
                                                 <TeamMemberRow key={i} member={m} isExpert />
                                             ))}
                                         </div>
-                                    </SectionCard>
-                                </div>
-
-                                {/* Right column */}
-                                <div className="space-y-6">
-                                    {/* Project Image */}
-                                    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-                                        <div className="px-5 py-4 border-b flex items-center justify-between">
-                                            <h3 className="font-semibold text-slate-900">Projektbild</h3>
-                                            <button
-                                                className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-                                                aria-label="Projektbild bearbeiten"
-                                            >
-                                                <Icon name="edit" size={18} />
-                                            </button>
-                                        </div>
-                                        <div className="p-4">
-                                            <div className="aspect-video rounded-lg bg-slate-100 border-2 border-dashed border-slate-200 overflow-hidden relative group cursor-pointer hover:border-emerald-300 hover:bg-emerald-50/30 transition-all">
-                                                {/* Placeholder state - will show upload UI */}
-                                                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                                    <div className="w-12 h-12 rounded-full bg-slate-200 group-hover:bg-emerald-100 flex items-center justify-center mb-2 transition-colors">
-                                                        <Icon name="add_photo_alternate" size={24} className="text-slate-400 group-hover:text-emerald-600 transition-colors" />
-                                                    </div>
-                                                    <div className="text-sm font-medium text-slate-600 group-hover:text-emerald-700">Projektbild hochladen</div>
-                                                    <div className="text-xs text-slate-400 mt-1">Wird in der Projektübersicht angezeigt</div>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
+                                )}
 
-                                    {/* Map */}
-                                    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-                                        <div className="h-48 bg-slate-200 relative">
-                                            <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
-                                                <div className="text-center">
-                                                    <Icon name="map" size={32} className="text-slate-400 mx-auto mb-2" />
-                                                    <div className="text-sm text-slate-500">Karte</div>
-                                                </div>
-                                            </div>
-                                            <button
-                                                className="absolute top-3 right-3 p-1.5 bg-white rounded-lg shadow-sm hover:shadow transition-shadow"
-                                                aria-label="Karte vergrößern"
-                                            >
-                                                <Icon name="fullscreen" size={18} className="text-slate-600" />
-                                            </button>
+                                {/* Timeline Tab */}
+                                {overviewTab === 'timeline' && (
+                                    <div className="space-y-6">
+                                        <div className="flex items-center justify-between">
+                                            <h3 className="font-semibold text-slate-900">Meilensteine</h3>
+                                            <Button variant="ghost" size="sm" icon="add">Meilenstein hinzufügen</Button>
                                         </div>
-                                        <div className="p-4">
-                                            <div className="flex items-start gap-2">
-                                                <Icon name="location_on" size={18} className="text-slate-400 mt-0.5" />
-                                                <div>
-                                                    <div className="text-sm font-medium text-slate-900">Badenerstrasse 501</div>
-                                                    <div className="text-xs text-slate-500">8048 Zürich, Schweiz</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Milestones */}
-                                    <SectionCard
-                                        title="Meilensteine"
-                                        actions={
-                                            <button
-                                                className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-                                                aria-label="Meilensteine bearbeiten"
-                                            >
-                                                <Icon name="edit" size={18} />
-                                            </button>
-                                        }
-                                    >
                                         <div className="space-y-3">
                                             {milestones.map((m, i) => (
-                                                <div key={i} className="flex items-start gap-3">
-                                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-                                                        m.done ? 'bg-emerald-100' : 'bg-slate-100'
+                                                <div key={i} className={`flex items-start gap-4 p-4 rounded-lg transition-colors ${m.done ? 'bg-slate-50' : 'bg-amber-50 border border-amber-200'}`}>
+                                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                                        m.done ? 'bg-emerald-100' : 'bg-amber-100'
                                                     }`}>
                                                         <Icon
                                                             name={m.done ? 'check' : 'schedule'}
-                                                            size={14}
-                                                            className={m.done ? 'text-emerald-600' : 'text-slate-400'}
+                                                            size={16}
+                                                            className={m.done ? 'text-emerald-600' : 'text-amber-600'}
                                                         />
                                                     </div>
                                                     <div className="flex-1 min-w-0">
-                                                        <div className={`text-sm ${m.done ? 'text-slate-500 line-through' : 'text-slate-900'}`}>
+                                                        <div className={`text-sm font-medium ${m.done ? 'text-slate-500 line-through' : 'text-slate-900'}`}>
                                                             {m.label}
                                                         </div>
-                                                        <div className="text-xs text-slate-400">{m.date}</div>
+                                                        <div className="text-xs text-slate-500 mt-0.5">{m.date}</div>
                                                     </div>
+                                                    {!m.done && (
+                                                        <button className="text-xs text-emerald-600 hover:text-emerald-700 font-medium">
+                                                            Als erledigt markieren
+                                                        </button>
+                                                    )}
                                                 </div>
                                             ))}
                                         </div>
-                                    </SectionCard>
-
-                                    {/* Quick actions */}
-                                    <div className="bg-white rounded-xl border overflow-hidden">
-                                        <div className="px-5 py-4 border-b">
-                                            <h3 className="font-semibold text-slate-900">Aktionen</h3>
-                                        </div>
-                                        <div className="p-4">
-                                        <div className="space-y-2">
-                                            <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
-                                                <Icon name="download" size={18} className="text-slate-400" />
-                                                Bericht exportieren
-                                            </button>
-                                            <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
-                                                <Icon name="share" size={18} className="text-slate-400" />
-                                                Projekt teilen
-                                            </button>
-                                            <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
-                                                <Icon name="archive" size={18} className="text-slate-400" />
-                                                Archivieren
-                                            </button>
-                                        </div>
-                                        </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </div>
+                    </div>
                 );
             };
+
 
             // ============ BREADCRUMB ============
             const Breadcrumb = () => {
                 // Don't show breadcrumb in gallery view
                 if (!currentProject) return null;
+
+                // Map sidebar views to human-readable labels
+                const viewLabels = {
+                    uebersicht: 'Übersicht',
+                    bewertung: 'Bewertung',
+                    viewer: '3D Modell',
+                    dashboard: 'Vergleich'
+                };
 
                 const getBreadcrumbItems = () => {
                     const items = [
@@ -1421,21 +1656,69 @@
 
                     if (sidebarView === 'bewertung') {
                         items[1].active = false;
-                        items.push({ label: 'Bewertung', active: false });
-                        items.push({ label: currentVariant.name, active: true });
+                        items.push({ label: viewLabels.bewertung, active: false, onClick: () => {} });
+                        items.push({ label: currentVariant.name, active: true, isVariantSelector: true });
                     } else if (sidebarView === 'viewer') {
                         items[1].active = false;
-                        items.push({ label: '3D Viewer', active: false });
-                        items.push({ label: currentVariant.name, active: true });
+                        items.push({ label: viewLabels.viewer, active: false, onClick: () => {} });
+                        items.push({ label: currentVariant.name, active: true, isVariantSelector: true });
                     } else if (sidebarView === 'dashboard') {
                         items[1].active = false;
-                        items.push({ label: 'Dashboard', active: true });
+                        items.push({ label: viewLabels.dashboard, active: true });
                     }
 
                     return items;
                 };
 
                 const items = getBreadcrumbItems();
+
+                // Variant selector dropdown component
+                const VariantSelector = ({ currentName }) => {
+                    const [isOpen, setIsOpen] = React.useState(false);
+                    return (
+                        <div className="relative">
+                            <button
+                                onClick={() => setIsOpen(!isOpen)}
+                                className="px-2 py-1 rounded-md text-slate-900 font-medium bg-slate-100 hover:bg-slate-200 transition-colors flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                aria-haspopup="listbox"
+                                aria-expanded={isOpen}
+                            >
+                                {currentName}
+                                <Icon name="expand_more" size={16} className="text-slate-500" />
+                            </button>
+                            {isOpen && (
+                                <>
+                                    <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
+                                    <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-20">
+                                        {variants.map((v, i) => (
+                                            <button
+                                                key={v.id}
+                                                onClick={() => {
+                                                    setSelectedVariant(i);
+                                                    setIsOpen(false);
+                                                }}
+                                                className={`w-full px-3 py-2 text-left text-sm hover:bg-slate-50 flex items-center gap-2 ${
+                                                    selectedVariant === i ? 'bg-emerald-50 text-emerald-700' : 'text-slate-700'
+                                                }`}
+                                            >
+                                                <div className="w-8 h-8 rounded bg-slate-200 overflow-hidden flex-shrink-0">
+                                                    <img src={v.thumbnail} alt="" className="w-full h-full object-cover" />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="font-medium truncate">{v.name}</div>
+                                                    <div className="text-xs text-slate-500">{v.code}</div>
+                                                </div>
+                                                {selectedVariant === i && (
+                                                    <Icon name="check" size={16} className="text-emerald-600" />
+                                                )}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    );
+                };
 
                 return (
                     <nav
@@ -1449,7 +1732,9 @@
                                     {index > 0 && (
                                         <Icon name="chevron_right" size={16} className="text-slate-300 mx-1" />
                                     )}
-                                    {item.onClick ? (
+                                    {item.isVariantSelector ? (
+                                        <VariantSelector currentName={item.label} />
+                                    ) : item.onClick ? (
                                         <button
                                             onClick={item.onClick}
                                             className={`
@@ -2156,20 +2441,22 @@
                                     {filteredVariants.map((v, variantIndex) => {
                                     const actualIndex = selectedVariantsForCompare[variantIndex];
                                     const rating = getRating(actualIndex, parseInt(criterion.id));
+                                    const ratingSymbol = rating === 'positive' ? '+' : rating === 'neutral' ? '○' : '−';
+                                    const ratingLabel = rating === 'positive' ? 'Gut' : rating === 'neutral' ? 'Mittel' : 'Schwach';
                                     return (
                                         <td key={v.id} className="px-4 py-2.5 text-center border-b">
-                                        <div className="flex justify-center">
-                                            <div 
-                                            className={`w-6 h-6 rounded-full ${
+                                        <div className="flex justify-center items-center gap-1.5">
+                                            <div
+                                            className={`w-5 h-5 rounded-full flex items-center justify-center text-white text-xs font-bold ${
                                                 rating === 'positive' ? 'bg-emerald-500' :
                                                 rating === 'neutral' ? 'bg-amber-400' :
                                                 'bg-red-500'
                                             }`}
-                                            title={
-                                                rating === 'positive' ? 'Gut' :
-                                                rating === 'neutral' ? 'Mittel' : 'Schwach'
-                                            }
-                                            />
+                                            title={ratingLabel}
+                                            aria-label={ratingLabel}
+                                            >
+                                                {ratingSymbol}
+                                            </div>
                                         </div>
                                         </td>
                                     );
@@ -2231,19 +2518,19 @@
                     <div className="px-4 py-3 border-t flex items-center gap-6 text-sm text-slate-600">
                         <span className="font-medium">Legende:</span>
                         <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full bg-emerald-500" />
-                            <span>Gut (+)</span>
+                            <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-bold">+</div>
+                            <span>Gut</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full bg-amber-400" />
-                            <span>Mittel (○)</span>
+                            <div className="w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center text-white text-xs font-bold">○</div>
+                            <span>Mittel</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full bg-red-500" />
-                            <span>Schwach (−)</span>
+                            <div className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center text-white text-xs font-bold">−</div>
+                            <span>Schwach</span>
                         </div>
                         <div className="flex items-center gap-2 ml-4">
-                            <span className="text-emerald-500">★</span>
+                            <span className="text-emerald-500 text-lg">★</span>
                             <span>Bester Wert</span>
                         </div>
                     </div>
