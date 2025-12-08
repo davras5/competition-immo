@@ -656,18 +656,18 @@
                 ];
 
                 return kriterien.map((k, i) => {
-                // Check if we have stored data for this criterion
-                const storedData = criteriaData[variantIndex]?.[k.id];
-                const defaultRating = defaultRatings[(variantIndex + i) % 3];
-                const defaultComment = defaultComments[(variantIndex + i) % defaultComments.length];
+                    // Check if we have stored data for this criterion
+                    const storedData = criteriaData[variantIndex]?.[k.id];
+                    const defaultRating = defaultRatings[(variantIndex + i) % 3];
+                    const defaultComment = defaultComments[(variantIndex + i) % defaultComments.length];
 
-                return {
-                    ...k,
-                    rating: storedData?.rating || defaultRating,
-                    score: [33, 66][(variantIndex + i) % 2],
-                    comment: storedData?.comment !== undefined ? storedData.comment : defaultComment
-                };
-                }));
+                    return {
+                        ...k,
+                        rating: storedData?.rating || defaultRating,
+                        score: [33, 66][(variantIndex + i) % 2],
+                        comment: storedData?.comment !== undefined ? storedData.comment : defaultComment
+                    };
+                });
             };
 
             const currentVariant = variants[selectedVariant];
