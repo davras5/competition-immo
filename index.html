@@ -41,15 +41,317 @@
     <script type="text/babel">
         const { useState } = React;
 
-        // Material Icons component
-        const Icon = ({ name, className = "", size = 20 }) => (
-            <span 
+        // ============ DESIGN TOKENS ============
+        // Centralized design system for consistent UI
+        const tokens = {
+            // Color palette
+            colors: {
+                primary: {
+                    50: 'emerald-50',
+                    100: 'emerald-100',
+                    500: 'emerald-500',
+                    600: 'emerald-600',
+                    700: 'emerald-700',
+                },
+                surface: {
+                    base: 'slate-50',      // Page background
+                    elevated: 'white',      // Cards, modals
+                    sunken: 'slate-100',    // Inset areas, sidebar
+                    overlay: 'black/50',    // Modal backdrop
+                },
+                text: {
+                    primary: 'slate-900',
+                    secondary: 'slate-600',
+                    tertiary: 'slate-500',
+                    disabled: 'slate-400',
+                    inverse: 'white',
+                },
+                border: {
+                    default: 'slate-200',
+                    subtle: 'slate-100',
+                    focus: 'emerald-500',
+                },
+            },
+            // Status colors (unified)
+            status: {
+                active: { bg: 'bg-amber-100', text: 'text-amber-700', dot: 'bg-amber-400', icon: 'text-amber-600' },
+                completed: { bg: 'bg-emerald-100', text: 'text-emerald-700', dot: 'bg-emerald-400', icon: 'text-emerald-600' },
+                draft: { bg: 'bg-slate-100', text: 'text-slate-600', dot: 'bg-slate-400', icon: 'text-slate-500' },
+                warning: { bg: 'bg-amber-100', text: 'text-amber-700', dot: 'bg-amber-400', icon: 'text-amber-600' },
+                error: { bg: 'bg-red-100', text: 'text-red-700', dot: 'bg-red-500', icon: 'text-red-600' },
+                info: { bg: 'bg-blue-100', text: 'text-blue-700', dot: 'bg-blue-400', icon: 'text-blue-600' },
+                success: { bg: 'bg-emerald-100', text: 'text-emerald-700', dot: 'bg-emerald-400', icon: 'text-emerald-600' },
+            },
+            // Spacing scale (based on 4px grid)
+            spacing: {
+                xs: '1',    // 4px
+                sm: '2',    // 8px
+                md: '3',    // 12px
+                lg: '4',    // 16px
+                xl: '5',    // 20px
+                '2xl': '6', // 24px
+                '3xl': '8', // 32px
+            },
+            // Border radius scale
+            radius: {
+                sm: 'rounded',
+                md: 'rounded-lg',
+                lg: 'rounded-xl',
+                xl: 'rounded-2xl',
+                full: 'rounded-full',
+            },
+            // Shadow scale
+            shadow: {
+                sm: 'shadow-sm',
+                md: 'shadow',
+                lg: 'shadow-lg',
+                xl: 'shadow-xl',
+            },
+            // Typography scale
+            typography: {
+                h1: 'text-2xl font-bold text-slate-900',
+                h2: 'text-xl font-semibold text-slate-900',
+                h3: 'text-lg font-semibold text-slate-900',
+                h4: 'text-sm font-semibold text-slate-700',
+                body: 'text-sm text-slate-600',
+                bodyLarge: 'text-base text-slate-600',
+                small: 'text-xs text-slate-500',
+                label: 'text-xs text-slate-500 uppercase tracking-wide',
+                link: 'text-sm text-emerald-600 hover:text-emerald-700 font-medium',
+            },
+            // Transitions
+            transition: {
+                fast: 'transition-all duration-150',
+                normal: 'transition-all duration-200',
+                slow: 'transition-all duration-300',
+            },
+        };
+
+        // ============ BASE COMPONENTS ============
+
+        // Icon component with accessibility
+        const Icon = ({ name, className = "", size = 20, label }) => (
+            <span
                 className={`material-symbols-outlined ${className}`}
                 style={{ fontSize: size, lineHeight: 1, userSelect: 'none' }}
+                role={label ? "img" : "presentation"}
+                aria-label={label}
+                aria-hidden={!label}
             >
                 {name}
             </span>
         );
+
+        // Button component with variants
+        const Button = ({
+            children,
+            variant = 'primary',
+            size = 'md',
+            icon,
+            iconPosition = 'left',
+            className = '',
+            disabled = false,
+            ...props
+        }) => {
+            const variants = {
+                primary: 'bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-500',
+                secondary: 'bg-slate-100 text-slate-700 hover:bg-slate-200 focus:ring-slate-400',
+                ghost: 'bg-transparent text-slate-600 hover:bg-slate-100 focus:ring-slate-400',
+                danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
+                dangerGhost: 'bg-transparent text-red-600 hover:bg-red-50 focus:ring-red-400',
+            };
+            const sizes = {
+                sm: 'px-3 py-1.5 text-xs gap-1.5',
+                md: 'px-4 py-2 text-sm gap-2',
+                lg: 'px-5 py-2.5 text-base gap-2',
+            };
+            return (
+                <button
+                    className={`
+                        inline-flex items-center justify-center font-medium rounded-lg
+                        transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2
+                        disabled:opacity-50 disabled:cursor-not-allowed
+                        ${variants[variant]} ${sizes[size]} ${className}
+                    `}
+                    disabled={disabled}
+                    {...props}
+                >
+                    {icon && iconPosition === 'left' && <Icon name={icon} size={size === 'sm' ? 14 : size === 'lg' ? 20 : 16} />}
+                    {children}
+                    {icon && iconPosition === 'right' && <Icon name={icon} size={size === 'sm' ? 14 : size === 'lg' ? 20 : 16} />}
+                </button>
+            );
+        };
+
+        // Status Badge component
+        const StatusBadge = ({ status, label, showDot = true, size = 'md' }) => {
+            const statusStyles = tokens.status[status] || tokens.status.draft;
+            const sizes = {
+                sm: 'px-2 py-0.5 text-xs',
+                md: 'px-2.5 py-1 text-xs',
+                lg: 'px-3 py-1.5 text-sm',
+            };
+            return (
+                <span className={`inline-flex items-center gap-1.5 font-medium rounded-full ${statusStyles.bg} ${statusStyles.text} ${sizes[size]}`}>
+                    {showDot && <span className={`w-1.5 h-1.5 rounded-full ${statusStyles.dot}`} />}
+                    {label}
+                </span>
+            );
+        };
+
+        // Avatar component
+        const Avatar = ({ name, src, size = 'md', className = '' }) => {
+            const sizes = {
+                sm: 'w-6 h-6 text-xs',
+                md: 'w-8 h-8 text-sm',
+                lg: 'w-10 h-10 text-base',
+                xl: 'w-12 h-12 text-lg',
+            };
+            const getInitials = (name) => {
+                if (!name) return '?';
+                return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+            };
+            if (src) {
+                return (
+                    <img
+                        src={src}
+                        alt={name}
+                        className={`${sizes[size]} rounded-full object-cover ${className}`}
+                    />
+                );
+            }
+            return (
+                <div
+                    className={`${sizes[size]} rounded-full bg-slate-200 flex items-center justify-center font-medium text-slate-600 ${className}`}
+                    title={name}
+                >
+                    {getInitials(name)}
+                </div>
+            );
+        };
+
+        // Section Card component
+        const SectionCard = ({ title, actions, children, className = '', noPadding = false }) => (
+            <div className={`bg-white rounded-xl border border-slate-200 overflow-hidden ${className}`}>
+                {title && (
+                    <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+                        <h3 className="font-semibold text-slate-900">{title}</h3>
+                        {actions && <div className="flex items-center gap-2">{actions}</div>}
+                    </div>
+                )}
+                <div className={noPadding ? '' : 'p-5'}>
+                    {children}
+                </div>
+            </div>
+        );
+
+        // Stat Card component
+        const StatCard = ({ icon, iconBg = 'bg-slate-100', iconColor = 'text-slate-600', value, label, valueColor = 'text-slate-900' }) => (
+            <div className="bg-white rounded-xl p-5 border border-slate-200">
+                <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 ${iconBg} rounded-lg flex items-center justify-center`}>
+                        <Icon name={icon} size={20} className={iconColor} />
+                    </div>
+                    <div>
+                        <div className={`text-2xl font-bold ${valueColor}`}>{value}</div>
+                        <div className="text-sm text-slate-500">{label}</div>
+                    </div>
+                </div>
+            </div>
+        );
+
+        // Empty State component
+        const EmptyState = ({ icon, title, description, action }) => (
+            <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                    <Icon name={icon} size={32} className="text-slate-400" />
+                </div>
+                <h3 className="text-lg font-medium text-slate-900 mb-1">{title}</h3>
+                {description && <p className="text-sm text-slate-500 mb-4 max-w-sm">{description}</p>}
+                {action}
+            </div>
+        );
+
+        // Input component
+        const Input = ({ label, error, className = '', ...props }) => (
+            <div className={className}>
+                {label && (
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                        {label}
+                    </label>
+                )}
+                <input
+                    className={`
+                        w-full px-3 py-2 border rounded-lg text-sm
+                        transition-all duration-200
+                        focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none
+                        ${error ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-slate-200'}
+                    `}
+                    {...props}
+                />
+                {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+            </div>
+        );
+
+        // Select component
+        const Select = ({ label, options = [], error, className = '', ...props }) => (
+            <div className={className}>
+                {label && (
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                        {label}
+                    </label>
+                )}
+                <select
+                    className={`
+                        w-full px-3 py-2 border rounded-lg text-sm
+                        transition-all duration-200
+                        focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none
+                        ${error ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-slate-200'}
+                    `}
+                    {...props}
+                >
+                    {options.map(opt => (
+                        <option key={opt.value || opt} value={opt.value || opt}>
+                            {opt.label || opt}
+                        </option>
+                    ))}
+                </select>
+                {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+            </div>
+        );
+
+        // Label component for data display
+        const DataLabel = ({ label, children, className = '' }) => (
+            <div className={className}>
+                <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">{label}</div>
+                <div className="text-sm font-medium text-slate-900">{children}</div>
+            </div>
+        );
+
+        // Progress Bar component
+        const ProgressBar = ({ value, max = 100, color = 'emerald', size = 'md', showLabel = false }) => {
+            const percentage = Math.min(100, Math.max(0, (value / max) * 100));
+            const sizes = { sm: 'h-1', md: 'h-2', lg: 'h-3' };
+            const colors = {
+                emerald: 'bg-emerald-500',
+                amber: 'bg-amber-400',
+                red: 'bg-red-500',
+                blue: 'bg-blue-500',
+            };
+            return (
+                <div className="w-full">
+                    <div className={`${sizes[size]} bg-slate-100 rounded-full overflow-hidden`}>
+                        <div
+                            className={`h-full rounded-full transition-all duration-300 ${colors[color]}`}
+                            style={{ width: `${percentage}%` }}
+                        />
+                    </div>
+                    {showLabel && (
+                        <div className="mt-1 text-xs text-slate-500 text-right">{Math.round(percentage)}%</div>
+                    )}
+                </div>
+            );
+        };
 
         const EvaluationPrototype = () => {
             const [role, setRole] = useState('admin');
@@ -329,106 +631,86 @@
             const kriterienData = currentTheme ? generateKriterienData(selectedVariant, currentTheme.kriterien) : [];
 
             // ============ PROJECTS GALLERY ============
-            const ProjectCard = ({ project, onClick }) => {
-                const statusColors = {
-                    active: { bg: 'bg-amber-100', text: 'text-amber-700', dot: 'bg-amber-400' },
-                    completed: { bg: 'bg-emerald-100', text: 'text-emerald-700', dot: 'bg-emerald-400' },
-                    draft: { bg: 'bg-slate-100', text: 'text-slate-600', dot: 'bg-slate-400' }
-                };
-                const colors = statusColors[project.status] || statusColors.draft;
-
-                return (
-                    <div
-                        onClick={onClick}
-                        className="bg-white rounded-xl border overflow-hidden cursor-pointer hover:shadow-lg hover:border-emerald-300 transition-all group"
-                    >
-                        {/* Thumbnail */}
-                        <div className="h-40 relative overflow-hidden">
-                            <img
-                                src={project.thumbnail}
-                                alt={project.name}
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                            <div className="absolute top-3 right-3">
-                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${colors.bg} ${colors.text} flex items-center gap-1.5`}>
-                                    <span className={`w-1.5 h-1.5 rounded-full ${colors.dot}`}></span>
-                                    {project.statusLabel}
-                                </span>
-                            </div>
-                            <div className="absolute bottom-3 left-3 right-3">
-                                <h3 className="text-white font-semibold text-lg truncate">{project.name}</h3>
-                                <p className="text-white/80 text-sm truncate">{project.address}</p>
-                            </div>
+            const ProjectCard = ({ project, onClick }) => (
+                <div
+                    onClick={onClick}
+                    className="bg-white rounded-xl border border-slate-200 overflow-hidden cursor-pointer hover:shadow-lg hover:border-emerald-300 transition-all duration-200 group focus-within:ring-2 focus-within:ring-emerald-500"
+                    tabIndex={0}
+                    role="button"
+                    aria-label={`Projekt ${project.name} öffnen`}
+                    onKeyDown={(e) => e.key === 'Enter' && onClick()}
+                >
+                    {/* Thumbnail */}
+                    <div className="h-40 relative overflow-hidden">
+                        <img
+                            src={project.thumbnail}
+                            alt={project.name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                        <div className="absolute top-3 right-3">
+                            <StatusBadge status={project.status} label={project.statusLabel} />
                         </div>
+                        <div className="absolute bottom-3 left-3 right-3">
+                            <h3 className="text-white font-semibold text-lg truncate">{project.name}</h3>
+                            <p className="text-white/80 text-sm truncate">{project.address}</p>
+                        </div>
+                    </div>
 
-                        {/* Details */}
-                        <div className="p-4">
-                            <div className="grid grid-cols-2 gap-3 mb-3">
-                                <div>
-                                    <div className="text-xs text-slate-500">Nutzung</div>
-                                    <div className="text-sm font-medium text-slate-900 truncate">{project.usageType}</div>
+                    {/* Details */}
+                    <div className="p-4">
+                        <div className="grid grid-cols-2 gap-3 mb-3">
+                            <DataLabel label="Nutzung">
+                                <span className="truncate block">{project.usageType}</span>
+                            </DataLabel>
+                            <DataLabel label="Framework">{project.framework}</DataLabel>
+                        </div>
+                        <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                            <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-1.5 text-sm text-slate-600">
+                                    <Icon name="apartment" size={16} className="text-slate-400" />
+                                    <span>{project.variantCount} Varianten</span>
                                 </div>
-                                <div>
-                                    <div className="text-xs text-slate-500">Framework</div>
-                                    <div className="text-sm font-medium text-slate-900">{project.framework}</div>
-                                </div>
-                            </div>
-                            <div className="flex items-center justify-between pt-3 border-t">
-                                <div className="flex items-center gap-4">
-                                    <div className="flex items-center gap-1.5 text-sm text-slate-600">
-                                        <Icon name="apartment" size={16} className="text-slate-400" />
-                                        <span>{project.variantCount} Varianten</span>
-                                    </div>
-                                    <div className="flex items-center gap-1.5 text-sm text-slate-600">
-                                        <Icon name="check_circle" size={16} className="text-emerald-500" />
-                                        <span>{project.evaluatedCount} bewertet</span>
-                                    </div>
+                                <div className="flex items-center gap-1.5 text-sm text-slate-600">
+                                    <Icon name="check_circle" size={16} className="text-emerald-500" />
+                                    <span>{project.evaluatedCount} bewertet</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                );
-            };
+                </div>
+            );
 
-            const ProjectListRow = ({ project, onClick }) => {
-                const statusColors = {
-                    active: { bg: 'bg-amber-100', text: 'text-amber-700', dot: 'bg-amber-400' },
-                    completed: { bg: 'bg-emerald-100', text: 'text-emerald-700', dot: 'bg-emerald-400' },
-                    draft: { bg: 'bg-slate-100', text: 'text-slate-600', dot: 'bg-slate-400' }
-                };
-                const colors = statusColors[project.status] || statusColors.draft;
-
-                return (
-                    <tr
-                        onClick={onClick}
-                        className="hover:bg-slate-50 cursor-pointer border-b last:border-b-0"
-                    >
-                        <td className="px-4 py-3">
-                            <div className="flex items-center gap-3">
-                                <div className="w-16 h-12 rounded-lg overflow-hidden flex-shrink-0">
-                                    <img src={project.thumbnail} alt={project.name} className="w-full h-full object-cover" />
-                                </div>
-                                <div>
-                                    <div className="font-medium text-slate-900">{project.name}</div>
-                                    <div className="text-sm text-slate-500">{project.address}</div>
-                                </div>
+            const ProjectListRow = ({ project, onClick }) => (
+                <tr
+                    onClick={onClick}
+                    className="hover:bg-slate-50 cursor-pointer border-b border-slate-100 last:border-b-0 transition-colors duration-150"
+                    tabIndex={0}
+                    role="button"
+                    aria-label={`Projekt ${project.name} öffnen`}
+                    onKeyDown={(e) => e.key === 'Enter' && onClick()}
+                >
+                    <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                            <div className="w-16 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                                <img src={project.thumbnail} alt={project.name} className="w-full h-full object-cover" />
                             </div>
-                        </td>
-                        <td className="px-4 py-3 text-sm text-slate-600">{project.usageType}</td>
-                        <td className="px-4 py-3 text-sm text-slate-600">{project.framework}</td>
-                        <td className="px-4 py-3 text-sm text-slate-600">{project.phase}</td>
-                        <td className="px-4 py-3">
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${colors.bg} ${colors.text} inline-flex items-center gap-1.5`}>
-                                <span className={`w-1.5 h-1.5 rounded-full ${colors.dot}`}></span>
-                                {project.statusLabel}
-                            </span>
-                        </td>
-                        <td className="px-4 py-3 text-sm text-slate-600">{project.variantCount}</td>
-                        <td className="px-4 py-3 text-sm text-slate-500">{project.lastUpdated}</td>
-                    </tr>
-                );
-            };
+                            <div>
+                                <div className="font-medium text-slate-900">{project.name}</div>
+                                <div className="text-sm text-slate-500">{project.address}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-slate-600">{project.usageType}</td>
+                    <td className="px-4 py-3 text-sm text-slate-600">{project.framework}</td>
+                    <td className="px-4 py-3 text-sm text-slate-600">{project.phase}</td>
+                    <td className="px-4 py-3">
+                        <StatusBadge status={project.status} label={project.statusLabel} size="sm" />
+                    </td>
+                    <td className="px-4 py-3 text-sm text-slate-600">{project.variantCount}</td>
+                    <td className="px-4 py-3 text-sm text-slate-500">{project.lastUpdated}</td>
+                </tr>
+            );
 
             const ProjectsGallery = () => {
                 const handleProjectClick = (project) => {
@@ -441,49 +723,49 @@
                 const activeProjects = projects.filter(p => p.status === 'active').length;
                 const completedProjects = projects.filter(p => p.status === 'completed').length;
 
+                // View mode toggle button component
+                const ViewModeButton = ({ mode, icon, label }) => (
+                    <button
+                        onClick={() => setGalleryViewMode(mode)}
+                        className={`p-2 rounded-md transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
+                            galleryViewMode === mode
+                                ? 'bg-white shadow-sm text-emerald-600'
+                                : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
+                        }`}
+                        aria-label={label}
+                        aria-pressed={galleryViewMode === mode}
+                        title={label}
+                    >
+                        <Icon name={icon} size={18} />
+                    </button>
+                );
+
                 return (
                     <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
                         {/* Gallery Header */}
-                        <div className="bg-white border-b px-6 py-4">
+                        <div className="bg-white border-b border-slate-200 px-6 py-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h1 className="text-xl font-semibold text-slate-900">Projekte</h1>
-                                    <p className="text-sm text-slate-500 mt-0.5">{totalProjects} Projekte · {activeProjects} aktiv · {completedProjects} abgeschlossen</p>
+                                    <h1 className="text-2xl font-bold text-slate-900">Projekte</h1>
+                                    <p className="text-sm text-slate-500 mt-1">
+                                        {totalProjects} Projekte · {activeProjects} aktiv · {completedProjects} abgeschlossen
+                                    </p>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     {/* View Mode Toggle */}
-                                    <div className="flex items-center bg-slate-100 rounded-lg p-1">
-                                        <button
-                                            onClick={() => setGalleryViewMode('grid')}
-                                            className={`p-2 rounded-md transition-all ${galleryViewMode === 'grid' ? 'bg-white shadow-sm text-emerald-600' : 'text-slate-500 hover:text-slate-700'}`}
-                                            title="Galerie"
-                                        >
-                                            <Icon name="grid_view" size={18} />
-                                        </button>
-                                        <button
-                                            onClick={() => setGalleryViewMode('list')}
-                                            className={`p-2 rounded-md transition-all ${galleryViewMode === 'list' ? 'bg-white shadow-sm text-emerald-600' : 'text-slate-500 hover:text-slate-700'}`}
-                                            title="Liste"
-                                        >
-                                            <Icon name="view_list" size={18} />
-                                        </button>
-                                        <button
-                                            onClick={() => setGalleryViewMode('map')}
-                                            className={`p-2 rounded-md transition-all ${galleryViewMode === 'map' ? 'bg-white shadow-sm text-emerald-600' : 'text-slate-500 hover:text-slate-700'}`}
-                                            title="Karte"
-                                        >
-                                            <Icon name="map" size={18} />
-                                        </button>
+                                    <div className="flex items-center bg-slate-100 rounded-lg p-1" role="group" aria-label="Ansichtsoptionen">
+                                        <ViewModeButton mode="grid" icon="grid_view" label="Galerieansicht" />
+                                        <ViewModeButton mode="list" icon="view_list" label="Listenansicht" />
+                                        <ViewModeButton mode="map" icon="map" label="Kartenansicht" />
                                     </div>
 
                                     {/* New Project Button */}
-                                    <button
+                                    <Button
                                         onClick={() => setShowNewProjectModal(true)}
-                                        className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
+                                        icon="add"
                                     >
-                                        <Icon name="add" size={18} />
                                         Neues Projekt
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -576,79 +858,80 @@
             const NewProjectModal = () => {
                 if (!showNewProjectModal) return null;
 
+                const usageOptions = [
+                    'Wohnen',
+                    'Büro / Gewerbe',
+                    'Wohnen / Gewerbe',
+                    'Bildung',
+                    'Andere'
+                ];
+                const frameworkOptions = ['SNAP', 'SNBS', 'Minergie-ECO', 'DGNB'];
+                const phaseOptions = ['Machbarkeit', 'Vorprojekt', 'Bauprojekt', 'Realisierung'];
+
                 return (
-                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                        <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4">
-                            <div className="px-6 py-4 border-b flex items-center justify-between">
-                                <h2 className="text-lg font-semibold text-slate-900">Neues Projekt erstellen</h2>
+                    <div
+                        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="modal-title"
+                    >
+                        <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 animate-in fade-in zoom-in duration-200">
+                            {/* Modal Header */}
+                            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                                <h2 id="modal-title" className="text-lg font-semibold text-slate-900">
+                                    Neues Projekt erstellen
+                                </h2>
                                 <button
                                     onClick={() => setShowNewProjectModal(false)}
-                                    className="p-1 text-slate-400 hover:text-slate-600 rounded"
+                                    className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                    aria-label="Modal schließen"
                                 >
                                     <Icon name="close" size={20} />
                                 </button>
                             </div>
+
+                            {/* Modal Body */}
                             <div className="p-6 space-y-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">Projektname *</label>
-                                    <input
-                                        type="text"
-                                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
-                                        placeholder="z.B. Musterstrasse 123"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">Adresse</label>
-                                    <input
-                                        type="text"
-                                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
-                                        placeholder="Strasse, PLZ Ort"
-                                    />
-                                </div>
+                                <Input
+                                    label="Projektname *"
+                                    type="text"
+                                    placeholder="z.B. Musterstrasse 123"
+                                    autoFocus
+                                />
+                                <Input
+                                    label="Adresse"
+                                    type="text"
+                                    placeholder="Strasse, PLZ Ort"
+                                />
                                 <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1">Nutzungstyp</label>
-                                        <select className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
-                                            <option>Wohnen</option>
-                                            <option>Büro / Gewerbe</option>
-                                            <option>Wohnen / Gewerbe</option>
-                                            <option>Bildung</option>
-                                            <option>Andere</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1">Framework</label>
-                                        <select className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
-                                            <option>SNAP</option>
-                                            <option>SNBS</option>
-                                            <option>Minergie-ECO</option>
-                                            <option>DGNB</option>
-                                        </select>
-                                    </div>
+                                    <Select
+                                        label="Nutzungstyp"
+                                        options={usageOptions}
+                                    />
+                                    <Select
+                                        label="Framework"
+                                        options={frameworkOptions}
+                                    />
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">Bauphase SIA 102</label>
-                                    <select className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
-                                        <option>Machbarkeit</option>
-                                        <option>Vorprojekt</option>
-                                        <option>Bauprojekt</option>
-                                        <option>Realisierung</option>
-                                    </select>
-                                </div>
+                                <Select
+                                    label="Bauphase SIA 102"
+                                    options={phaseOptions}
+                                />
                             </div>
-                            <div className="px-6 py-4 border-t bg-slate-50 rounded-b-2xl flex justify-end gap-3">
-                                <button
+
+                            {/* Modal Footer */}
+                            <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 rounded-b-2xl flex justify-end gap-3">
+                                <Button
+                                    variant="ghost"
                                     onClick={() => setShowNewProjectModal(false)}
-                                    className="px-4 py-2 text-slate-700 hover:bg-slate-200 rounded-lg transition-colors"
                                 >
                                     Abbrechen
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     onClick={() => setShowNewProjectModal(false)}
-                                    className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
                                 >
                                     Projekt erstellen
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     </div>
@@ -656,77 +939,112 @@
             };
 
             // ============ HEADER ============
-            const Header = () => (
-                <header className="bg-slate-900 text-white h-14 flex items-center justify-between px-4">
-                <div className="flex items-center gap-3">
-                    <div
-                        className="w-8 h-8 bg-emerald-500 rounded flex items-center justify-center cursor-pointer hover:bg-emerald-600 transition-colors"
-                        onClick={() => setCurrentProject(null)}
-                        title="Zur Projektübersicht"
-                    >
-                    <Icon name="eco" size={18} />
-                    </div>
-                    <span className="font-semibold">Nachhaltigkeit</span>
-                    {currentProject && (
-                        <>
-                            <span className="text-slate-500">|</span>
-                            <span className="text-slate-300">{currentProject.name}</span>
-                        </>
+            // Icon button for header with tooltip
+            const HeaderIconButton = ({ icon, label, onClick, badge }) => (
+                <button
+                    className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-emerald-500 relative"
+                    onClick={onClick}
+                    aria-label={label}
+                    title={label}
+                >
+                    <Icon name={icon} size={20} />
+                    {badge && (
+                        <span className="absolute top-1 right-1 w-2 h-2 bg-emerald-500 rounded-full" />
                     )}
-                </div>
+                </button>
+            );
 
-                <div className="flex items-center gap-2">
-                    <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg">
-                    <Icon name="help_outline" size={20} />
-                    </button>
-                    <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg">
-                    <Icon name="notifications" size={20} />
-                    </button>
-                    <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg">
-                    <Icon name="settings" size={20} />
-                    </button>
-                    <div className="w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center text-sm ml-2">DA</div>
-                </div>
+            const Header = () => (
+                <header className="bg-slate-900 text-white h-14 flex items-center justify-between px-4" role="banner">
+                    <div className="flex items-center gap-3">
+                        <button
+                            className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center cursor-pointer hover:bg-emerald-600 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+                            onClick={() => setCurrentProject(null)}
+                            aria-label="Zur Projektübersicht"
+                            title="Zur Projektübersicht"
+                        >
+                            <Icon name="eco" size={18} />
+                        </button>
+                        <span className="font-semibold text-lg">Nachhaltigkeit</span>
+                        {currentProject && (
+                            <>
+                                <span className="text-slate-600 select-none">/</span>
+                                <span className="text-slate-300 font-medium">{currentProject.name}</span>
+                            </>
+                        )}
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                        <HeaderIconButton icon="help_outline" label="Hilfe" />
+                        <HeaderIconButton icon="notifications" label="Benachrichtigungen" badge />
+                        <HeaderIconButton icon="settings" label="Einstellungen" />
+                        <div className="w-px h-6 bg-slate-700 mx-2" />
+                        <button
+                            className="flex items-center gap-2 p-1 rounded-lg hover:bg-slate-800 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            aria-label="Benutzerprofil"
+                        >
+                            <Avatar name="David Admin" size="md" className="bg-slate-700 text-slate-300" />
+                        </button>
+                    </div>
                 </header>
             );
 
             // ============ SIDEBAR ============
             const Sidebar = () => {
                 const sidebarItems = [
-                { id: 'uebersicht', label: 'Übersicht', sublabel: 'Projekt', icon: 'dashboard' },
-                { id: 'bewertung', label: 'Bewertung', sublabel: 'Varianten', icon: 'balance' },
-                { id: 'viewer', label: '3D Viewer', sublabel: 'Modelle', icon: 'view_in_ar', requires3D: true },
-                { id: 'dashboard', label: 'Vergleich', sublabel: 'Dashboard', icon: 'leaderboard' },
+                    { id: 'uebersicht', label: 'Übersicht', sublabel: 'Projekt', icon: 'dashboard' },
+                    { id: 'bewertung', label: 'Bewertung', sublabel: 'Varianten', icon: 'balance' },
+                    { id: 'viewer', label: '3D Viewer', sublabel: 'Modelle', icon: 'view_in_ar', requires3D: true },
+                    { id: 'dashboard', label: 'Vergleich', sublabel: 'Dashboard', icon: 'leaderboard' },
                 ];
 
                 const filteredItems = sidebarItems.filter(item => !item.requires3D || projectHas3D);
 
                 return (
-                <aside className="w-48 bg-slate-100 border-r flex flex-col">
-                    <nav className="flex-1 py-2">
-                    {filteredItems.map(item => (
-                        <button
-                        key={item.id}
-                        onClick={() => setSidebarView(item.id)}
-                        className={`w-full px-4 py-3 text-left flex items-center gap-3 transition-all ${
-                            sidebarView === item.id
-                            ? 'bg-white border-r-2 border-emerald-600 text-slate-900'
-                            : 'text-slate-600 hover:bg-slate-50'
-                        }`}
-                        >
-                        <Icon 
-                            name={item.icon} 
-                            size={20} 
-                            className={sidebarView === item.id ? 'text-emerald-600' : 'text-slate-400'}
-                        />
-                        <div>
-                            <div className="font-medium text-sm">{item.label}</div>
-                            <div className="text-xs text-slate-500">{item.sublabel}</div>
-                        </div>
-                        </button>
-                    ))}
-                    </nav>
-                </aside>
+                    <aside className="w-48 bg-slate-100 border-r border-slate-200 flex flex-col" role="navigation" aria-label="Hauptnavigation">
+                        <nav className="flex-1 py-2">
+                            {filteredItems.map(item => {
+                                const isActive = sidebarView === item.id;
+                                return (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => setSidebarView(item.id)}
+                                        className={`
+                                            w-full px-4 py-3 text-left flex items-center gap-3
+                                            transition-all duration-150 relative
+                                            focus:outline-none focus:bg-slate-50
+                                            ${isActive
+                                                ? 'bg-white text-slate-900 shadow-sm'
+                                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                                            }
+                                        `}
+                                        aria-current={isActive ? 'page' : undefined}
+                                    >
+                                        {/* Active indicator */}
+                                        {isActive && (
+                                            <div className="absolute left-0 top-2 bottom-2 w-0.5 bg-emerald-600 rounded-r" />
+                                        )}
+                                        <div className={`
+                                            w-8 h-8 rounded-lg flex items-center justify-center transition-colors duration-150
+                                            ${isActive ? 'bg-emerald-100' : 'bg-transparent'}
+                                        `}>
+                                            <Icon
+                                                name={item.icon}
+                                                size={20}
+                                                className={isActive ? 'text-emerald-600' : 'text-slate-400'}
+                                            />
+                                        </div>
+                                        <div>
+                                            <div className={`font-medium text-sm ${isActive ? 'text-slate-900' : ''}`}>
+                                                {item.label}
+                                            </div>
+                                            <div className="text-xs text-slate-500">{item.sublabel}</div>
+                                        </div>
+                                    </button>
+                                );
+                            })}
+                        </nav>
+                    </aside>
                 );
             };
 
@@ -811,289 +1129,260 @@
             // ============ ÜBERSICHT / PROJECT OVERVIEW ============
             const Uebersicht = () => {
                 const teamMembers = [
-                { name: 'David Rasner', email: 'david.rasner@example.ch', role: 'Projektleiter', initials: 'DR' },
-                { name: 'Matthias Spiss', email: 'matthias.spiss@allreal.ch', role: 'Admin', initials: 'MS' },
-                { name: 'Adrian Schmid', email: 'adrian.schmid@allreal.ch', role: 'Admin', initials: 'AS' },
+                    { name: 'David Rasner', email: 'david.rasner@example.ch', role: 'Projektleiter' },
+                    { name: 'Matthias Spiss', email: 'matthias.spiss@allreal.ch', role: 'Admin' },
+                    { name: 'Adrian Schmid', email: 'adrian.schmid@allreal.ch', role: 'Admin' },
                 ];
 
                 const experts = [
-                { name: 'Dr. Eva Müller', role: 'Tageslicht, Raumklima', initials: 'EM' },
-                { name: 'Thomas Weber', role: 'Lebenszykluskosten', initials: 'TW' },
-                { name: 'Sarah Koch', role: 'Energie', initials: 'SK' },
+                    { name: 'Dr. Eva Müller', role: 'Tageslicht, Raumklima' },
+                    { name: 'Thomas Weber', role: 'Lebenszykluskosten' },
+                    { name: 'Sarah Koch', role: 'Energie' },
                 ];
 
                 const milestones = [
-                { date: '15.07.2024', label: 'Abgabe BIM Modelle (90%)', done: true },
-                { date: '21.07.2024', label: 'Abgabe definitive BIM Modelle', done: true },
-                { date: '15.08.2024', label: 'Bewertung Funktionalität', done: true },
-                { date: '30.08.2024', label: 'Bewertung Komfort & Wirtschaftlichkeit', done: false },
-                { date: '15.09.2024', label: 'Abgabe Kosten Kalkulation', done: false },
-                { date: '30.09.2024', label: 'Jurysitzung', done: false },
+                    { date: '15.07.2024', label: 'Abgabe BIM Modelle (90%)', done: true },
+                    { date: '21.07.2024', label: 'Abgabe definitive BIM Modelle', done: true },
+                    { date: '15.08.2024', label: 'Bewertung Funktionalität', done: true },
+                    { date: '30.08.2024', label: 'Bewertung Komfort & Wirtschaftlichkeit', done: false },
+                    { date: '15.09.2024', label: 'Abgabe Kosten Kalkulation', done: false },
+                    { date: '30.09.2024', label: 'Jurysitzung', done: false },
                 ];
 
+                // Team member row component
+                const TeamMemberRow = ({ member, isExpert = false }) => (
+                    <div className="px-5 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors duration-150">
+                        <div className="flex items-center gap-3">
+                            <Avatar
+                                name={member.name}
+                                size="md"
+                                className={isExpert ? 'bg-emerald-100 text-emerald-700' : ''}
+                            />
+                            <div>
+                                <div className="text-sm font-medium text-slate-900">{member.name}</div>
+                                <div className="text-xs text-slate-500">{member.email || member.role}</div>
+                            </div>
+                        </div>
+                        <span className={`text-xs px-2 py-1 rounded ${
+                            isExpert ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'
+                        }`}>
+                            {isExpert ? 'Experte' : member.role}
+                        </span>
+                    </div>
+                );
+
                 return (
-                <div className="flex-1 flex flex-col overflow-hidden">
-                    {/* Content */}
-                    <div className="flex-1 overflow-auto p-6 bg-slate-50">
-                    {/* Stats row */}
-                    <div className="grid grid-cols-4 gap-4 mb-6">
-                        <div className="bg-white rounded-xl p-5 border">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <Icon name="apartment" size={20} className="text-blue-600" />
+                    <div className="flex-1 flex flex-col overflow-hidden">
+                        {/* Content */}
+                        <div className="flex-1 overflow-auto p-6 bg-slate-50">
+                            {/* Stats row using StatCard */}
+                            <div className="grid grid-cols-4 gap-4 mb-6">
+                                <StatCard
+                                    icon="apartment"
+                                    iconBg="bg-blue-100"
+                                    iconColor="text-blue-600"
+                                    value="5"
+                                    label="Varianten"
+                                />
+                                <StatCard
+                                    icon="check_circle"
+                                    iconBg="bg-emerald-100"
+                                    iconColor="text-emerald-600"
+                                    value="2"
+                                    valueColor="text-emerald-600"
+                                    label="Bewertet"
+                                />
+                                <StatCard
+                                    icon="pending"
+                                    iconBg="bg-amber-100"
+                                    iconColor="text-amber-600"
+                                    value="3"
+                                    valueColor="text-amber-600"
+                                    label="In Arbeit"
+                                />
+                                <StatCard
+                                    icon="groups"
+                                    iconBg="bg-violet-100"
+                                    iconColor="text-violet-600"
+                                    value="6"
+                                    label="Teammitglieder"
+                                />
                             </div>
-                            <div>
-                            <div className="text-2xl font-bold text-slate-900">5</div>
-                            <div className="text-sm text-slate-500">Varianten</div>
+
+                            <div className="grid grid-cols-3 gap-6">
+                                {/* Left column */}
+                                <div className="col-span-2 space-y-6">
+                                    {/* Project details */}
+                                    <SectionCard
+                                        title="Projektdetails"
+                                        actions={
+                                            <button
+                                                className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                                                aria-label="Projektdetails bearbeiten"
+                                            >
+                                                <Icon name="edit" size={18} />
+                                            </button>
+                                        }
+                                    >
+                                        <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                                            <DataLabel label="Projektname">Badenerstrasse 501</DataLabel>
+                                            <DataLabel label="Adresse">Badenerstrasse 501, 8048 Zürich</DataLabel>
+                                            <DataLabel label="Nutzungstyp">Wohnen</DataLabel>
+                                            <DataLabel label="Bauphase SIA 102">Vorprojekt</DataLabel>
+                                            <DataLabel label="Framework">
+                                                <span className="flex items-center gap-2">
+                                                    SNAP
+                                                    <StatusBadge status="success" label="15 Kriterien" showDot={false} size="sm" />
+                                                </span>
+                                            </DataLabel>
+                                            <DataLabel label="Status">
+                                                <span className="flex items-center gap-2">
+                                                    <span className="w-2 h-2 bg-amber-400 rounded-full" />
+                                                    Bewertung läuft
+                                                </span>
+                                            </DataLabel>
+                                        </div>
+                                    </SectionCard>
+
+                                    {/* Evaluation progress */}
+                                    <SectionCard title="Bewertungsfortschritt">
+                                        <div className="space-y-4">
+                                            {Object.values(themes).map(theme => {
+                                                const progress = theme.id === 'funk' ? 100 :
+                                                    theme.id === 'komfort' ? 75 :
+                                                    theme.id === 'wirt' ? 40 : 20;
+                                                return (
+                                                    <div key={theme.id}>
+                                                        <div className="flex justify-between text-sm mb-1.5">
+                                                            <span className="font-medium text-slate-700">{theme.name}</span>
+                                                            <span className="text-slate-500">{progress}%</span>
+                                                        </div>
+                                                        <ProgressBar
+                                                            value={progress}
+                                                            color={progress === 100 ? 'emerald' : 'amber'}
+                                                        />
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </SectionCard>
+
+                                    {/* Team */}
+                                    <SectionCard
+                                        title="Team"
+                                        actions={
+                                            <Button variant="ghost" size="sm" icon="person_add">
+                                                Einladen
+                                            </Button>
+                                        }
+                                        noPadding
+                                    >
+                                        <div className="divide-y divide-slate-100">
+                                            <div className="px-5 py-2.5 bg-slate-50">
+                                                <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                                                    Projektteam
+                                                </div>
+                                            </div>
+                                            {teamMembers.map((m, i) => (
+                                                <TeamMemberRow key={i} member={m} />
+                                            ))}
+                                            <div className="px-5 py-2.5 bg-slate-50">
+                                                <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                                                    Experten
+                                                </div>
+                                            </div>
+                                            {experts.map((m, i) => (
+                                                <TeamMemberRow key={i} member={m} isExpert />
+                                            ))}
+                                        </div>
+                                    </SectionCard>
+                                </div>
+
+                                {/* Right column */}
+                                <div className="space-y-6">
+                                    {/* Map */}
+                                    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                                        <div className="h-48 bg-slate-200 relative">
+                                            <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+                                                <div className="text-center">
+                                                    <Icon name="map" size={32} className="text-slate-400 mx-auto mb-2" />
+                                                    <div className="text-sm text-slate-500">Karte</div>
+                                                </div>
+                                            </div>
+                                            <button
+                                                className="absolute top-3 right-3 p-1.5 bg-white rounded-lg shadow-sm hover:shadow transition-shadow"
+                                                aria-label="Karte vergrößern"
+                                            >
+                                                <Icon name="fullscreen" size={18} className="text-slate-600" />
+                                            </button>
+                                        </div>
+                                        <div className="p-4">
+                                            <div className="flex items-start gap-2">
+                                                <Icon name="location_on" size={18} className="text-slate-400 mt-0.5" />
+                                                <div>
+                                                    <div className="text-sm font-medium text-slate-900">Badenerstrasse 501</div>
+                                                    <div className="text-xs text-slate-500">8048 Zürich, Schweiz</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Milestones */}
+                                    <SectionCard
+                                        title="Meilensteine"
+                                        actions={
+                                            <button
+                                                className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                                                aria-label="Meilensteine bearbeiten"
+                                            >
+                                                <Icon name="edit" size={18} />
+                                            </button>
+                                        }
+                                    >
+                                        <div className="space-y-3">
+                                            {milestones.map((m, i) => (
+                                                <div key={i} className="flex items-start gap-3">
+                                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                                        m.done ? 'bg-emerald-100' : 'bg-slate-100'
+                                                    }`}>
+                                                        <Icon
+                                                            name={m.done ? 'check' : 'schedule'}
+                                                            size={14}
+                                                            className={m.done ? 'text-emerald-600' : 'text-slate-400'}
+                                                        />
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className={`text-sm ${m.done ? 'text-slate-500 line-through' : 'text-slate-900'}`}>
+                                                            {m.label}
+                                                        </div>
+                                                        <div className="text-xs text-slate-400">{m.date}</div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </SectionCard>
+
+                                    {/* Quick actions */}
+                                    <div className="bg-white rounded-xl border border-slate-200 p-4">
+                                        <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-3">
+                                            Aktionen
+                                        </div>
+                                        <div className="space-y-1">
+                                            <Button variant="ghost" icon="download" className="w-full justify-start">
+                                                Bericht exportieren
+                                            </Button>
+                                            <Button variant="ghost" icon="share" className="w-full justify-start">
+                                                Projekt teilen
+                                            </Button>
+                                            <Button variant="ghost" icon="archive" className="w-full justify-start">
+                                                Archivieren
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        </div>
-                        <div className="bg-white rounded-xl p-5 border">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                            <Icon name="check_circle" size={20} className="text-emerald-600" />
-                            </div>
-                            <div>
-                            <div className="text-2xl font-bold text-emerald-600">2</div>
-                            <div className="text-sm text-slate-500">Bewertet</div>
-                            </div>
-                        </div>
-                        </div>
-                        <div className="bg-white rounded-xl p-5 border">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                            <Icon name="pending" size={20} className="text-amber-600" />
-                            </div>
-                            <div>
-                            <div className="text-2xl font-bold text-amber-600">3</div>
-                            <div className="text-sm text-slate-500">In Arbeit</div>
-                            </div>
-                        </div>
-                        </div>
-                        <div className="bg-white rounded-xl p-5 border">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center">
-                            <Icon name="groups" size={20} className="text-violet-600" />
-                            </div>
-                            <div>
-                            <div className="text-2xl font-bold text-slate-900">6</div>
-                            <div className="text-sm text-slate-500">Teammitglieder</div>
-                            </div>
-                        </div>
                         </div>
                     </div>
-
-                    <div className="grid grid-cols-3 gap-6">
-                        {/* Left column */}
-                        <div className="col-span-2 space-y-6">
-                        {/* Project details */}
-                        <div className="bg-white rounded-xl border overflow-hidden">
-                            <div className="px-5 py-4 border-b flex items-center justify-between">
-                            <h2 className="font-semibold text-slate-900">Projektdetails</h2>
-                            <button className="text-slate-400 hover:text-slate-600">
-                                <Icon name="edit" size={18} />
-                            </button>
-                            </div>
-                            <div className="p-5">
-                            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                                <div>
-                                <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Projektname</div>
-                                <div className="text-sm font-medium text-slate-900">Badenerstrasse 501</div>
-                                </div>
-                                <div>
-                                <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Adresse</div>
-                                <div className="text-sm font-medium text-slate-900">Badenerstrasse 501, 8048 Zürich</div>
-                                </div>
-                                <div>
-                                <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Nutzungstyp</div>
-                                <div className="text-sm font-medium text-slate-900">Wohnen</div>
-                                </div>
-                                <div>
-                                <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Bauphase SIA 102</div>
-                                <div className="text-sm font-medium text-slate-900">Vorprojekt</div>
-                                </div>
-                                <div>
-                                <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Framework</div>
-                                <div className="flex items-center gap-2">
-                                    <span className="text-sm font-medium text-slate-900">SNAP</span>
-                                    <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">15 Kriterien</span>
-                                </div>
-                                </div>
-                                <div>
-                                <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Status</div>
-                                <div className="flex items-center gap-2">
-                                    <span className="w-2 h-2 bg-amber-400 rounded-full"></span>
-                                    <span className="text-sm font-medium text-slate-900">Bewertung läuft</span>
-                                </div>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-
-                        {/* Evaluation progress */}
-                        <div className="bg-white rounded-xl border overflow-hidden">
-                            <div className="px-5 py-4 border-b">
-                            <h2 className="font-semibold text-slate-900">Bewertungsfortschritt</h2>
-                            </div>
-                            <div className="p-5">
-                            <div className="space-y-4">
-                                {Object.values(themes).map(theme => {
-                                const progress = theme.id === 'funk' ? 100 : 
-                                                theme.id === 'komfort' ? 75 : 
-                                                theme.id === 'wirt' ? 40 : 20;
-                                return (
-                                    <div key={theme.id}>
-                                    <div className="flex justify-between text-sm mb-1">
-                                        <span className="text-slate-700">{theme.name}</span>
-                                        <span className="text-slate-500">{progress}%</span>
-                                    </div>
-                                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                                        <div 
-                                        className={`h-full rounded-full ${
-                                            progress === 100 ? 'bg-emerald-500' : 'bg-amber-400'
-                                        }`}
-                                        style={{ width: `${progress}%` }}
-                                        />
-                                    </div>
-                                    </div>
-                                );
-                                })}
-                            </div>
-                            </div>
-                        </div>
-
-                        {/* Team */}
-                        <div className="bg-white rounded-xl border overflow-hidden">
-                            <div className="px-5 py-4 border-b flex items-center justify-between">
-                            <h2 className="font-semibold text-slate-900">Team</h2>
-                            <button className="text-sm text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1">
-                                <Icon name="person_add" size={16} />
-                                Einladen
-                            </button>
-                            </div>
-                            <div className="divide-y">
-                            <div className="px-5 py-3 bg-slate-50">
-                                <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">Projektteam</div>
-                            </div>
-                            {teamMembers.map((m, i) => (
-                                <div key={i} className="px-5 py-3 flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center text-xs font-medium text-slate-600">
-                                    {m.initials}
-                                    </div>
-                                    <div>
-                                    <div className="text-sm font-medium text-slate-900">{m.name}</div>
-                                    <div className="text-xs text-slate-500">{m.email}</div>
-                                    </div>
-                                </div>
-                                <span className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded">{m.role}</span>
-                                </div>
-                            ))}
-                            <div className="px-5 py-3 bg-slate-50">
-                                <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">Experten</div>
-                            </div>
-                            {experts.map((m, i) => (
-                                <div key={i} className="px-5 py-3 flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center text-xs font-medium text-emerald-700">
-                                    {m.initials}
-                                    </div>
-                                    <div>
-                                    <div className="text-sm font-medium text-slate-900">{m.name}</div>
-                                    <div className="text-xs text-slate-500">{m.role}</div>
-                                    </div>
-                                </div>
-                                <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded">Experte</span>
-                                </div>
-                            ))}
-                            </div>
-                        </div>
-                        </div>
-
-                        {/* Right column */}
-                        <div className="space-y-6">
-                        {/* Map */}
-                        <div className="bg-white rounded-xl border overflow-hidden">
-                            <div className="h-48 bg-slate-200 relative">
-                            {/* Map placeholder */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
-                                <div className="text-center">
-                                <Icon name="map" size={32} className="text-slate-400 mx-auto mb-2" />
-                                <div className="text-sm text-slate-500">Karte</div>
-                                </div>
-                            </div>
-                            <div className="absolute top-3 right-3">
-                                <button className="p-1.5 bg-white rounded shadow-sm hover:shadow">
-                                <Icon name="fullscreen" size={18} className="text-slate-600" />
-                                </button>
-                            </div>
-                            </div>
-                            <div className="p-4">
-                            <div className="flex items-start gap-2">
-                                <Icon name="location_on" size={18} className="text-slate-400 mt-0.5" />
-                                <div>
-                                <div className="text-sm font-medium text-slate-900">Badenerstrasse 501</div>
-                                <div className="text-xs text-slate-500">8048 Zürich, Schweiz</div>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-
-                        {/* Milestones */}
-                        <div className="bg-white rounded-xl border overflow-hidden">
-                            <div className="px-5 py-4 border-b flex items-center justify-between">
-                            <h2 className="font-semibold text-slate-900">Meilensteine</h2>
-                            <button className="text-slate-400 hover:text-slate-600">
-                                <Icon name="edit" size={18} />
-                            </button>
-                            </div>
-                            <div className="p-4">
-                            <div className="space-y-3">
-                                {milestones.map((m, i) => (
-                                <div key={i} className="flex items-start gap-3">
-                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-                                    m.done ? 'bg-emerald-100' : 'bg-slate-100'
-                                    }`}>
-                                    <Icon 
-                                        name={m.done ? 'check' : 'schedule'} 
-                                        size={14} 
-                                        className={m.done ? 'text-emerald-600' : 'text-slate-400'}
-                                    />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                    <div className={`text-sm ${m.done ? 'text-slate-500' : 'text-slate-900'}`}>
-                                        {m.label}
-                                    </div>
-                                    <div className="text-xs text-slate-400">{m.date}</div>
-                                    </div>
-                                </div>
-                                ))}
-                            </div>
-                            </div>
-                        </div>
-
-                        {/* Quick actions */}
-                        <div className="bg-white rounded-xl border p-4">
-                            <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-3">Aktionen</div>
-                            <div className="space-y-2">
-                            <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
-                                <Icon name="download" size={18} className="text-slate-400" />
-                                Bericht exportieren
-                            </button>
-                            <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
-                                <Icon name="share" size={18} className="text-slate-400" />
-                                Projekt teilen
-                            </button>
-                            <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
-                                <Icon name="archive" size={18} className="text-slate-400" />
-                                Archivieren
-                            </button>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
-                </div>
                 );
             };
 
@@ -1104,7 +1393,7 @@
 
                 const getBreadcrumbItems = () => {
                     const items = [
-                        { label: 'Projekte', active: false, onClick: () => setCurrentProject(null) },
+                        { label: 'Projekte', icon: 'folder', active: false, onClick: () => setCurrentProject(null) },
                         { label: currentProject.name, active: sidebarView === 'uebersicht', onClick: () => setSidebarView('uebersicht') }
                     ];
 
@@ -1127,19 +1416,46 @@
                 const items = getBreadcrumbItems();
 
                 return (
-                    <div className="h-10 bg-white border-b px-4 flex items-center gap-2 text-sm">
-                        {items.map((item, index) => (
-                            <React.Fragment key={index}>
-                                {index > 0 && <span className="text-slate-300">/</span>}
-                                <span
-                                    className={`${item.active ? 'text-slate-900 font-medium' : 'text-slate-400'} ${item.onClick ? 'cursor-pointer hover:text-slate-600' : ''}`}
-                                    onClick={item.onClick}
-                                >
-                                    {item.label}
-                                </span>
-                            </React.Fragment>
-                        ))}
-                    </div>
+                    <nav
+                        className="h-11 bg-white border-b border-slate-200 px-4 flex items-center text-sm"
+                        aria-label="Breadcrumb"
+                    >
+                        <ol className="flex items-center gap-1">
+                            {items.map((item, index) => (
+                                <li key={index} className="flex items-center">
+                                    {index > 0 && (
+                                        <Icon name="chevron_right" size={16} className="text-slate-300 mx-1" />
+                                    )}
+                                    {item.onClick ? (
+                                        <button
+                                            onClick={item.onClick}
+                                            className={`
+                                                px-2 py-1 rounded-md transition-colors duration-150
+                                                focus:outline-none focus:ring-2 focus:ring-emerald-500
+                                                ${item.active
+                                                    ? 'text-slate-900 font-medium bg-slate-100'
+                                                    : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
+                                                }
+                                            `}
+                                            aria-current={item.active ? 'page' : undefined}
+                                        >
+                                            <span className="flex items-center gap-1.5">
+                                                {item.icon && <Icon name={item.icon} size={14} />}
+                                                {item.label}
+                                            </span>
+                                        </button>
+                                    ) : (
+                                        <span
+                                            className={`px-2 py-1 ${item.active ? 'text-slate-900 font-medium' : 'text-slate-500'}`}
+                                            aria-current={item.active ? 'page' : undefined}
+                                        >
+                                            {item.label}
+                                        </span>
+                                    )}
+                                </li>
+                            ))}
+                        </ol>
+                    </nav>
                 );
             };
 
