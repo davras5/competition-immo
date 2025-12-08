@@ -1067,7 +1067,7 @@
                 };
 
                 return (
-                <div className="w-52 bg-white border-r flex flex-col">
+                <div className="w-52 bg-white rounded-xl border border-slate-200 flex flex-col overflow-hidden">
                     <div className="px-4 py-3 border-b bg-slate-50">
                     <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">Varianten</div>
                     {isDashboard && (
@@ -1172,22 +1172,8 @@
                 );
 
                 return (
-                    <div className="flex-1 flex flex-col overflow-hidden">
-                        {/* Header bar */}
-                        <div className="bg-white border-b px-4 py-3 flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <h2 className="font-semibold text-slate-900">Projektübersicht</h2>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg">
-                                    <Icon name="settings" size={16} />
-                                    Einstellungen
-                                </button>
-                            </div>
-                        </div>
-                        {/* Content */}
-                        <div className="flex-1 overflow-auto p-6 bg-slate-50">
-                            {/* Stats row using StatCard */}
+                    <div className="flex-1 overflow-auto">
+                        {/* Stats row using StatCard */}
                             <div className="grid grid-cols-4 gap-4 mb-6">
                                 <StatCard
                                     icon="apartment"
@@ -1420,7 +1406,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
                 );
             };
 
@@ -1979,27 +1964,10 @@
 
             // ============ 3D VIEWER ============
             const Viewer3D = () => (
-                <div className="flex-1 flex flex-col overflow-hidden">
-                {/* Header bar */}
-                <div className="bg-white border-b px-4 py-3 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <h2 className="font-semibold text-slate-900">3D Viewer</h2>
-                        <span className="text-sm text-slate-500">{currentVariant.name}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-slate-500">
-                        <Icon name="description" size={16} />
-                        <span>IFC Model</span>
-                        <span className="text-slate-300">|</span>
-                        <span>Hochgeladen: 25.03.2023</span>
-                    </div>
-                </div>
-
-                {/* Content area */}
-                <div className="flex-1 overflow-auto p-6 bg-slate-50">
-                    {/* 3D Canvas card */}
-                    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden h-full flex flex-col">
-                        {/* Toolbar */}
-                        <div className="bg-slate-50 border-b px-4 py-2 flex items-center gap-1">
+                <div className="flex-1 flex flex-col overflow-hidden bg-white rounded-xl border border-slate-200">
+                    {/* Toolbar */}
+                    <div className="bg-slate-50 border-b px-4 py-2 flex items-center justify-between">
+                        <div className="flex items-center gap-1">
                             <button className="px-3 py-1.5 text-sm bg-white border rounded hover:bg-slate-50 flex items-center gap-1.5">
                                 <Icon name="restart_alt" size={16} /> Reset
                             </button>
@@ -2017,9 +1985,16 @@
                                 <Icon name="visibility" size={16} /> Sichtbarkeit
                             </button>
                         </div>
+                        <div className="flex items-center gap-2 text-sm text-slate-500">
+                            <Icon name="description" size={16} />
+                            <span>IFC Model</span>
+                            <span className="text-slate-300">|</span>
+                            <span>Hochgeladen: 25.03.2023</span>
+                        </div>
+                    </div>
 
-                        {/* 3D Canvas */}
-                        <div className="flex-1 bg-slate-900 relative">
+                    {/* 3D Canvas */}
+                    <div className="flex-1 bg-slate-900 relative">
                             {/* Fake 3D building visualization */}
                             <div className="absolute inset-0 flex items-center justify-center">
                                 <div className="relative" style={{ perspective: '1000px' }}>
@@ -2086,8 +2061,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
                 </div>
             );
 
@@ -2108,27 +2081,9 @@
                 const filteredVariants = variants.filter((_, i) => selectedVariantsForCompare.includes(i));
 
                 return (
-                <div className="flex-1 flex flex-col overflow-hidden">
-                    {/* Header bar */}
-                    <div className="bg-white border-b px-4 py-3 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <h2 className="font-semibold text-slate-900">Vergleich</h2>
-                            <span className="text-sm text-slate-500">{filteredVariants.length} Varianten ausgewählt</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg">
-                                <Icon name="filter_list" size={16} />
-                                Filter
-                            </button>
-                            <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg">
-                                <Icon name="download" size={16} />
-                                Export
-                            </button>
-                        </div>
-                    </div>
+                <div className="flex-1 flex flex-col overflow-hidden bg-white rounded-xl border border-slate-200">
                     {/* Matrix */}
-                    <div className="flex-1 overflow-auto bg-slate-50 p-6">
-                    <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+                    <div className="flex-1 overflow-auto">
                         <table className="w-full border-collapse">
                         {/* Header row with variant names */}
                         <thead>
@@ -2280,25 +2235,24 @@
                     </div>
 
                     {/* Legend */}
-                    <div className="mt-4 flex items-center gap-6 text-sm text-slate-600">
+                    <div className="px-4 py-3 border-t flex items-center gap-6 text-sm text-slate-600">
                         <span className="font-medium">Legende:</span>
                         <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded-full bg-emerald-500" />
-                        <span>Gut (+)</span>
+                            <div className="w-4 h-4 rounded-full bg-emerald-500" />
+                            <span>Gut (+)</span>
                         </div>
                         <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded-full bg-amber-400" />
-                        <span>Mittel (○)</span>
+                            <div className="w-4 h-4 rounded-full bg-amber-400" />
+                            <span>Mittel (○)</span>
                         </div>
                         <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded-full bg-red-500" />
-                        <span>Schwach (−)</span>
+                            <div className="w-4 h-4 rounded-full bg-red-500" />
+                            <span>Schwach (−)</span>
                         </div>
                         <div className="flex items-center gap-2 ml-4">
-                        <span className="text-emerald-500">★</span>
-                        <span>Bester Wert</span>
+                            <span className="text-emerald-500">★</span>
+                            <span>Bester Wert</span>
                         </div>
-                    </div>
                     </div>
                 </div>
                 );
@@ -2306,34 +2260,49 @@
 
             // ============ MAIN CONTENT AREA ============
             const MainContent = () => (
-                <div className="flex-1 flex flex-col overflow-hidden">
-                {/* Header bar */}
-                <div className="bg-white border-b px-4 py-3 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <h2 className="font-semibold text-slate-900">Bewertung</h2>
-                        <span className="text-sm text-slate-500">{currentVariant.name}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg">
-                            <Icon name="history" size={16} />
-                            Verlauf
-                        </button>
-                    </div>
-                </div>
-                <ThemeTabs />
-                {activeTheme === 'allgemein' ? (
-                    <AllgemeinTab />
-                ) : (
-                    <div className="flex-1 overflow-y-auto">
-                    <KennwerteSection />
-                    <KriterienSection />
-                    </div>
-                )}
+                <div className="flex-1 flex flex-col overflow-hidden bg-white rounded-xl border border-slate-200">
+                    {/* Tabs inside the card */}
+                    <ThemeTabs />
+                    {/* Content */}
+                    {activeTheme === 'allgemein' ? (
+                        <AllgemeinTab />
+                    ) : (
+                        <div className="flex-1 overflow-y-auto">
+                            <KennwerteSection />
+                            <KriterienSection />
+                        </div>
+                    )}
                 </div>
             );
 
             // ============ RENDER ============
             const showVariantList = currentProject && sidebarView !== 'uebersicht';
+
+            // View header component - renders above the content area
+            const ViewHeader = () => {
+                const getViewInfo = () => {
+                    switch (sidebarView) {
+                        case 'uebersicht':
+                            return { title: 'Übersicht', subtitle: 'Projekt' };
+                        case 'bewertung':
+                            return { title: 'Bewertung', subtitle: 'Varianten' };
+                        case 'viewer':
+                            return { title: '3D Viewer', subtitle: 'Modelle' };
+                        case 'dashboard':
+                            return { title: 'Vergleich', subtitle: 'Dashboard' };
+                        default:
+                            return { title: '', subtitle: '' };
+                    }
+                };
+                const { title, subtitle } = getViewInfo();
+
+                return (
+                    <div className="bg-white border-b px-4 py-2">
+                        <span className="text-sm text-slate-600">{title}</span>
+                        {subtitle && <span className="text-sm text-slate-400 ml-1">{subtitle}</span>}
+                    </div>
+                );
+            };
 
             // Gallery view (no project selected)
             if (!currentProject) {
@@ -2354,7 +2323,8 @@
                     <Sidebar />
                     <div className="flex-1 flex flex-col overflow-hidden">
                         <Breadcrumb />
-                        <div className="flex-1 flex overflow-hidden">
+                        <ViewHeader />
+                        <div className="flex-1 flex overflow-hidden p-6 gap-6 bg-slate-50">
                             {showVariantList && <VariantList />}
                             {sidebarView === 'uebersicht' ? <Uebersicht /> :
                             sidebarView === 'dashboard' ? <Dashboard /> :
