@@ -1270,7 +1270,7 @@
                                             w-10 h-10 rounded-xl flex items-center justify-center transition-colors duration-150
                                             ${isActive ? 'bg-emerald-100' : 'bg-slate-600'}
                                         `}>
-                                            <Icon
+                                            <MaterialIcon
                                                 name={item.icon}
                                                 size={22}
                                                 className={isActive ? 'text-emerald-600' : 'text-slate-300'}
@@ -1592,7 +1592,7 @@
                                                     <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                                                         m.done ? 'bg-emerald-100' : 'bg-amber-100'
                                                     }`}>
-                                                        <Icon
+                                                        <MaterialIcon
                                                             name={m.done ? 'check' : 'schedule'}
                                                             size={16}
                                                             className={m.done ? 'text-emerald-600' : 'text-amber-600'}
@@ -1887,7 +1887,7 @@
                                     {items.map((item, i) => (
                                         <div key={i} className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 group cursor-pointer">
                                             <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
-                                                <Icon
+                                                <MaterialIcon
                                                     name={item.type === 'PDF' ? 'picture_as_pdf' : item.type === 'Excel' ? 'table_chart' : 'view_in_ar'}
                                                     size={20}
                                                     className={item.type === 'PDF' ? 'text-red-500' : item.type === 'Excel' ? 'text-emerald-600' : 'text-blue-500'}
@@ -2053,9 +2053,9 @@
                                 <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
                                     done ? 'bg-emerald-100' : 'bg-slate-100'
                                 }`}>
-                                    <Icon 
-                                    name={done ? 'check' : 'schedule'} 
-                                    size={14} 
+                                    <MaterialIcon
+                                    name={done ? 'check' : 'schedule'}
+                                    size={14}
                                     className={done ? 'text-emerald-600' : 'text-slate-400'}
                                     />
                                 </div>
