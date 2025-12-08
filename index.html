@@ -362,9 +362,7 @@
             const [galleryViewMode, setGalleryViewMode] = useState('grid'); // grid, list, map
             const [sidebarView, setSidebarView] = useState('overview'); // overview, evaluation, model3d, comparison
             const [selectedVariant, setSelectedVariant] = useState(0);
-            const [selectedVariantsForCompare, setSelectedVariantsForCompare] = useState([0, 1, 2, 3, 4]); // For dashboard
-            const [activeGeneralTab, setActiveGeneralTab] = useState('overview'); // overview, team, floorplans, documents, models3d
-            const [activeSnapTab, setActiveSnapTab] = useState('functionality'); // functionality, comfort, economics, resources
+            const [selectedVariantsForCompare, setSelectedVariantsForCompare] = useState([0, 1, 2, 3, 4]); // For comparison view
             const [isEditMode, setIsEditMode] = useState(false);
             const [has3DModel, setHas3DModel] = useState(true);
             const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -629,10 +627,7 @@
                 }));
             };
 
-            const currentTheme = themes[activeSnapTab] || themes['functionality'];
             const currentVariant = variants[selectedVariant];
-            const kennwertData = currentTheme ? generateKennwertData(selectedVariant, currentTheme.kennwerte) : [];
-            const kriterienData = currentTheme ? generateKriterienData(selectedVariant, currentTheme.kriterien) : [];
 
             // ============ PROJECTS GALLERY ============
             const ProjectCard = ({ project, onClick }) => (
@@ -1360,10 +1355,46 @@
                 );
             };
 
+            // ============ COLLAPSIBLE SECTION COMPONENT ============
+            const CollapsibleSection = ({ title, icon, badge, children, defaultOpen = true, actions }) => {
+                const [isOpen, setIsOpen] = useState(defaultOpen);
+                return (
+                    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                        <button
+                            onClick={() => setIsOpen(!isOpen)}
+                            className="w-full px-5 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                                    <MaterialIcon name={icon} size={18} className="text-slate-600" />
+                                </div>
+                                <span className="font-semibold text-slate-900">{title}</span>
+                                {badge !== undefined && (
+                                    <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                                        {badge}
+                                    </span>
+                                )}
+                            </div>
+                            <div className="flex items-center gap-2">
+                                {actions && <div onClick={e => e.stopPropagation()}>{actions}</div>}
+                                <MaterialIcon
+                                    name={isOpen ? 'expand_less' : 'expand_more'}
+                                    size={20}
+                                    className="text-slate-400"
+                                />
+                            </div>
+                        </button>
+                        {isOpen && (
+                            <div className="px-5 pb-5 border-t border-slate-100">
+                                {children}
+                            </div>
+                        )}
+                    </div>
+                );
+            };
+
             // ============ PROJECT OVERVIEW VIEW ============
             const ProjectOverviewView = () => {
-                const [overviewTab, setOverviewTab] = useState('details');
-
                 const teamMembers = [
                     { name: 'David Rasner', email: 'david.rasner@example.ch', role: 'Projektleiter' },
                     { name: 'Matthias Spiss', email: 'matthias.spiss@allreal.ch', role: 'Admin' },
@@ -1385,16 +1416,11 @@
                     { date: '30.09.2024', label: 'Jurysitzung', done: false },
                 ];
 
-                // Tab configuration
-                const overviewTabs = [
-                    { id: 'details', label: 'Details', icon: 'info' },
-                    { id: 'team', label: 'Team', icon: 'groups', badge: teamMembers.length + experts.length },
-                    { id: 'timeline', label: 'Zeitplan', icon: 'schedule', badge: milestones.filter(m => !m.done).length },
-                ];
+                const pendingMilestones = milestones.filter(m => !m.done).length;
 
                 // Team member row component
                 const TeamMemberRow = ({ member, isExpert = false }) => (
-                    <div className="px-5 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors duration-150">
+                    <div className="py-3 flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <UserAvatar
                                 name={member.name}
@@ -1415,9 +1441,9 @@
                 );
 
                 return (
-                    <div className="flex-1">
-                        {/* Hero Stats Section */}
-                        <div className="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+                    <div className="flex-1 space-y-4">
+                        {/* Project Header Card */}
+                        <div className="bg-white rounded-xl border border-slate-200 p-6">
                             <div className="flex items-start justify-between mb-6">
                                 <div>
                                     <h2 className="text-xl font-semibold text-slate-900">{currentProject?.name || 'Badenerstrasse 501'}</h2>
@@ -1425,196 +1451,191 @@
                                 </div>
                                 <StatusBadge status="active" label="Bewertung läuft" />
                             </div>
-                            <div className="grid grid-cols-4 gap-4">
-                                <StatisticCard
-                                    icon="apartment"
-                                    iconBg="bg-blue-100"
-                                    iconColor="text-blue-600"
-                                    value="5"
-                                    label="Varianten"
-                                />
-                                <StatisticCard
-                                    icon="check_circle"
-                                    iconBg="bg-emerald-100"
-                                    iconColor="text-emerald-600"
-                                    value="2"
-                                    valueColor="text-emerald-600"
-                                    label="Bewertet"
-                                />
-                                <StatisticCard
-                                    icon="pending"
-                                    iconBg="bg-amber-100"
-                                    iconColor="text-amber-600"
-                                    value="3"
-                                    valueColor="text-amber-600"
-                                    label="In Arbeit"
-                                />
-                                <StatisticCard
-                                    icon="groups"
-                                    iconBg="bg-violet-100"
-                                    iconColor="text-violet-600"
-                                    value="6"
-                                    label="Teammitglieder"
-                                />
-                            </div>
-                        </div>
 
-                        {/* Tabbed Content Section */}
-                        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-                            {/* Tab Navigation */}
-                            <div className="border-b border-slate-200 bg-slate-50">
-                                <div className="flex">
-                                    {overviewTabs.map(tab => (
-                                        <button
-                                            key={tab.id}
-                                            onClick={() => setOverviewTab(tab.id)}
-                                            className={`px-6 py-3 text-sm font-medium transition-all flex items-center gap-2 border-b-2 -mb-px ${
-                                                overviewTab === tab.id
-                                                    ? 'border-emerald-600 text-emerald-700 bg-white'
-                                                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100'
-                                            }`}
-                                        >
-                                            <MaterialIcon name={tab.icon} size={18} />
-                                            {tab.label}
-                                            {tab.badge !== undefined && tab.badge > 0 && (
-                                                <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-                                                    overviewTab === tab.id ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'
-                                                }`}>
-                                                    {tab.badge}
-                                                </span>
-                                            )}
-                                        </button>
-                                    ))}
+                            {/* Stats Grid */}
+                            <div className="grid grid-cols-4 gap-4 mb-6">
+                                <div className="bg-slate-50 rounded-lg p-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                            <MaterialIcon name="apartment" size={20} className="text-blue-600" />
+                                        </div>
+                                        <div>
+                                            <div className="text-2xl font-bold text-slate-900">5</div>
+                                            <div className="text-xs text-slate-500">Varianten</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="bg-slate-50 rounded-lg p-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                            <MaterialIcon name="check_circle" size={20} className="text-emerald-600" />
+                                        </div>
+                                        <div>
+                                            <div className="text-2xl font-bold text-emerald-600">2</div>
+                                            <div className="text-xs text-slate-500">Bewertet</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="bg-slate-50 rounded-lg p-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                                            <MaterialIcon name="pending" size={20} className="text-amber-600" />
+                                        </div>
+                                        <div>
+                                            <div className="text-2xl font-bold text-amber-600">3</div>
+                                            <div className="text-xs text-slate-500">In Arbeit</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="bg-slate-50 rounded-lg p-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center">
+                                            <MaterialIcon name="groups" size={20} className="text-violet-600" />
+                                        </div>
+                                        <div>
+                                            <div className="text-2xl font-bold text-slate-900">6</div>
+                                            <div className="text-xs text-slate-500">Teammitglieder</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* Tab Content */}
-                            <div className="p-6">
-                                {/* Details Tab */}
-                                {overviewTab === 'details' && (
-                                    <div className="space-y-6">
-                                        {/* Project details */}
-                                        <div>
-                                            <div className="flex items-center justify-between mb-4">
-                                                <h3 className="font-semibold text-slate-900">Projektdetails</h3>
-                                                <button
-                                                    className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-                                                    aria-label="Projektdetails bearbeiten"
-                                                >
-                                                    <MaterialIcon name="edit" size={18} />
-                                                </button>
-                                            </div>
-                                            <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4">
-                                                <LabelValuePair label="Nutzungstyp">Wohnen</LabelValuePair>
-                                                <LabelValuePair label="Bauphase SIA 102">Vorprojekt</LabelValuePair>
-                                                <LabelValuePair label="Framework">
-                                                    <span className="flex items-center gap-2">
-                                                        SNAP
-                                                        <StatusBadge status="success" label="15 Kriterien" showDot={false} size="sm" />
-                                                    </span>
-                                                </LabelValuePair>
-                                            </div>
-                                        </div>
+                            {/* Project Details */}
+                            <div className="border-t border-slate-100 pt-5">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">Projektdetails</h3>
+                                    <button
+                                        className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                                        aria-label="Projektdetails bearbeiten"
+                                    >
+                                        <MaterialIcon name="edit" size={16} />
+                                    </button>
+                                </div>
+                                <div className="grid grid-cols-3 gap-6">
+                                    <LabelValuePair label="Nutzungstyp">Wohnen</LabelValuePair>
+                                    <LabelValuePair label="Bauphase SIA 102">Vorprojekt</LabelValuePair>
+                                    <LabelValuePair label="Framework">
+                                        <span className="flex items-center gap-2">
+                                            SNAP
+                                            <StatusBadge status="success" label="15 Kriterien" showDot={false} size="sm" />
+                                        </span>
+                                    </LabelValuePair>
+                                </div>
+                            </div>
+                        </div>
 
-                                        <hr className="border-slate-200" />
-
-                                        {/* Evaluation progress */}
-                                        <div>
-                                            <h3 className="font-semibold text-slate-900 mb-4">Bewertungsfortschritt</h3>
-                                            <div className="grid grid-cols-2 gap-6">
-                                                {Object.values(themes).map(theme => {
-                                                    const progress = theme.id === 'functionality' ? 100 :
-                                                        theme.id === 'comfort' ? 75 :
-                                                        theme.id === 'economics' ? 40 : 20;
-                                                    return (
-                                                        <div key={theme.id}>
-                                                            <div className="flex justify-between text-sm mb-1.5">
-                                                                <span className="font-medium text-slate-700">{theme.name}</span>
-                                                                <span className="text-slate-500">{progress}%</span>
-                                                            </div>
-                                                            <ProgressBar
-                                                                value={progress}
-                                                                color={progress === 100 ? 'emerald' : 'amber'}
-                                                            />
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-
-                                        <hr className="border-slate-200" />
-
-                                        {/* Quick Actions */}
-                                        <div>
-                                            <h3 className="font-semibold text-slate-900 mb-4">Schnellaktionen</h3>
-                                            <div className="flex flex-wrap gap-2">
-                                                <Button variant="secondary" size="sm" icon="download">Bericht exportieren</Button>
-                                                <Button variant="secondary" size="sm" icon="share">Projekt teilen</Button>
-                                                <Button variant="secondary" size="sm" icon="archive">Archivieren</Button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Team Tab */}
-                                {overviewTab === 'team' && (
-                                    <div className="space-y-6">
-                                        <div className="flex items-center justify-between">
-                                            <h3 className="font-semibold text-slate-900">Projektteam</h3>
-                                            <Button variant="ghost" size="sm" icon="person_add">Einladen</Button>
-                                        </div>
-                                        <div className="divide-y divide-slate-100 -mx-6 px-6">
-                                            {teamMembers.map((m, i) => (
-                                                <TeamMemberRow key={i} member={m} />
-                                            ))}
-                                        </div>
-
-                                        <hr className="border-slate-200" />
-
-                                        <h3 className="font-semibold text-slate-900">Experten</h3>
-                                        <div className="divide-y divide-slate-100 -mx-6 px-6">
-                                            {experts.map((m, i) => (
-                                                <TeamMemberRow key={i} member={m} isExpert />
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Timeline Tab */}
-                                {overviewTab === 'timeline' && (
-                                    <div className="space-y-6">
-                                        <div className="flex items-center justify-between">
-                                            <h3 className="font-semibold text-slate-900">Meilensteine</h3>
-                                            <Button variant="ghost" size="sm" icon="add">Meilenstein hinzufügen</Button>
-                                        </div>
-                                        <div className="space-y-3">
-                                            {milestones.map((m, i) => (
-                                                <div key={i} className={`flex items-start gap-4 p-4 rounded-lg transition-colors ${m.done ? 'bg-slate-50' : 'bg-amber-50 border border-amber-200'}`}>
-                                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                                                        m.done ? 'bg-emerald-100' : 'bg-amber-100'
-                                                    }`}>
-                                                        <MaterialIcon
-                                                            name={m.done ? 'check' : 'schedule'}
-                                                            size={16}
-                                                            className={m.done ? 'text-emerald-600' : 'text-amber-600'}
-                                                        />
-                                                    </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <div className={`text-sm font-medium ${m.done ? 'text-slate-500 line-through' : 'text-slate-900'}`}>
-                                                            {m.label}
-                                                        </div>
-                                                        <div className="text-xs text-slate-500 mt-0.5">{m.date}</div>
-                                                    </div>
-                                                    {!m.done && (
-                                                        <button className="text-xs text-emerald-600 hover:text-emerald-700 font-medium">
-                                                            Als erledigt markieren
-                                                        </button>
-                                                    )}
+                        {/* Evaluation Progress Section */}
+                        <div className="bg-white rounded-xl border border-slate-200 p-6">
+                            <div className="flex items-center gap-3 mb-5">
+                                <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                                    <MaterialIcon name="assessment" size={18} className="text-emerald-600" />
+                                </div>
+                                <h3 className="font-semibold text-slate-900">Bewertungsfortschritt</h3>
+                            </div>
+                            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                                {Object.values(themes).map(theme => {
+                                    const progress = theme.id === 'functionality' ? 100 :
+                                        theme.id === 'comfort' ? 75 :
+                                        theme.id === 'economics' ? 40 : 20;
+                                    const themeColors = {
+                                        functionality: 'blue',
+                                        comfort: 'emerald',
+                                        economics: 'amber',
+                                        resources: 'violet'
+                                    };
+                                    const color = themeColors[theme.id];
+                                    return (
+                                        <div key={theme.id} className="flex items-center gap-4">
+                                            <div className={`w-2 h-2 rounded-full bg-${color}-500`}></div>
+                                            <div className="flex-1">
+                                                <div className="flex justify-between text-sm mb-1.5">
+                                                    <span className="font-medium text-slate-700">{theme.name}</span>
+                                                    <span className={progress === 100 ? 'text-emerald-600 font-medium' : 'text-slate-500'}>{progress}%</span>
                                                 </div>
-                                            ))}
+                                                <ProgressBar
+                                                    value={progress}
+                                                    color={progress === 100 ? 'emerald' : 'amber'}
+                                                />
+                                            </div>
                                         </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Team Section - Collapsible */}
+                        <CollapsibleSection
+                            title="Team"
+                            icon="groups"
+                            badge={teamMembers.length + experts.length}
+                            actions={<Button variant="ghost" size="sm" icon="person_add">Einladen</Button>}
+                        >
+                            <div className="pt-4">
+                                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Projektteam</div>
+                                <div className="divide-y divide-slate-100">
+                                    {teamMembers.map((m, i) => (
+                                        <TeamMemberRow key={i} member={m} />
+                                    ))}
+                                </div>
+
+                                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3 mt-6">Experten</div>
+                                <div className="divide-y divide-slate-100">
+                                    {experts.map((m, i) => (
+                                        <TeamMemberRow key={i} member={m} isExpert />
+                                    ))}
+                                </div>
+                            </div>
+                        </CollapsibleSection>
+
+                        {/* Timeline Section - Collapsible */}
+                        <CollapsibleSection
+                            title="Zeitplan"
+                            icon="schedule"
+                            badge={pendingMilestones > 0 ? `${pendingMilestones} offen` : undefined}
+                            actions={<Button variant="ghost" size="sm" icon="add">Hinzufügen</Button>}
+                        >
+                            <div className="pt-4 space-y-3">
+                                {milestones.map((m, i) => (
+                                    <div key={i} className={`flex items-center gap-4 p-3 rounded-lg transition-colors ${m.done ? 'bg-slate-50' : 'bg-amber-50 border border-amber-100'}`}>
+                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                            m.done ? 'bg-emerald-100' : 'bg-amber-100'
+                                        }`}>
+                                            <MaterialIcon
+                                                name={m.done ? 'check' : 'schedule'}
+                                                size={16}
+                                                className={m.done ? 'text-emerald-600' : 'text-amber-600'}
+                                            />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className={`text-sm font-medium ${m.done ? 'text-slate-500 line-through' : 'text-slate-900'}`}>
+                                                {m.label}
+                                            </div>
+                                            <div className="text-xs text-slate-500">{m.date}</div>
+                                        </div>
+                                        {!m.done && (
+                                            <button className="text-xs text-emerald-600 hover:text-emerald-700 font-medium whitespace-nowrap">
+                                                Erledigt
+                                            </button>
+                                        )}
                                     </div>
-                                )}
+                                ))}
+                            </div>
+                        </CollapsibleSection>
+
+                        {/* Quick Actions */}
+                        <div className="bg-white rounded-xl border border-slate-200 p-5">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                                        <MaterialIcon name="bolt" size={18} className="text-slate-600" />
+                                    </div>
+                                    <span className="font-semibold text-slate-900">Schnellaktionen</span>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    <Button variant="secondary" size="sm" icon="download">Bericht exportieren</Button>
+                                    <Button variant="secondary" size="sm" icon="share">Projekt teilen</Button>
+                                    <Button variant="secondary" size="sm" icon="archive">Archivieren</Button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1755,569 +1776,339 @@
                 );
             };
 
-            // ============ ALLGEMEIN SECTION ============
-            const AllgemeinSection = () => {
+            // ============ VARIANT HEADER CARD (Simplified from AllgemeinSection) ============
+            const VariantHeaderCard = () => {
                 const variant = variants[selectedVariant];
 
-                const variantTeam = [
-                    { name: 'Peter Baukontor', role: 'Projektleiter', initials: 'PB' },
-                    { name: 'Maria Schmidt', role: 'Architektin', initials: 'MS' },
-                    { name: 'Hans Weber', role: 'BIM Manager', initials: 'HW' },
-                ];
-
-                // Tab configuration for Allgemein section
-                const generalTabs = [
-                    { id: 'overview', name: 'Allgemein', icon: 'info' },
-                    { id: 'team', name: 'Teilnehmer Team', icon: 'group' },
-                    { id: 'floorplans', name: 'Grundrisse', icon: 'floor' },
-                    { id: 'documents', name: 'Dokumente', icon: 'description' },
-                    { id: 'models3d', name: '3D Modelle', icon: 'view_in_ar' },
-                ];
-
-                // Media sections data
-                const mediaSections = {
-                    bilder: {
-                        title: 'Bilder',
-                        icon: 'image',
-                        items: [
-                            { label: 'Perspektive Süd', type: 'Rendering', url: variant.images[0] },
-                            { label: 'Perspektive Nord', type: 'Rendering', url: variant.images[1] },
-                        ]
-                    },
-                    grundrisse: {
-                        title: 'Grundrisse',
-                        icon: 'floor',
-                        items: [
-                            { label: 'Grundriss EG', type: 'Plan', url: variant.images[2] },
-                        ]
-                    },
-                    dokumente: {
-                        title: 'Dokumente',
-                        icon: 'description',
-                        items: [
-                            { label: 'Technischer Bericht', type: 'PDF', filename: 'technischer_bericht.pdf' },
-                            { label: 'Kostenberechnung', type: 'Excel', filename: 'kosten.xlsx' },
-                        ]
-                    },
-                    modelle3d: {
-                        title: '3D Modelle',
-                        icon: 'view_in_ar',
-                        items: [
-                            { label: 'IFC Modell', type: 'IFC', filename: 'model.ifc', status: 'uploaded' },
-                        ]
-                    }
-                };
-
-                // Reusable image gallery component
-                const ImageGallery = ({ items, showAddButton = true }) => (
-                    <div className="grid grid-cols-3 gap-4">
-                        {items.map((item, i) => (
-                            <div key={i} className="group relative">
-                                <div className="aspect-video rounded-lg bg-slate-200 overflow-hidden cursor-pointer">
-                                    <img
-                                        src={item.url}
-                                        alt={item.label}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                                    />
-                                </div>
-                                <div className="mt-2">
-                                    <div className="text-sm font-medium text-slate-900">{item.label}</div>
-                                    <div className="text-xs text-slate-500">{item.type}</div>
-                                </div>
-                                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button className="p-1.5 bg-white rounded-lg shadow">
-                                        <MaterialIcon name="fullscreen" size={16} className="text-slate-600" />
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                        {showAddButton && (
-                            <div className="aspect-video rounded-lg border-2 border-dashed border-slate-200 flex flex-col items-center justify-center cursor-pointer hover:border-slate-300 hover:bg-slate-50 transition-colors">
-                                <MaterialIcon name="add_photo_alternate" size={32} className="text-slate-300" />
-                                <span className="text-xs text-slate-400 mt-1">Hinzufügen</span>
-                            </div>
-                        )}
-                    </div>
-                );
-
-                // Reusable file list component
-                const FileList = ({ items, showAddButton = true }) => (
-                    <div className="space-y-2">
-                        {items.map((item, i) => (
-                            <div key={i} className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 group cursor-pointer">
-                                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
-                                    <MaterialIcon
-                                        name={item.type === 'PDF' ? 'picture_as_pdf' : item.type === 'Excel' ? 'table_chart' : 'view_in_ar'}
-                                        size={20}
-                                        className={item.type === 'PDF' ? 'text-red-500' : item.type === 'Excel' ? 'text-emerald-600' : 'text-blue-500'}
-                                    />
-                                </div>
-                                <div className="flex-1">
-                                    <div className="text-sm font-medium text-slate-900">{item.label}</div>
-                                    <div className="text-xs text-slate-500">{item.filename || item.type}</div>
-                                </div>
-                                {item.status === 'uploaded' && (
-                                    <MaterialIcon name="check_circle" size={16} className="text-emerald-500" />
-                                )}
-                                <button className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-all">
-                                    <MaterialIcon name="download" size={16} />
-                                </button>
-                            </div>
-                        ))}
-                        {showAddButton && (
-                            <button className="w-full flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-dashed border-slate-200 text-slate-400 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-500 transition-colors">
-                                <MaterialIcon name="add" size={18} />
-                                <span className="text-sm">Datei hinzufügen</span>
-                            </button>
-                        )}
-                    </div>
-                );
-
-                // Tab content renderer
-                const renderTabContent = () => {
-                    switch (activeGeneralTab) {
-                        case 'overview':
-                            return (
-                                <div className="grid grid-cols-3 gap-6">
-                                    {/* Left column - Main content */}
-                                    <div className="col-span-2 space-y-6">
-                                        {/* Variant header card */}
-                                        <div className="bg-slate-50 rounded-xl overflow-hidden">
-                                            <div className="h-40 relative">
-                                                <img
-                                                    src={variant.thumbnail}
-                                                    alt={variant.name}
-                                                    className="w-full h-full object-cover"
-                                                />
-                                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-                                                <div className="absolute bottom-4 left-5 text-white">
-                                                    <div className="text-2xl font-semibold">{variant.name}</div>
-                                                    <div className="text-white/80">{variant.firm}</div>
-                                                </div>
-                                                <div className="absolute top-4 right-4">
-                                                    <span className="px-3 py-1 bg-white/20 backdrop-blur rounded-full text-white text-sm">
-                                                        Code: {variant.code}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div className="p-5 grid grid-cols-4 gap-4 bg-white">
-                                                <div className="text-center">
-                                                    <div className="text-2xl font-bold text-slate-900">7'816</div>
-                                                    <div className="text-xs text-slate-500">GF (m²)</div>
-                                                </div>
-                                                <div className="text-center">
-                                                    <div className="text-2xl font-bold text-slate-900">23'332</div>
-                                                    <div className="text-xs text-slate-500">GV (m³)</div>
-                                                </div>
-                                                <div className="text-center">
-                                                    <div className="text-2xl font-bold text-slate-900">0.64</div>
-                                                    <div className="text-xs text-slate-500">Effizienz</div>
-                                                </div>
-                                                <div className="text-center">
-                                                    <div className="text-2xl font-bold text-slate-900">14</div>
-                                                    <div className="text-xs text-slate-500">Geschosse</div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Bilder Section */}
-                                        <div>
-                                            <div className="flex items-center justify-between mb-4">
-                                                <div className="flex items-center gap-2">
-                                                    <h4 className="font-semibold text-slate-900">Bilder</h4>
-                                                    <span className="text-sm text-slate-400">{mediaSections.bilder.items.length}</span>
-                                                </div>
-                                                <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
-                                                    <MaterialIcon name="upload" size={14} />
-                                                    Hochladen
-                                                </button>
-                                            </div>
-                                            <ImageGallery items={mediaSections.bilder.items} />
-                                        </div>
-
-                                        {/* Einreichung Section */}
-                                        <div className="bg-slate-50 rounded-xl p-5">
-                                            <h4 className="font-semibold text-slate-900 mb-4">Einreichung</h4>
-                                            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                                                <div>
-                                                    <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Eingereicht am</div>
-                                                    <div className="text-sm font-medium text-slate-900">25.03.2023, 10:37</div>
-                                                </div>
-                                                <div>
-                                                    <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Letzte Änderung</div>
-                                                    <div className="text-sm font-medium text-slate-900">18.04.2023, 14:22</div>
-                                                </div>
-                                                <div>
-                                                    <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">BIM Modell</div>
-                                                    <div className="flex items-center gap-2">
-                                                        <MaterialIcon name="check_circle" size={16} className="text-emerald-500" />
-                                                        <span className="text-sm font-medium text-slate-900">Hochgeladen</span>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Dokumente</div>
-                                                    <div className="text-sm font-medium text-slate-900">{variant.images.length} Dateien</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Right column */}
-                                    <div className="space-y-6">
-                                        {/* Bewertungsstatus */}
-                                        <div className="bg-slate-50 rounded-xl p-5">
-                                            <h4 className="font-semibold text-slate-900 mb-4">Bewertungsstatus</h4>
-                                            <div className="space-y-3">
-                                                {Object.values(themes).map(theme => {
-                                                    const progress = theme.id === 'functionality' ? 100 :
-                                                                    theme.id === 'comfort' ? 75 :
-                                                                    theme.id === 'economics' ? 50 : 25;
-                                                    const done = progress === 100;
-                                                    return (
-                                                        <div key={theme.id} className="flex items-center gap-3">
-                                                            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                                                                done ? 'bg-emerald-100' : 'bg-white'
-                                                            }`}>
-                                                                <MaterialIcon
-                                                                    name={done ? 'check' : 'schedule'}
-                                                                    size={14}
-                                                                    className={done ? 'text-emerald-600' : 'text-slate-400'}
-                                                                />
-                                                            </div>
-                                                            <div className="flex-1">
-                                                                <div className="text-sm text-slate-700">{theme.name}</div>
-                                                            </div>
-                                                            <div className="text-xs text-slate-500">{progress}%</div>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-
-                                        {/* Aktionen */}
-                                        <div className="bg-slate-50 rounded-xl p-5">
-                                            <h4 className="font-semibold text-slate-900 mb-4">Aktionen</h4>
-                                            <div className="space-y-2">
-                                                <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg">
-                                                    <MaterialIcon name="add" size={18} className="text-blue-400" />
-                                                    Neue Variante
-                                                </button>
-                                                <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-white rounded-lg">
-                                                    <MaterialIcon name="download" size={18} className="text-slate-400" />
-                                                    Daten exportieren
-                                                </button>
-                                                <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-white rounded-lg">
-                                                    <MaterialIcon name="print" size={18} className="text-slate-400" />
-                                                    Datenblatt drucken
-                                                </button>
-                                                <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg">
-                                                    <MaterialIcon name="delete" size={18} className="text-red-400" />
-                                                    Variante löschen
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-
-                        case 'team':
-                            return (
-                                <div className="max-w-2xl">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <p className="text-sm text-slate-500">Team-Mitglieder für diese Variante</p>
-                                        <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
-                                            <MaterialIcon name="person_add" size={14} />
-                                            Hinzufügen
-                                        </button>
-                                    </div>
-                                    <div className="bg-slate-50 rounded-xl divide-y divide-slate-200">
-                                        {variantTeam.map((m, i) => (
-                                            <div key={i} className="px-5 py-4 flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-sm font-medium text-slate-600">
-                                                    {m.initials}
-                                                </div>
-                                                <div className="flex-1">
-                                                    <div className="text-sm font-medium text-slate-900">{m.name}</div>
-                                                    <div className="text-xs text-slate-500">{m.role}</div>
-                                                </div>
-                                                <button className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg">
-                                                    <MaterialIcon name="more_vert" size={18} />
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            );
-
-                        case 'floorplans':
-                            return (
-                                <div>
-                                    <div className="flex items-center justify-between mb-4">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-sm text-slate-500">{mediaSections.grundrisse.items.length} Grundrisse</span>
-                                        </div>
-                                        <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
-                                            <MaterialIcon name="upload" size={14} />
-                                            Hochladen
-                                        </button>
-                                    </div>
-                                    <ImageGallery items={mediaSections.grundrisse.items} />
-                                </div>
-                            );
-
-                        case 'documents':
-                            return (
-                                <div className="max-w-2xl">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <span className="text-sm text-slate-500">{mediaSections.dokumente.items.length} Dokumente</span>
-                                        <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
-                                            <MaterialIcon name="upload" size={14} />
-                                            Hochladen
-                                        </button>
-                                    </div>
-                                    <FileList items={mediaSections.dokumente.items} />
-                                </div>
-                            );
-
-                        case 'models3d':
-                            return (
-                                <div className="max-w-2xl">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <span className="text-sm text-slate-500">{mediaSections.modelle3d.items.length} 3D Modelle</span>
-                                        <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
-                                            <MaterialIcon name="upload" size={14} />
-                                            Hochladen
-                                        </button>
-                                    </div>
-                                    <FileList items={mediaSections.modelle3d.items} />
-                                </div>
-                            );
-
-                        default:
-                            return null;
-                    }
+                // Asset counts for quick access badges
+                const assetCounts = {
+                    images: variant.images?.length || 2,
+                    documents: 2,
+                    models: 1
                 };
 
                 return (
                     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-                        {/* Section header */}
-                        <div className="px-6 py-4 border-b border-slate-200 bg-slate-50">
-                            <h2 className="text-lg font-semibold text-slate-900">Allgemein</h2>
-                        </div>
-                        {/* Tabs */}
-                        <div className="border-b border-slate-200">
-                            <div className="flex px-2">
-                                {generalTabs.map(tab => (
-                                    <button
-                                        key={tab.id}
-                                        onClick={() => setActiveGeneralTab(tab.id)}
-                                        className={`px-4 py-3 text-sm font-medium transition-all flex items-center gap-2 border-b-2 -mb-px ${
-                                            activeGeneralTab === tab.id
-                                                ? 'border-emerald-600 text-emerald-700'
-                                                : 'border-transparent text-slate-500 hover:text-slate-700'
-                                        }`}
-                                    >
-                                        <MaterialIcon name={tab.icon} size={18} />
-                                        {tab.name}
-                                    </button>
-                                ))}
+                        <div className="flex">
+                            {/* Left: Variant Image */}
+                            <div className="w-64 h-44 relative flex-shrink-0">
+                                <img
+                                    src={variant.thumbnail}
+                                    alt={variant.name}
+                                    className="w-full h-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent"></div>
+                                <div className="absolute bottom-4 left-4 text-white">
+                                    <div className="text-lg font-semibold">{variant.name}</div>
+                                    <div className="text-white/80 text-sm">{variant.firm}</div>
+                                </div>
+                                <div className="absolute top-3 left-3">
+                                    <span className="px-2 py-1 bg-black/40 backdrop-blur rounded text-white text-xs font-mono">
+                                        {variant.code}
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                        {/* Content */}
-                        <div className="p-6">
-                            {renderTabContent()}
+
+                            {/* Right: Details */}
+                            <div className="flex-1 p-5">
+                                {/* Key Metrics Row */}
+                                <div className="flex items-center gap-6 mb-4 pb-4 border-b border-slate-100">
+                                    <div>
+                                        <div className="text-xl font-bold text-slate-900">7'816</div>
+                                        <div className="text-xs text-slate-500">GF (m²)</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-xl font-bold text-slate-900">23'332</div>
+                                        <div className="text-xs text-slate-500">GV (m³)</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-xl font-bold text-slate-900">0.64</div>
+                                        <div className="text-xs text-slate-500">NF/BGF</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-xl font-bold text-slate-900">14</div>
+                                        <div className="text-xs text-slate-500">Geschosse</div>
+                                    </div>
+                                    <div className="ml-auto flex items-center gap-2">
+                                        <button
+                                            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                                            title="Daten exportieren"
+                                        >
+                                            <MaterialIcon name="download" size={18} />
+                                        </button>
+                                        <button
+                                            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                                            title="Drucken"
+                                        >
+                                            <MaterialIcon name="print" size={18} />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Quick Info & Assets */}
+                                <div className="flex items-center justify-between">
+                                    {/* Submission Info */}
+                                    <div className="flex items-center gap-6 text-sm">
+                                        <div>
+                                            <span className="text-slate-500">Eingereicht:</span>
+                                            <span className="ml-1.5 text-slate-700 font-medium">25.03.2023</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5">
+                                            <MaterialIcon name="check_circle" size={16} className="text-emerald-500" />
+                                            <span className="text-slate-700">BIM Modell vorhanden</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Asset Quick Links */}
+                                    <div className="flex items-center gap-2">
+                                        <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                                            <MaterialIcon name="image" size={16} className="text-slate-400" />
+                                            <span>{assetCounts.images} Bilder</span>
+                                        </button>
+                                        <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                                            <MaterialIcon name="description" size={16} className="text-slate-400" />
+                                            <span>{assetCounts.documents} Dokumente</span>
+                                        </button>
+                                        <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                                            <MaterialIcon name="view_in_ar" size={16} className="text-slate-400" />
+                                            <span>{assetCounts.models} 3D</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 );
             };
 
-            // ============ METRICS SECTION ============
-            const MetricsSection = () => (
-                <div className="border rounded-lg overflow-hidden">
-                <div className="px-5 py-4 flex items-center justify-between border-b">
-                    <h3 className="font-semibold text-slate-900">Kennwerte</h3>
-                    <span className="text-sm text-slate-500">Teilnehmer {currentVariant.code}</span>
-                </div>
-                
-                <div className="divide-y">
-                    {kennwertData.map(k => (
-                    <div key={k.id} className="px-4 py-2 grid grid-cols-12 gap-4 items-center">
-                        {/* Label */}
-                        <div className="col-span-4 text-sm text-slate-600">
-                        {k.label} {k.unit && `(${k.unit})`}
-                        </div>
-                        
-                        {/* Value */}
-                        <div className="col-span-1 text-sm font-medium text-slate-900">
-                        {k.value}{k.unit === '%' ? '%' : ''}
-                        </div>
-                        
-                        {/* Bar visualization */}
-                        <div className="col-span-5 flex items-center gap-2">
-                        <div className="flex-1 h-6 bg-slate-100 rounded relative">
-                            {/* Value bar */}
-                            <div 
-                            className={`absolute top-0 left-0 h-full rounded ${
-                                k.delta >= 0 ? 'bg-emerald-400' : 'bg-red-400'
-                            }`}
-                            style={{ width: `${k.value}%` }}
-                            />
-                            {/* Average marker */}
-                            <div 
-                            className="absolute top-0 h-full w-0.5 bg-slate-800"
-                            style={{ left: `${k.avg}%` }}
-                            >
-                            <div className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-slate-500 whitespace-nowrap">
-                                Ø {k.avg}%
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-                        
-                        {/* Delta & Rank */}
-                        <div className="col-span-1 text-right">
-                        <span className={`text-sm font-medium ${k.delta >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                            {k.delta >= 0 ? '+' : ''}{k.delta}%
-                        </span>
-                        </div>
-                        <div className="col-span-1 text-right text-sm text-slate-500">
-                        {k.rank} / {k.total}
-                        </div>
-                    </div>
-                    ))}
-                </div>
-                </div>
-            );
-
-            // ============ CRITERIA SECTION ============
-            const CriteriaSection = () => (
-                <div className="border rounded-lg overflow-hidden">
-                <div className="px-5 py-4 flex items-center justify-between border-b">
-                    <h3 className="font-semibold text-slate-900">Kriterien</h3>
-                    <button
-                        onClick={() => setIsEditMode(!isEditMode)}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg ${
-                        isEditMode
-                            ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-                            : 'text-slate-600 hover:bg-slate-100'
-                        }`}
-                    >
-                        <MaterialIcon name={isEditMode ? 'check' : 'edit'} size={14} />
-                        {isEditMode ? 'Speichern' : 'Bearbeiten'}
-                    </button>
-                </div>
-                
-                <table className="w-full">
-                    <thead className="bg-slate-50 text-xs text-slate-500 uppercase">
-                    <tr>
-                        <th className="px-4 py-2 text-left font-medium w-32">Thema</th>
-                        <th className="px-4 py-2 text-left font-medium w-48">Kriterium</th>
-                        <th className="px-4 py-2 text-center font-medium w-8">−</th>
-                        <th className="px-4 py-2 text-center font-medium w-8">○</th>
-                        <th className="px-4 py-2 text-center font-medium w-8">+</th>
-                        <th className="px-4 py-2 text-left font-medium">Anmerkungen</th>
-                    </tr>
-                    </thead>
-                    <tbody className="divide-y">
-                    {kriterienData.map((k, i) => (
-                        <tr key={k.id} className="hover:bg-slate-50">
-                        {/* Theme label - only show for first criterion */}
-                        <td className="px-4 py-3 text-sm text-slate-600 align-top">
-                            {i === 0 && (
-                            <div className="font-medium">
-                                {currentTheme.name}
-                            </div>
-                            )}
-                        </td>
-                        
-                        {/* Criterion name */}
-                        <td className="px-4 py-3 align-top">
-                            <div className="text-sm font-medium text-slate-900">{k.id} {k.name}</div>
-                        </td>
-                        
-                        {/* Rating indicators */}
-                        <td className="px-4 py-3 text-center align-top">
-                            <div 
-                            className={`w-12 h-5 rounded ${
-                                k.rating === 'negative' ? 'bg-red-500' : 'bg-slate-200'
-                            } ${isEditMode ? 'cursor-pointer hover:ring-2 ring-slate-400' : ''}`}
-                            />
-                        </td>
-                        <td className="px-4 py-3 text-center align-top">
-                            <div 
-                            className={`w-12 h-5 rounded ${
-                                k.rating === 'neutral' ? 'bg-amber-400' : 'bg-slate-200'
-                            } ${isEditMode ? 'cursor-pointer hover:ring-2 ring-slate-400' : ''}`}
-                            />
-                        </td>
-                        <td className="px-4 py-3 text-center align-top">
-                            <div 
-                            className={`w-12 h-5 rounded ${
-                                k.rating === 'positive' ? 'bg-emerald-500' : 'bg-slate-200'
-                            } ${isEditMode ? 'cursor-pointer hover:ring-2 ring-slate-400' : ''}`}
-                            />
-                        </td>
-                        
-                        {/* Comments */}
-                        <td className="px-4 py-3 align-top">
-                            {isEditMode ? (
-                            <textarea 
-                                className="w-full text-sm text-slate-600 bg-slate-50 border rounded p-2 min-h-16"
-                                defaultValue={k.comment}
-                            />
-                            ) : (
-                            <div className="text-sm text-slate-600 leading-relaxed">{k.comment}</div>
-                            )}
-                        </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-                </div>
-            );
-
             // ============ SNAP KRITERIEN SECTION ============
             const SNAPKriterienSection = () => {
-                // Tab configuration for SNAP Kriterien section
-                const snapTabs = Object.values(themes).map(theme => ({
-                    id: theme.id,
-                    name: theme.name,
-                    icon: theme.id === 'functionality' ? 'settings_accessibility' :
-                          theme.id === 'comfort' ? 'spa' :
-                          theme.id === 'economics' ? 'payments' : 'bolt',
-                    color: theme.color
-                }));
+                // Track which themes are expanded
+                const [expandedThemes, setExpandedThemes] = useState(['functionality']);
+
+                const toggleTheme = (themeId) => {
+                    setExpandedThemes(prev =>
+                        prev.includes(themeId)
+                            ? prev.filter(id => id !== themeId)
+                            : [...prev, themeId]
+                    );
+                };
+
+                // Theme styling configuration
+                const themeConfig = {
+                    functionality: { icon: 'settings_accessibility', color: 'blue', progress: 100 },
+                    comfort: { icon: 'spa', color: 'emerald', progress: 75 },
+                    economics: { icon: 'payments', color: 'amber', progress: 40 },
+                    resources: { icon: 'bolt', color: 'violet', progress: 20 }
+                };
+
+                const colorClasses = {
+                    blue: { bg: 'bg-blue-500', bgLight: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-200' },
+                    emerald: { bg: 'bg-emerald-500', bgLight: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-200' },
+                    amber: { bg: 'bg-amber-500', bgLight: 'bg-amber-50', text: 'text-amber-600', border: 'border-amber-200' },
+                    violet: { bg: 'bg-violet-500', bgLight: 'bg-violet-50', text: 'text-violet-600', border: 'border-violet-200' }
+                };
+
+                // Theme Card Component
+                const ThemeCard = ({ theme }) => {
+                    const config = themeConfig[theme.id];
+                    const colors = colorClasses[config.color];
+                    const isExpanded = expandedThemes.includes(theme.id);
+                    const themeKennwerte = generateKennwertData(selectedVariant, theme.kennwerte);
+                    const themeKriterien = generateKriterienData(selectedVariant, theme.kriterien);
+
+                    // Count ratings for summary
+                    const ratingCounts = themeKriterien.reduce((acc, k) => {
+                        acc[k.rating] = (acc[k.rating] || 0) + 1;
+                        return acc;
+                    }, {});
+
+                    return (
+                        <div className={`bg-white rounded-xl border overflow-hidden transition-all ${isExpanded ? colors.border : 'border-slate-200'}`}>
+                            {/* Theme Header - Always visible */}
+                            <button
+                                onClick={() => toggleTheme(theme.id)}
+                                className={`w-full px-5 py-4 flex items-center gap-4 hover:bg-slate-50 transition-colors ${isExpanded ? colors.bgLight : ''}`}
+                            >
+                                {/* Color indicator */}
+                                <div className={`w-1 h-12 rounded-full ${colors.bg}`}></div>
+
+                                {/* Icon */}
+                                <div className={`w-10 h-10 rounded-lg ${colors.bgLight} flex items-center justify-center`}>
+                                    <MaterialIcon name={config.icon} size={22} className={colors.text} />
+                                </div>
+
+                                {/* Title & Progress */}
+                                <div className="flex-1 text-left">
+                                    <div className="font-semibold text-slate-900">{theme.name}</div>
+                                    <div className="text-sm text-slate-500">
+                                        {theme.kriterien.length} Kriterien · {theme.kennwerte.length} Kennwerte
+                                    </div>
+                                </div>
+
+                                {/* Rating Summary Badges */}
+                                <div className="flex items-center gap-2 mr-4">
+                                    {ratingCounts.positive > 0 && (
+                                        <span className="flex items-center gap-1 px-2 py-1 bg-emerald-100 text-emerald-700 rounded text-xs font-medium">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                            {ratingCounts.positive}
+                                        </span>
+                                    )}
+                                    {ratingCounts.neutral > 0 && (
+                                        <span className="flex items-center gap-1 px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs font-medium">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                            {ratingCounts.neutral}
+                                        </span>
+                                    )}
+                                    {ratingCounts.negative > 0 && (
+                                        <span className="flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-medium">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                            {ratingCounts.negative}
+                                        </span>
+                                    )}
+                                </div>
+
+                                {/* Progress indicator */}
+                                <div className="flex items-center gap-3 w-32">
+                                    <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                        <div
+                                            className={`h-full rounded-full ${config.progress === 100 ? 'bg-emerald-500' : colors.bg}`}
+                                            style={{ width: `${config.progress}%` }}
+                                        ></div>
+                                    </div>
+                                    <span className="text-sm text-slate-500 w-10">{config.progress}%</span>
+                                </div>
+
+                                {/* Expand/Collapse icon */}
+                                <MaterialIcon
+                                    name={isExpanded ? 'expand_less' : 'expand_more'}
+                                    size={20}
+                                    className="text-slate-400"
+                                />
+                            </button>
+
+                            {/* Expanded Content */}
+                            {isExpanded && (
+                                <div className="border-t border-slate-100">
+                                    {/* Kennwerte Section */}
+                                    <div className="px-5 py-4 border-b border-slate-100">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <h4 className="text-sm font-semibold text-slate-700">Kennwerte</h4>
+                                            <span className="text-xs text-slate-400">Teilnehmer {currentVariant.code}</span>
+                                        </div>
+                                        <div className="space-y-3">
+                                            {themeKennwerte.map(k => (
+                                                <div key={k.id} className="flex items-center gap-4">
+                                                    <div className="w-48 text-sm text-slate-600 truncate">
+                                                        {k.label} {k.unit && <span className="text-slate-400">({k.unit})</span>}
+                                                    </div>
+                                                    <div className="w-16 text-sm font-medium text-slate-900">
+                                                        {k.value}{k.unit === '%' ? '%' : ''}
+                                                    </div>
+                                                    <div className="flex-1 h-5 bg-slate-100 rounded relative">
+                                                        <div
+                                                            className={`absolute top-0 left-0 h-full rounded ${k.delta >= 0 ? 'bg-emerald-400' : 'bg-red-400'}`}
+                                                            style={{ width: `${Math.min(k.value, 100)}%` }}
+                                                        />
+                                                        <div
+                                                            className="absolute top-0 h-full w-0.5 bg-slate-600"
+                                                            style={{ left: `${k.avg}%` }}
+                                                        />
+                                                    </div>
+                                                    <div className={`w-14 text-right text-sm font-medium ${k.delta >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                                                        {k.delta >= 0 ? '+' : ''}{k.delta}%
+                                                    </div>
+                                                    <div className="w-12 text-right text-xs text-slate-400">
+                                                        {k.rank}/{k.total}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Kriterien Section */}
+                                    <div className="px-5 py-4">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <h4 className="text-sm font-semibold text-slate-700">Kriterien</h4>
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); setIsEditMode(!isEditMode); }}
+                                                className={`flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-lg transition-colors ${
+                                                    isEditMode
+                                                        ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+                                                        : 'text-slate-500 hover:bg-slate-100'
+                                                }`}
+                                            >
+                                                <MaterialIcon name={isEditMode ? 'check' : 'edit'} size={14} />
+                                                {isEditMode ? 'Speichern' : 'Bearbeiten'}
+                                            </button>
+                                        </div>
+                                        <div className="space-y-2">
+                                            {themeKriterien.map(k => (
+                                                <div key={k.id} className="flex items-start gap-4 p-3 rounded-lg hover:bg-slate-50 transition-colors">
+                                                    {/* Rating indicator */}
+                                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                                                        k.rating === 'positive' ? 'bg-emerald-100' :
+                                                        k.rating === 'neutral' ? 'bg-amber-100' : 'bg-red-100'
+                                                    }`}>
+                                                        <span className={`text-sm font-bold ${
+                                                            k.rating === 'positive' ? 'text-emerald-600' :
+                                                            k.rating === 'neutral' ? 'text-amber-600' : 'text-red-600'
+                                                        }`}>
+                                                            {k.rating === 'positive' ? '+' : k.rating === 'neutral' ? '○' : '−'}
+                                                        </span>
+                                                    </div>
+
+                                                    {/* Criterion details */}
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <span className="text-xs text-slate-400 font-mono">{k.id}</span>
+                                                            <span className="text-sm font-medium text-slate-900">{k.name}</span>
+                                                        </div>
+                                                        {isEditMode ? (
+                                                            <textarea
+                                                                className="w-full text-sm text-slate-600 bg-slate-50 border border-slate-200 rounded p-2 min-h-16"
+                                                                defaultValue={k.comment}
+                                                                onClick={e => e.stopPropagation()}
+                                                            />
+                                                        ) : (
+                                                            <div className="text-sm text-slate-500 leading-relaxed">{k.comment}</div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    );
+                };
 
                 return (
-                    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-                        {/* Section header */}
-                        <div className="px-6 py-4 border-b border-slate-200 bg-slate-50">
-                            <h2 className="text-lg font-semibold text-slate-900">SNAP Kriterien</h2>
-                        </div>
-                        {/* Tabs */}
-                        <div className="border-b border-slate-200">
-                            <div className="flex px-2">
-                                {snapTabs.map(tab => (
-                                    <button
-                                        key={tab.id}
-                                        onClick={() => setActiveSnapTab(tab.id)}
-                                        className={`px-4 py-3 text-sm font-medium transition-all flex items-center gap-2 border-b-2 -mb-px ${
-                                            activeSnapTab === tab.id
-                                                ? 'border-emerald-600 text-emerald-700'
-                                                : 'border-transparent text-slate-500 hover:text-slate-700'
-                                        }`}
-                                    >
-                                        <MaterialIcon name={tab.icon} size={18} />
-                                        {tab.name}
-                                    </button>
-                                ))}
+                    <div className="space-y-3">
+                        {/* Section Title */}
+                        <div className="flex items-center justify-between px-1">
+                            <h2 className="text-lg font-semibold text-slate-900">SNAP Bewertung</h2>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => setExpandedThemes(Object.keys(themes))}
+                                    className="text-xs text-slate-500 hover:text-slate-700 px-2 py-1 hover:bg-slate-100 rounded"
+                                >
+                                    Alle öffnen
+                                </button>
+                                <button
+                                    onClick={() => setExpandedThemes([])}
+                                    className="text-xs text-slate-500 hover:text-slate-700 px-2 py-1 hover:bg-slate-100 rounded"
+                                >
+                                    Alle schließen
+                                </button>
                             </div>
                         </div>
-                        {/* Content */}
-                        <div className="p-6 space-y-6">
-                            <MetricsSection />
-                            <CriteriaSection />
-                        </div>
+
+                        {/* Theme Cards */}
+                        {Object.values(themes).map(theme => (
+                            <ThemeCard key={theme.id} theme={theme} />
+                        ))}
                     </div>
                 );
             };
@@ -2622,8 +2413,8 @@
 
             // ============ EVALUATION CONTENT VIEW ============
             const EvaluationContentView = () => (
-                <div className="flex-1 space-y-6">
-                    <AllgemeinSection />
+                <div className="flex-1 space-y-4">
+                    <VariantHeaderCard />
                     <SNAPKriterienSection />
                 </div>
             );
