@@ -2410,7 +2410,7 @@
                                     )}
                                     {ratingCounts.neutral > 0 && (
                                         <span className="flex items-center gap-1 px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-medium">
-                                            <MaterialIcon name="remove" size={14} className="text-slate-400" />
+                                            <MaterialIcon name="sentiment_neutral" size={14} className="text-amber-500" />
                                             {ratingCounts.neutral}
                                         </span>
                                     )}
@@ -2539,12 +2539,12 @@
                                                                 onClick={() => updateCriterionRating(selectedVariant, k.id, 'neutral')}
                                                                 className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
                                                                     k.rating === 'neutral'
-                                                                        ? 'bg-slate-500 text-white ring-2 ring-slate-300 ring-offset-1'
-                                                                        : 'bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-500'
+                                                                        ? 'bg-amber-500 text-white ring-2 ring-amber-300 ring-offset-1'
+                                                                        : 'bg-amber-100 text-amber-400 hover:bg-amber-200 hover:text-amber-500'
                                                                 }`}
                                                                 title="Neutral"
                                                             >
-                                                                <MaterialIcon name="remove" size={18} />
+                                                                <MaterialIcon name="sentiment_neutral" size={18} />
                                                             </button>
                                                             {/* Positive button */}
                                                             <button
@@ -2563,14 +2563,14 @@
                                                         /* Read-only rating indicator - uses Material Icons matching comparison view */
                                                         <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
                                                             k.rating === 'positive' ? 'bg-emerald-100' :
-                                                            k.rating === 'neutral' ? 'bg-slate-100' : 'bg-red-100'
+                                                            k.rating === 'neutral' ? 'bg-amber-100' : 'bg-red-100'
                                                         }`}>
                                                             <MaterialIcon
-                                                                name={k.rating === 'positive' ? 'thumb_up' : k.rating === 'neutral' ? 'remove' : 'thumb_down'}
+                                                                name={k.rating === 'positive' ? 'thumb_up' : k.rating === 'neutral' ? 'sentiment_neutral' : 'thumb_down'}
                                                                 size={20}
                                                                 className={
                                                                     k.rating === 'positive' ? 'text-emerald-600' :
-                                                                    k.rating === 'neutral' ? 'text-slate-500' : 'text-red-600'
+                                                                    k.rating === 'neutral' ? 'text-amber-500' : 'text-red-600'
                                                                 }
                                                             />
                                                         </div>
@@ -2585,7 +2585,7 @@
                                                             </div>
                                                             {/* SNAP criterion description */}
                                                             {k.desc && (
-                                                                <div className="text-xs text-slate-400 mt-0.5 ml-7">
+                                                                <div className="text-xs text-slate-400 mt-0.5">
                                                                     {k.desc}
                                                                 </div>
                                                             )}
@@ -2842,9 +2842,9 @@
                                     {filteredVariants.map((v, variantIndex) => {
                                     const actualIndex = selectedVariantsForCompare[variantIndex];
                                     const rating = getRating(actualIndex, parseInt(criterion.id));
-                                    const ratingIcon = rating === 'positive' ? 'thumb_up' : rating === 'neutral' ? 'remove' : 'thumb_down';
+                                    const ratingIcon = rating === 'positive' ? 'thumb_up' : rating === 'neutral' ? 'sentiment_neutral' : 'thumb_down';
                                     const ratingLabel = rating === 'positive' ? 'Gut' : rating === 'neutral' ? 'Mittel' : 'Schwach';
-                                    const ratingColor = rating === 'positive' ? 'text-emerald-500' : rating === 'neutral' ? 'text-slate-400' : 'text-red-500';
+                                    const ratingColor = rating === 'positive' ? 'text-emerald-500' : rating === 'neutral' ? 'text-amber-500' : 'text-red-500';
                                     return (
                                         <td key={v.id} className="px-4 py-2.5 text-center border-b">
                                         <div className="flex justify-center items-center">
@@ -2919,7 +2919,7 @@
                             <span>Gut</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <MaterialIcon name="remove" size={20} className="text-slate-400" />
+                            <MaterialIcon name="sentiment_neutral" size={20} className="text-amber-500" />
                             <span>Mittel</span>
                         </div>
                         <div className="flex items-center gap-1.5">
