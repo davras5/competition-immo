@@ -2824,22 +2824,18 @@
                                     {filteredVariants.map((v, variantIndex) => {
                                     const actualIndex = selectedVariantsForCompare[variantIndex];
                                     const rating = getRating(actualIndex, parseInt(criterion.id));
-                                    const ratingSymbol = rating === 'positive' ? '+' : rating === 'neutral' ? '○' : '−';
+                                    const ratingIcon = rating === 'positive' ? 'check_circle' : rating === 'neutral' ? 'remove' : 'cancel';
                                     const ratingLabel = rating === 'positive' ? 'Gut' : rating === 'neutral' ? 'Mittel' : 'Schwach';
+                                    const ratingColor = rating === 'positive' ? 'text-emerald-500' : rating === 'neutral' ? 'text-slate-400' : 'text-red-500';
                                     return (
                                         <td key={v.id} className="px-4 py-2.5 text-center border-b">
-                                        <div className="flex justify-center items-center gap-1.5">
-                                            <div
-                                            className={`w-5 h-5 rounded-full flex items-center justify-center text-white text-xs font-bold ${
-                                                rating === 'positive' ? 'bg-emerald-500' :
-                                                rating === 'neutral' ? 'bg-slate-400' :
-                                                'bg-red-500'
-                                            }`}
-                                            title={ratingLabel}
-                                            aria-label={ratingLabel}
-                                            >
-                                                {ratingSymbol}
-                                            </div>
+                                        <div className="flex justify-center items-center">
+                                            <MaterialIcon
+                                                name={ratingIcon}
+                                                size={22}
+                                                className={ratingColor}
+                                                label={ratingLabel}
+                                            />
                                         </div>
                                         </td>
                                     );
@@ -2900,19 +2896,19 @@
                     {/* Legend */}
                     <div className="px-4 py-3 border-t flex items-center gap-6 text-sm text-slate-600">
                         <span className="font-medium">Legende:</span>
-                        <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-bold">+</div>
+                        <div className="flex items-center gap-1.5">
+                            <MaterialIcon name="check_circle" size={20} className="text-emerald-500" />
                             <span>Gut</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 rounded-full bg-slate-400 flex items-center justify-center text-white text-xs font-bold">○</div>
+                        <div className="flex items-center gap-1.5">
+                            <MaterialIcon name="remove" size={20} className="text-slate-400" />
                             <span>Mittel</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center text-white text-xs font-bold">−</div>
+                        <div className="flex items-center gap-1.5">
+                            <MaterialIcon name="cancel" size={20} className="text-red-500" />
                             <span>Schwach</span>
                         </div>
-                        <div className="flex items-center gap-2 ml-4">
+                        <div className="flex items-center gap-1.5 ml-4">
                             <span className="text-emerald-500 text-lg">★</span>
                             <span>Bester Wert</span>
                         </div>
