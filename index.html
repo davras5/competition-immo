@@ -53,12 +53,15 @@
 
         const EvaluationPrototype = () => {
             const [role, setRole] = useState('admin');
+            const [currentProject, setCurrentProject] = useState(null); // null = gallery view, project object = project view
+            const [galleryViewMode, setGalleryViewMode] = useState('grid'); // grid, list, map
             const [sidebarView, setSidebarView] = useState('uebersicht'); // uebersicht, bewertung, viewer, dashboard
             const [selectedVariant, setSelectedVariant] = useState(0);
             const [selectedVariantsForCompare, setSelectedVariantsForCompare] = useState([0, 1, 2, 3, 4]); // For dashboard
             const [activeTheme, setActiveTheme] = useState('allgemein');
             const [editMode, setEditMode] = useState(false);
             const [projectHas3D, setProjectHas3D] = useState(true);
+            const [showNewProjectModal, setShowNewProjectModal] = useState(false);
 
             // Variants data with images
             const variants = [
@@ -102,6 +105,100 @@
                     'https://images.unsplash.com/photo-1494526585095-c41746248156?w=800&h=600&fit=crop',
                 ]
                 },
+            ];
+
+            // Projects data
+            const projects = [
+                {
+                    id: 1,
+                    name: 'Badenerstrasse 501',
+                    address: 'Badenerstrasse 501, 8048 Zürich',
+                    usageType: 'Wohnen',
+                    status: 'active',
+                    statusLabel: 'Bewertung läuft',
+                    variantCount: 5,
+                    evaluatedCount: 2,
+                    thumbnail: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400&h=300&fit=crop',
+                    framework: 'SNAP',
+                    phase: 'Vorprojekt',
+                    coordinates: { lat: 47.3769, lng: 8.5017 },
+                    lastUpdated: '18.11.2024'
+                },
+                {
+                    id: 2,
+                    name: 'Europaallee Baufeld G',
+                    address: 'Europaallee 21, 8004 Zürich',
+                    usageType: 'Büro / Gewerbe',
+                    status: 'completed',
+                    statusLabel: 'Abgeschlossen',
+                    variantCount: 3,
+                    evaluatedCount: 3,
+                    thumbnail: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop',
+                    framework: 'SNAP',
+                    phase: 'Bauprojekt',
+                    coordinates: { lat: 47.3782, lng: 8.5314 },
+                    lastUpdated: '02.10.2024'
+                },
+                {
+                    id: 3,
+                    name: 'Glattpark Mitte',
+                    address: 'Lindberghplatz 1, 8152 Opfikon',
+                    usageType: 'Wohnen / Gewerbe',
+                    status: 'active',
+                    statusLabel: 'In Bearbeitung',
+                    variantCount: 4,
+                    evaluatedCount: 1,
+                    thumbnail: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop',
+                    framework: 'SNBS',
+                    phase: 'Vorprojekt',
+                    coordinates: { lat: 47.4234, lng: 8.5687 },
+                    lastUpdated: '25.11.2024'
+                },
+                {
+                    id: 4,
+                    name: 'Hardturm Areal',
+                    address: 'Pfingstweidstrasse 100, 8005 Zürich',
+                    usageType: 'Stadion / Wohnen',
+                    status: 'draft',
+                    statusLabel: 'Entwurf',
+                    variantCount: 6,
+                    evaluatedCount: 0,
+                    thumbnail: 'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=400&h=300&fit=crop',
+                    framework: 'SNAP',
+                    phase: 'Machbarkeit',
+                    coordinates: { lat: 47.3912, lng: 8.5043 },
+                    lastUpdated: '10.11.2024'
+                },
+                {
+                    id: 5,
+                    name: 'Greencity Süd',
+                    address: 'Maneggstrasse 50, 8041 Zürich',
+                    usageType: 'Wohnen',
+                    status: 'completed',
+                    statusLabel: 'Abgeschlossen',
+                    variantCount: 2,
+                    evaluatedCount: 2,
+                    thumbnail: 'https://images.unsplash.com/photo-1494526585095-c41746248156?w=400&h=300&fit=crop',
+                    framework: 'Minergie-ECO',
+                    phase: 'Realisierung',
+                    coordinates: { lat: 47.3456, lng: 8.5234 },
+                    lastUpdated: '15.09.2024'
+                },
+                {
+                    id: 6,
+                    name: 'Seefeld Quartier',
+                    address: 'Seefeldstrasse 123, 8008 Zürich',
+                    usageType: 'Wohnen',
+                    status: 'active',
+                    statusLabel: 'Bewertung läuft',
+                    variantCount: 3,
+                    evaluatedCount: 2,
+                    thumbnail: 'https://images.unsplash.com/photo-1448630360428-65456885c650?w=400&h=300&fit=crop',
+                    framework: 'SNAP',
+                    phase: 'Vorprojekt',
+                    coordinates: { lat: 47.3543, lng: 8.5567 },
+                    lastUpdated: '20.11.2024'
+                }
             ];
 
             // SNAP themes
@@ -226,23 +323,358 @@
                 }));
             };
 
-            const currentTheme = themes[activeTheme] || themes['funk']; 
+            const currentTheme = themes[activeTheme] || themes['funk'];
             const currentVariant = variants[selectedVariant];
             const kennwertData = currentTheme ? generateKennwertData(selectedVariant, currentTheme.kennwerte) : [];
             const kriterienData = currentTheme ? generateKriterienData(selectedVariant, currentTheme.kriterien) : [];
+
+            // ============ PROJECTS GALLERY ============
+            const ProjectCard = ({ project, onClick }) => {
+                const statusColors = {
+                    active: { bg: 'bg-amber-100', text: 'text-amber-700', dot: 'bg-amber-400' },
+                    completed: { bg: 'bg-emerald-100', text: 'text-emerald-700', dot: 'bg-emerald-400' },
+                    draft: { bg: 'bg-slate-100', text: 'text-slate-600', dot: 'bg-slate-400' }
+                };
+                const colors = statusColors[project.status] || statusColors.draft;
+
+                return (
+                    <div
+                        onClick={onClick}
+                        className="bg-white rounded-xl border overflow-hidden cursor-pointer hover:shadow-lg hover:border-emerald-300 transition-all group"
+                    >
+                        {/* Thumbnail */}
+                        <div className="h-40 relative overflow-hidden">
+                            <img
+                                src={project.thumbnail}
+                                alt={project.name}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                            <div className="absolute top-3 right-3">
+                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${colors.bg} ${colors.text} flex items-center gap-1.5`}>
+                                    <span className={`w-1.5 h-1.5 rounded-full ${colors.dot}`}></span>
+                                    {project.statusLabel}
+                                </span>
+                            </div>
+                            <div className="absolute bottom-3 left-3 right-3">
+                                <h3 className="text-white font-semibold text-lg truncate">{project.name}</h3>
+                                <p className="text-white/80 text-sm truncate">{project.address}</p>
+                            </div>
+                        </div>
+
+                        {/* Details */}
+                        <div className="p-4">
+                            <div className="grid grid-cols-2 gap-3 mb-3">
+                                <div>
+                                    <div className="text-xs text-slate-500">Nutzung</div>
+                                    <div className="text-sm font-medium text-slate-900 truncate">{project.usageType}</div>
+                                </div>
+                                <div>
+                                    <div className="text-xs text-slate-500">Framework</div>
+                                    <div className="text-sm font-medium text-slate-900">{project.framework}</div>
+                                </div>
+                            </div>
+                            <div className="flex items-center justify-between pt-3 border-t">
+                                <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-1.5 text-sm text-slate-600">
+                                        <Icon name="apartment" size={16} className="text-slate-400" />
+                                        <span>{project.variantCount} Varianten</span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5 text-sm text-slate-600">
+                                        <Icon name="check_circle" size={16} className="text-emerald-500" />
+                                        <span>{project.evaluatedCount} bewertet</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            const ProjectListRow = ({ project, onClick }) => {
+                const statusColors = {
+                    active: { bg: 'bg-amber-100', text: 'text-amber-700', dot: 'bg-amber-400' },
+                    completed: { bg: 'bg-emerald-100', text: 'text-emerald-700', dot: 'bg-emerald-400' },
+                    draft: { bg: 'bg-slate-100', text: 'text-slate-600', dot: 'bg-slate-400' }
+                };
+                const colors = statusColors[project.status] || statusColors.draft;
+
+                return (
+                    <tr
+                        onClick={onClick}
+                        className="hover:bg-slate-50 cursor-pointer border-b last:border-b-0"
+                    >
+                        <td className="px-4 py-3">
+                            <div className="flex items-center gap-3">
+                                <div className="w-16 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                                    <img src={project.thumbnail} alt={project.name} className="w-full h-full object-cover" />
+                                </div>
+                                <div>
+                                    <div className="font-medium text-slate-900">{project.name}</div>
+                                    <div className="text-sm text-slate-500">{project.address}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-slate-600">{project.usageType}</td>
+                        <td className="px-4 py-3 text-sm text-slate-600">{project.framework}</td>
+                        <td className="px-4 py-3 text-sm text-slate-600">{project.phase}</td>
+                        <td className="px-4 py-3">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${colors.bg} ${colors.text} inline-flex items-center gap-1.5`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${colors.dot}`}></span>
+                                {project.statusLabel}
+                            </span>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-slate-600">{project.variantCount}</td>
+                        <td className="px-4 py-3 text-sm text-slate-500">{project.lastUpdated}</td>
+                    </tr>
+                );
+            };
+
+            const ProjectsGallery = () => {
+                const handleProjectClick = (project) => {
+                    setCurrentProject(project);
+                    setSidebarView('uebersicht');
+                };
+
+                // Stats for the gallery
+                const totalProjects = projects.length;
+                const activeProjects = projects.filter(p => p.status === 'active').length;
+                const completedProjects = projects.filter(p => p.status === 'completed').length;
+
+                return (
+                    <div className="flex-1 flex flex-col overflow-hidden bg-slate-50">
+                        {/* Gallery Header */}
+                        <div className="bg-white border-b px-6 py-4">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <h1 className="text-xl font-semibold text-slate-900">Projekte</h1>
+                                    <p className="text-sm text-slate-500 mt-0.5">{totalProjects} Projekte · {activeProjects} aktiv · {completedProjects} abgeschlossen</p>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    {/* View Mode Toggle */}
+                                    <div className="flex items-center bg-slate-100 rounded-lg p-1">
+                                        <button
+                                            onClick={() => setGalleryViewMode('grid')}
+                                            className={`p-2 rounded-md transition-all ${galleryViewMode === 'grid' ? 'bg-white shadow-sm text-emerald-600' : 'text-slate-500 hover:text-slate-700'}`}
+                                            title="Galerie"
+                                        >
+                                            <Icon name="grid_view" size={18} />
+                                        </button>
+                                        <button
+                                            onClick={() => setGalleryViewMode('list')}
+                                            className={`p-2 rounded-md transition-all ${galleryViewMode === 'list' ? 'bg-white shadow-sm text-emerald-600' : 'text-slate-500 hover:text-slate-700'}`}
+                                            title="Liste"
+                                        >
+                                            <Icon name="view_list" size={18} />
+                                        </button>
+                                        <button
+                                            onClick={() => setGalleryViewMode('map')}
+                                            className={`p-2 rounded-md transition-all ${galleryViewMode === 'map' ? 'bg-white shadow-sm text-emerald-600' : 'text-slate-500 hover:text-slate-700'}`}
+                                            title="Karte"
+                                        >
+                                            <Icon name="map" size={18} />
+                                        </button>
+                                    </div>
+
+                                    {/* New Project Button */}
+                                    <button
+                                        onClick={() => setShowNewProjectModal(true)}
+                                        className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
+                                    >
+                                        <Icon name="add" size={18} />
+                                        Neues Projekt
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Gallery Content */}
+                        <div className="flex-1 overflow-auto p-6">
+                            {galleryViewMode === 'grid' && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {projects.map(project => (
+                                        <ProjectCard
+                                            key={project.id}
+                                            project={project}
+                                            onClick={() => handleProjectClick(project)}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+
+                            {galleryViewMode === 'list' && (
+                                <div className="bg-white rounded-xl border overflow-hidden">
+                                    <table className="w-full">
+                                        <thead className="bg-slate-50 border-b">
+                                            <tr className="text-left text-xs font-medium text-slate-500 uppercase tracking-wide">
+                                                <th className="px-4 py-3">Projekt</th>
+                                                <th className="px-4 py-3">Nutzung</th>
+                                                <th className="px-4 py-3">Framework</th>
+                                                <th className="px-4 py-3">Phase</th>
+                                                <th className="px-4 py-3">Status</th>
+                                                <th className="px-4 py-3">Varianten</th>
+                                                <th className="px-4 py-3">Aktualisiert</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {projects.map(project => (
+                                                <ProjectListRow
+                                                    key={project.id}
+                                                    project={project}
+                                                    onClick={() => handleProjectClick(project)}
+                                                />
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+
+                            {galleryViewMode === 'map' && (
+                                <div className="bg-white rounded-xl border overflow-hidden h-full min-h-96">
+                                    <div className="h-full bg-slate-200 relative">
+                                        {/* Map placeholder with project markers */}
+                                        <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+                                            <div className="text-center">
+                                                <Icon name="map" size={48} className="text-slate-400 mx-auto mb-3" />
+                                                <div className="text-lg font-medium text-slate-600">Kartenansicht</div>
+                                                <div className="text-sm text-slate-500 mt-1">Zeigt {projects.length} Projekte in der Region Zürich</div>
+                                            </div>
+                                        </div>
+
+                                        {/* Fake map markers */}
+                                        {projects.map((project, i) => (
+                                            <div
+                                                key={project.id}
+                                                onClick={() => handleProjectClick(project)}
+                                                className="absolute cursor-pointer group"
+                                                style={{
+                                                    left: `${20 + (i % 3) * 25 + Math.random() * 10}%`,
+                                                    top: `${20 + Math.floor(i / 3) * 30 + Math.random() * 10}%`
+                                                }}
+                                            >
+                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center shadow-lg transition-transform group-hover:scale-125 ${
+                                                    project.status === 'completed' ? 'bg-emerald-500' :
+                                                    project.status === 'active' ? 'bg-amber-500' : 'bg-slate-500'
+                                                }`}>
+                                                    <Icon name="location_on" size={16} className="text-white" />
+                                                </div>
+                                                <div className="absolute left-10 top-0 bg-white rounded-lg shadow-lg p-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
+                                                    <div className="font-medium text-sm text-slate-900">{project.name}</div>
+                                                    <div className="text-xs text-slate-500">{project.variantCount} Varianten</div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                );
+            };
+
+            // ============ NEW PROJECT MODAL ============
+            const NewProjectModal = () => {
+                if (!showNewProjectModal) return null;
+
+                return (
+                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                        <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4">
+                            <div className="px-6 py-4 border-b flex items-center justify-between">
+                                <h2 className="text-lg font-semibold text-slate-900">Neues Projekt erstellen</h2>
+                                <button
+                                    onClick={() => setShowNewProjectModal(false)}
+                                    className="p-1 text-slate-400 hover:text-slate-600 rounded"
+                                >
+                                    <Icon name="close" size={20} />
+                                </button>
+                            </div>
+                            <div className="p-6 space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Projektname *</label>
+                                    <input
+                                        type="text"
+                                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+                                        placeholder="z.B. Musterstrasse 123"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Adresse</label>
+                                    <input
+                                        type="text"
+                                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+                                        placeholder="Strasse, PLZ Ort"
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">Nutzungstyp</label>
+                                        <select className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
+                                            <option>Wohnen</option>
+                                            <option>Büro / Gewerbe</option>
+                                            <option>Wohnen / Gewerbe</option>
+                                            <option>Bildung</option>
+                                            <option>Andere</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">Framework</label>
+                                        <select className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
+                                            <option>SNAP</option>
+                                            <option>SNBS</option>
+                                            <option>Minergie-ECO</option>
+                                            <option>DGNB</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Bauphase SIA 102</label>
+                                    <select className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
+                                        <option>Machbarkeit</option>
+                                        <option>Vorprojekt</option>
+                                        <option>Bauprojekt</option>
+                                        <option>Realisierung</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="px-6 py-4 border-t bg-slate-50 rounded-b-2xl flex justify-end gap-3">
+                                <button
+                                    onClick={() => setShowNewProjectModal(false)}
+                                    className="px-4 py-2 text-slate-700 hover:bg-slate-200 rounded-lg transition-colors"
+                                >
+                                    Abbrechen
+                                </button>
+                                <button
+                                    onClick={() => setShowNewProjectModal(false)}
+                                    className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
+                                >
+                                    Projekt erstellen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
 
             // ============ HEADER ============
             const Header = () => (
                 <header className="bg-slate-900 text-white h-14 flex items-center justify-between px-4">
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-emerald-500 rounded flex items-center justify-center">
+                    <div
+                        className="w-8 h-8 bg-emerald-500 rounded flex items-center justify-center cursor-pointer hover:bg-emerald-600 transition-colors"
+                        onClick={() => setCurrentProject(null)}
+                        title="Zur Projektübersicht"
+                    >
                     <Icon name="eco" size={18} />
                     </div>
                     <span className="font-semibold">Nachhaltigkeit</span>
-                    <span className="text-slate-500">|</span>
-                    <span className="text-slate-300">Badenerstrasse 501</span>
+                    {currentProject && (
+                        <>
+                            <span className="text-slate-500">|</span>
+                            <span className="text-slate-300">{currentProject.name}</span>
+                        </>
+                    )}
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                     <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg">
                     <Icon name="help_outline" size={20} />
@@ -667,10 +1099,13 @@
 
             // ============ BREADCRUMB ============
             const Breadcrumb = () => {
+                // Don't show breadcrumb in gallery view
+                if (!currentProject) return null;
+
                 const getBreadcrumbItems = () => {
                     const items = [
-                        { label: 'Projekte', active: false },
-                        { label: 'Badenerstrasse 501', active: sidebarView === 'uebersicht' }
+                        { label: 'Projekte', active: false, onClick: () => setCurrentProject(null) },
+                        { label: currentProject.name, active: sidebarView === 'uebersicht', onClick: () => setSidebarView('uebersicht') }
                     ];
 
                     if (sidebarView === 'bewertung') {
@@ -696,7 +1131,10 @@
                         {items.map((item, index) => (
                             <React.Fragment key={index}>
                                 {index > 0 && <span className="text-slate-300">/</span>}
-                                <span className={item.active ? 'text-slate-900 font-medium' : 'text-slate-400'}>
+                                <span
+                                    className={`${item.active ? 'text-slate-900 font-medium' : 'text-slate-400'} ${item.onClick ? 'cursor-pointer hover:text-slate-600' : ''}`}
+                                    onClick={item.onClick}
+                                >
                                     {item.label}
                                 </span>
                             </React.Fragment>
@@ -1408,8 +1846,20 @@
             );
 
             // ============ RENDER ============
-            const showVariantList = sidebarView !== 'uebersicht';
-            
+            const showVariantList = currentProject && sidebarView !== 'uebersicht';
+
+            // Gallery view (no project selected)
+            if (!currentProject) {
+                return (
+                    <div className="h-screen flex flex-col bg-slate-50">
+                        <Header />
+                        <ProjectsGallery />
+                        <NewProjectModal />
+                    </div>
+                );
+            }
+
+            // Project view (project selected)
             return (
                 <div className="h-screen flex flex-col bg-slate-50">
                 <Header />
@@ -1422,6 +1872,7 @@
                     sidebarView === 'viewer' ? <Viewer3D /> :
                     <MainContent />}
                 </div>
+                <NewProjectModal />
                 </div>
             );
         };
