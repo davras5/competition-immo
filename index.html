@@ -1980,100 +1980,112 @@
             // ============ 3D VIEWER ============
             const Viewer3D = () => (
                 <div className="flex-1 flex flex-col overflow-hidden">
-                {/* Viewer toolbar */}
+                {/* Header bar */}
                 <div className="bg-white border-b px-4 py-3 flex items-center justify-between">
-                    <div className="flex items-center gap-1">
-                    <button className="px-3 py-1.5 text-sm bg-slate-100 rounded hover:bg-slate-200 flex items-center gap-1.5">
-                        <Icon name="restart_alt" size={16} /> Reset
-                    </button>
-                    <button className="px-3 py-1.5 text-sm bg-slate-100 rounded hover:bg-slate-200 flex items-center gap-1.5">
-                        <Icon name="carpenter" size={16} /> Schnitt
-                    </button>
-                    <button className="px-3 py-1.5 text-sm bg-slate-100 rounded hover:bg-slate-200 flex items-center gap-1.5">
-                        <Icon name="straighten" size={16} /> Messen
-                    </button>
-                    <div className="w-px h-6 bg-slate-200 mx-2" />
-                    <button className="px-3 py-1.5 text-sm bg-slate-100 rounded hover:bg-slate-200 flex items-center gap-1.5">
-                        <Icon name="layers" size={16} /> Geschosse
-                    </button>
-                    <button className="px-3 py-1.5 text-sm bg-slate-100 rounded hover:bg-slate-200 flex items-center gap-1.5">
-                        <Icon name="visibility" size={16} /> Sichtbarkeit
-                    </button>
+                    <div className="flex items-center gap-3">
+                        <h2 className="font-semibold text-slate-900">3D Viewer</h2>
+                        <span className="text-sm text-slate-500">{currentVariant.name}</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-slate-500">
-                    <Icon name="description" size={16} />
-                    <span>IFC Model</span>
-                    <span className="text-slate-300">|</span>
-                    <span>Hochgeladen: 25.03.2023</span>
+                        <Icon name="description" size={16} />
+                        <span>IFC Model</span>
+                        <span className="text-slate-300">|</span>
+                        <span>Hochgeladen: 25.03.2023</span>
                     </div>
                 </div>
-                
-                {/* 3D Canvas placeholder */}
-                <div className="flex-1 bg-slate-900 relative">
-                    {/* Fake 3D building visualization */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="relative" style={{ perspective: '1000px' }}>
-                        <div 
-                        className="w-64 h-80 relative"
-                        style={{ 
-                            transformStyle: 'preserve-3d',
-                            transform: 'rotateX(-15deg) rotateY(-25deg)'
-                        }}
-                        >
-                        {/* Building floors */}
-                        {[...Array(12)].map((_, i) => (
-                            <div
-                            key={i}
-                            className="absolute w-full bg-gradient-to-r from-slate-600 to-slate-700 border border-slate-500"
-                            style={{
-                                height: '20px',
-                                bottom: `${i * 22}px`,
-                                transform: `translateZ(${20}px)`,
-                                boxShadow: '4px 4px 0 rgba(0,0,0,0.3)'
-                            }}
-                            >
-                            {/* Windows */}
-                            <div className="absolute inset-1 flex gap-1">
-                                {[...Array(8)].map((_, j) => (
-                                <div 
-                                    key={j} 
-                                    className="flex-1 bg-amber-200 opacity-60"
-                                    style={{ opacity: Math.random() > 0.3 ? 0.7 : 0.2 }}
-                                />
-                                ))}
-                            </div>
-                            </div>
-                        ))}
+
+                {/* Content area */}
+                <div className="flex-1 overflow-auto p-6 bg-slate-50">
+                    {/* 3D Canvas card */}
+                    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden h-full flex flex-col">
+                        {/* Toolbar */}
+                        <div className="bg-slate-50 border-b px-4 py-2 flex items-center gap-1">
+                            <button className="px-3 py-1.5 text-sm bg-white border rounded hover:bg-slate-50 flex items-center gap-1.5">
+                                <Icon name="restart_alt" size={16} /> Reset
+                            </button>
+                            <button className="px-3 py-1.5 text-sm bg-white border rounded hover:bg-slate-50 flex items-center gap-1.5">
+                                <Icon name="carpenter" size={16} /> Schnitt
+                            </button>
+                            <button className="px-3 py-1.5 text-sm bg-white border rounded hover:bg-slate-50 flex items-center gap-1.5">
+                                <Icon name="straighten" size={16} /> Messen
+                            </button>
+                            <div className="w-px h-6 bg-slate-200 mx-2" />
+                            <button className="px-3 py-1.5 text-sm bg-white border rounded hover:bg-slate-50 flex items-center gap-1.5">
+                                <Icon name="layers" size={16} /> Geschosse
+                            </button>
+                            <button className="px-3 py-1.5 text-sm bg-white border rounded hover:bg-slate-50 flex items-center gap-1.5">
+                                <Icon name="visibility" size={16} /> Sichtbarkeit
+                            </button>
                         </div>
-                    </div>
-                    </div>
-                    
-                    {/* Viewer info overlay */}
-                    <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-2 rounded text-sm">
-                    <div className="font-medium">{currentVariant.name}</div>
-                    <div className="text-slate-300 text-xs">{currentVariant.firm}</div>
-                    </div>
-                    
-                    {/* Controls hint */}
-                    <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-2 rounded text-xs space-y-1">
-                    <div className="flex items-center gap-2"><Icon name="mouse" size={14} /> Drehen: Linksklick + Ziehen</div>
-                    <div className="flex items-center gap-2"><Icon name="zoom_in" size={14} /> Zoom: Scrollrad</div>
-                    <div className="flex items-center gap-2"><Icon name="pan_tool" size={14} /> Verschieben: Rechtsklick</div>
-                    </div>
-                    
-                    {/* Model stats */}
-                    <div className="absolute top-4 right-4 bg-black/50 text-white px-4 py-3 rounded">
-                    <div className="text-xs text-slate-400 uppercase tracking-wide mb-2">Modell-Daten</div>
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-                        <span className="text-slate-400">GF Total:</span>
-                        <span className="font-medium">7'816 m²</span>
-                        <span className="text-slate-400">GV Total:</span>
-                        <span className="font-medium">23'332 m³</span>
-                        <span className="text-slate-400">Geschosse:</span>
-                        <span className="font-medium">14</span>
-                        <span className="text-slate-400">Elemente:</span>
-                        <span className="font-medium">12'847</span>
-                    </div>
+
+                        {/* 3D Canvas */}
+                        <div className="flex-1 bg-slate-900 relative">
+                            {/* Fake 3D building visualization */}
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="relative" style={{ perspective: '1000px' }}>
+                                    <div
+                                        className="w-64 h-80 relative"
+                                        style={{
+                                            transformStyle: 'preserve-3d',
+                                            transform: 'rotateX(-15deg) rotateY(-25deg)'
+                                        }}
+                                    >
+                                        {/* Building floors */}
+                                        {[...Array(12)].map((_, i) => (
+                                            <div
+                                                key={i}
+                                                className="absolute w-full bg-gradient-to-r from-slate-600 to-slate-700 border border-slate-500"
+                                                style={{
+                                                    height: '20px',
+                                                    bottom: `${i * 22}px`,
+                                                    transform: `translateZ(${20}px)`,
+                                                    boxShadow: '4px 4px 0 rgba(0,0,0,0.3)'
+                                                }}
+                                            >
+                                                {/* Windows */}
+                                                <div className="absolute inset-1 flex gap-1">
+                                                    {[...Array(8)].map((_, j) => (
+                                                        <div
+                                                            key={j}
+                                                            className="flex-1 bg-amber-200 opacity-60"
+                                                            style={{ opacity: Math.random() > 0.3 ? 0.7 : 0.2 }}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Viewer info overlay */}
+                            <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-2 rounded text-sm">
+                                <div className="font-medium">{currentVariant.name}</div>
+                                <div className="text-slate-300 text-xs">{currentVariant.firm}</div>
+                            </div>
+
+                            {/* Controls hint */}
+                            <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-2 rounded text-xs space-y-1">
+                                <div className="flex items-center gap-2"><Icon name="mouse" size={14} /> Drehen: Linksklick + Ziehen</div>
+                                <div className="flex items-center gap-2"><Icon name="zoom_in" size={14} /> Zoom: Scrollrad</div>
+                                <div className="flex items-center gap-2"><Icon name="pan_tool" size={14} /> Verschieben: Rechtsklick</div>
+                            </div>
+
+                            {/* Model stats */}
+                            <div className="absolute top-4 right-4 bg-black/50 text-white px-4 py-3 rounded">
+                                <div className="text-xs text-slate-400 uppercase tracking-wide mb-2">Modell-Daten</div>
+                                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+                                    <span className="text-slate-400">GF Total:</span>
+                                    <span className="font-medium">7'816 m²</span>
+                                    <span className="text-slate-400">GV Total:</span>
+                                    <span className="font-medium">23'332 m³</span>
+                                    <span className="text-slate-400">Geschosse:</span>
+                                    <span className="font-medium">14</span>
+                                    <span className="text-slate-400">Elemente:</span>
+                                    <span className="font-medium">12'847</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 </div>
@@ -2100,10 +2112,8 @@
                     {/* Header bar */}
                     <div className="bg-white border-b px-4 py-3 flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <h2 className="font-semibold text-slate-900">Variantenvergleich</h2>
-                            <span className="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
-                                {filteredVariants.length} Varianten
-                            </span>
+                            <h2 className="font-semibold text-slate-900">Vergleich</h2>
+                            <span className="text-sm text-slate-500">{filteredVariants.length} Varianten ausgewählt</span>
                         </div>
                         <div className="flex items-center gap-2">
                             <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg">
@@ -2297,6 +2307,19 @@
             // ============ MAIN CONTENT AREA ============
             const MainContent = () => (
                 <div className="flex-1 flex flex-col overflow-hidden">
+                {/* Header bar */}
+                <div className="bg-white border-b px-4 py-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <h2 className="font-semibold text-slate-900">Bewertung</h2>
+                        <span className="text-sm text-slate-500">{currentVariant.name}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 rounded-lg">
+                            <Icon name="history" size={16} />
+                            Verlauf
+                        </button>
+                    </div>
+                </div>
                 <ThemeTabs />
                 {activeTheme === 'allgemein' ? (
                     <AllgemeinTab />
