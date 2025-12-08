@@ -1490,7 +1490,7 @@
                 ];
 
                 return (
-                <div className="bg-white border-b px-4 flex">
+                <div className="px-4 flex">
                     {tabs.map(tab => (
                     <button
                         key={tab.id}
@@ -1628,7 +1628,7 @@
                 );
 
                 return (
-                <div className="flex-1 overflow-y-auto p-6 bg-slate-50">
+                <div className="flex-1 overflow-y-auto p-6 bg-slate-100 rounded-b-xl border border-slate-200 border-t-0">
                     <div className="grid grid-cols-3 gap-6">
                     {/* Left column - Main content */}
                     <div className="col-span-2 space-y-6">
@@ -2260,14 +2260,16 @@
 
             // ============ MAIN CONTENT AREA ============
             const MainContent = () => (
-                <div className="flex-1 flex flex-col overflow-hidden bg-white rounded-xl border border-slate-200">
-                    {/* Tabs inside the card */}
-                    <ThemeTabs />
-                    {/* Content */}
+                <div className="flex-1 flex flex-col overflow-hidden">
+                    {/* Tabs bar - white background */}
+                    <div className="bg-white rounded-t-xl border border-slate-200 border-b-0">
+                        <ThemeTabs />
+                    </div>
+                    {/* Content - gray background with white widget cards */}
                     {activeTheme === 'allgemein' ? (
                         <AllgemeinTab />
                     ) : (
-                        <div className="flex-1 overflow-y-auto">
+                        <div className="flex-1 overflow-y-auto bg-slate-100 rounded-b-xl border border-slate-200 border-t-0">
                             <KennwerteSection />
                             <KriterienSection />
                         </div>
