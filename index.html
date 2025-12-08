@@ -43,7 +43,7 @@
 
         // ============ DESIGN TOKENS ============
         // Centralized design system for consistent UI
-        const tokens = {
+        const designTokens = {
             // Color palette
             colors: {
                 primary: {
@@ -130,7 +130,7 @@
         // ============ BASE COMPONENTS ============
 
         // Icon component with accessibility
-        const Icon = ({ name, className = "", size = 20, label }) => (
+        const MaterialIcon = ({ name, className = "", size = 20, label }) => (
             <span
                 className={`material-symbols-outlined ${className}`}
                 style={{ fontSize: size, lineHeight: 1, userSelect: 'none' }}
@@ -176,16 +176,16 @@
                     disabled={disabled}
                     {...props}
                 >
-                    {icon && iconPosition === 'left' && <Icon name={icon} size={size === 'sm' ? 14 : size === 'lg' ? 20 : 16} />}
+                    {icon && iconPosition === 'left' && <MaterialIcon name={icon} size={size === 'sm' ? 14 : size === 'lg' ? 20 : 16} />}
                     {children}
-                    {icon && iconPosition === 'right' && <Icon name={icon} size={size === 'sm' ? 14 : size === 'lg' ? 20 : 16} />}
+                    {icon && iconPosition === 'right' && <MaterialIcon name={icon} size={size === 'sm' ? 14 : size === 'lg' ? 20 : 16} />}
                 </button>
             );
         };
 
         // Status Badge component
         const StatusBadge = ({ status, label, showDot = true, size = 'md' }) => {
-            const statusStyles = tokens.status[status] || tokens.status.draft;
+            const statusStyles = designTokens.status[status] || designTokens.status.draft;
             const sizes = {
                 sm: 'px-2 py-0.5 text-xs',
                 md: 'px-2.5 py-1 text-xs',
@@ -200,7 +200,7 @@
         };
 
         // Avatar component
-        const Avatar = ({ name, src, size = 'md', className = '' }) => {
+        const UserAvatar = ({ name, src, size = 'md', className = '' }) => {
             const sizes = {
                 sm: 'w-6 h-6 text-xs',
                 md: 'w-8 h-8 text-sm',
@@ -230,8 +230,8 @@
             );
         };
 
-        // Section Card component
-        const SectionCard = ({ title, actions, children, className = '', noPadding = false }) => (
+        // Content Card component
+        const ContentCard = ({ title, actions, children, className = '', noPadding = false }) => (
             <div className={`bg-white rounded-xl border border-slate-200 overflow-hidden ${className}`}>
                 {title && (
                     <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
@@ -245,12 +245,12 @@
             </div>
         );
 
-        // Stat Card component
-        const StatCard = ({ icon, iconBg = 'bg-slate-100', iconColor = 'text-slate-600', value, label, valueColor = 'text-slate-900' }) => (
+        // Statistic Card component
+        const StatisticCard = ({ icon, iconBg = 'bg-slate-100', iconColor = 'text-slate-600', value, label, valueColor = 'text-slate-900' }) => (
             <div className="bg-white rounded-xl p-5 border border-slate-200">
                 <div className="flex items-center gap-3">
                     <div className={`w-10 h-10 ${iconBg} rounded-lg flex items-center justify-center`}>
-                        <Icon name={icon} size={20} className={iconColor} />
+                        <MaterialIcon name={icon} size={20} className={iconColor} />
                     </div>
                     <div>
                         <div className={`text-2xl font-bold ${valueColor}`}>{value}</div>
@@ -260,11 +260,11 @@
             </div>
         );
 
-        // Empty State component
-        const EmptyState = ({ icon, title, description, action }) => (
+        // Empty State Placeholder component
+        const EmptyStatePlaceholder = ({ icon, title, description, action }) => (
             <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
                 <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
-                    <Icon name={icon} size={32} className="text-slate-400" />
+                    <MaterialIcon name={icon} size={32} className="text-slate-400" />
                 </div>
                 <h3 className="text-lg font-medium text-slate-900 mb-1">{title}</h3>
                 {description && <p className="text-sm text-slate-500 mb-4 max-w-sm">{description}</p>}
@@ -272,8 +272,8 @@
             </div>
         );
 
-        // Input component
-        const Input = ({ label, error, required, helpText, className = '', ...props }) => (
+        // Text Input component
+        const TextInput = ({ label, error, required, helpText, className = '', ...props }) => (
             <div className={className}>
                 {label && (
                     <label className="block text-sm font-medium text-slate-700 mb-1.5">
@@ -296,8 +296,8 @@
             </div>
         );
 
-        // Select component
-        const Select = ({ label, options = [], error, className = '', ...props }) => (
+        // Select Dropdown component
+        const SelectDropdown = ({ label, options = [], error, className = '', ...props }) => (
             <div className={className}>
                 {label && (
                     <label className="block text-sm font-medium text-slate-700 mb-1.5">
@@ -323,8 +323,8 @@
             </div>
         );
 
-        // Label component for data display
-        const DataLabel = ({ label, children, className = '' }) => (
+        // Label-Value Pair component for data display
+        const LabelValuePair = ({ label, children, className = '' }) => (
             <div className={className}>
                 <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">{label}</div>
                 <div className="text-sm font-medium text-slate-900">{children}</div>
@@ -356,17 +356,17 @@
             );
         };
 
-        const EvaluationPrototype = () => {
+        const SustainabilityApp = () => {
             const [role, setRole] = useState('admin');
             const [currentProject, setCurrentProject] = useState(null); // null = gallery view, project object = project view
             const [galleryViewMode, setGalleryViewMode] = useState('grid'); // grid, list, map
-            const [sidebarView, setSidebarView] = useState('uebersicht'); // uebersicht, bewertung, viewer, dashboard
+            const [sidebarView, setSidebarView] = useState('overview'); // overview, evaluation, model3d, comparison
             const [selectedVariant, setSelectedVariant] = useState(0);
             const [selectedVariantsForCompare, setSelectedVariantsForCompare] = useState([0, 1, 2, 3, 4]); // For dashboard
-            const [activeTheme, setActiveTheme] = useState('allgemein');
-            const [editMode, setEditMode] = useState(false);
-            const [projectHas3D, setProjectHas3D] = useState(true);
-            const [showNewProjectModal, setShowNewProjectModal] = useState(false);
+            const [activeTheme, setActiveTheme] = useState('general');
+            const [isEditMode, setIsEditMode] = useState(false);
+            const [has3DModel, setHas3DModel] = useState(true);
+            const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
             // Variants data with images
             const variants = [
@@ -508,8 +508,8 @@
 
             // SNAP themes
             const themes = {
-                funk: {
-                id: 'funk',
+                functionality: {
+                id: 'functionality',
                 name: 'Funktionalität',
                 color: 'blue',
                 kennwerte: [
@@ -528,8 +528,8 @@
                     desc: 'Angebot im Gebäude und im Aussenraum' },
                 ]
                 },
-                komfort: {
-                id: 'komfort',
+                comfort: {
+                id: 'comfort',
                 name: 'Komfort & Gesundheit',
                 color: 'emerald',
                 kennwerte: [
@@ -548,8 +548,8 @@
                     desc: 'Orientierung, Sonnenschutzkonzept, Brüstungsbereich, bauliche Massnahmen' },
                 ]
                 },
-                wirt: {
-                id: 'wirt',
+                economics: {
+                id: 'economics',
                 name: 'Wirtschaftlichkeit',
                 color: 'amber',
                 kennwerte: [
@@ -567,8 +567,8 @@
                     desc: 'Kubatur, Fassade, Energiebedarf, Energiekosten, Dauerhaftigkeit' },
                 ]
                 },
-                ressourcen: {
-                id: 'ressourcen',
+                resources: {
+                id: 'resources',
                 name: 'Ressourcen & Energie',
                 color: 'violet',
                 kennwerte: [
@@ -628,7 +628,7 @@
                 }));
             };
 
-            const currentTheme = themes[activeTheme] || themes['funk'];
+            const currentTheme = themes[activeTheme] || themes['functionality'];
             const currentVariant = variants[selectedVariant];
             const kennwertData = currentTheme ? generateKennwertData(selectedVariant, currentTheme.kennwerte) : [];
             const kriterienData = currentTheme ? generateKriterienData(selectedVariant, currentTheme.kriterien) : [];
@@ -663,19 +663,19 @@
                     {/* Details */}
                     <div className="p-4">
                         <div className="grid grid-cols-2 gap-3 mb-3">
-                            <DataLabel label="Nutzung">
+                            <LabelValuePair label="Nutzung">
                                 <span className="truncate block">{project.usageType}</span>
                             </DataLabel>
-                            <DataLabel label="Framework">{project.framework}</DataLabel>
+                            <LabelValuePair label="Framework">{project.framework}</DataLabel>
                         </div>
                         <div className="flex items-center justify-between pt-3 border-t border-slate-100">
                             <div className="flex items-center gap-4">
                                 <div className="flex items-center gap-1.5 text-sm text-slate-600">
-                                    <Icon name="apartment" size={16} className="text-slate-400" />
+                                    <MaterialIcon name="apartment" size={16} className="text-slate-400" />
                                     <span>{project.variantCount} Varianten</span>
                                 </div>
                                 <div className="flex items-center gap-1.5 text-sm text-slate-600">
-                                    <Icon name="check_circle" size={16} className="text-emerald-500" />
+                                    <MaterialIcon name="check_circle" size={16} className="text-emerald-500" />
                                     <span>{project.evaluatedCount} bewertet</span>
                                 </div>
                             </div>
@@ -715,14 +715,14 @@
                 </tr>
             );
 
-            const ProjectsGallery = () => {
+            const ProjectGalleryView = () => {
                 const [searchQuery, setSearchQuery] = useState('');
                 const [statusFilter, setStatusFilter] = useState('all');
                 const [usageFilter, setUsageFilter] = useState('all');
 
                 const handleProjectClick = (project) => {
                     setCurrentProject(project);
-                    setSidebarView('uebersicht');
+                    setSidebarView('overview');
                 };
 
                 // Filter projects based on search and filters
@@ -744,7 +744,7 @@
                 const usageTypes = [...new Set(projects.map(p => p.usageType))];
 
                 // View mode toggle button component
-                const ViewModeButton = ({ mode, icon, label }) => (
+                const GalleryModeButton = ({ mode, icon, label }) => (
                     <button
                         onClick={() => setGalleryViewMode(mode)}
                         className={`p-2 rounded-md transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
@@ -756,7 +756,7 @@
                         aria-pressed={galleryViewMode === mode}
                         title={label}
                     >
-                        <Icon name={icon} size={18} />
+                        <MaterialIcon name={icon} size={18} />
                     </button>
                 );
 
@@ -778,14 +778,14 @@
                                     <div className="flex items-center gap-3">
                                         {/* View Mode Toggle */}
                                         <div className="flex items-center bg-slate-100 rounded-lg p-1" role="group" aria-label="Ansichtsoptionen">
-                                            <ViewModeButton mode="grid" icon="grid_view" label="Galerieansicht" />
-                                            <ViewModeButton mode="list" icon="view_list" label="Listenansicht" />
-                                            <ViewModeButton mode="map" icon="map" label="Kartenansicht" />
+                                            <GalleryModeButton mode="grid" icon="grid_view" label="Galerieansicht" />
+                                            <GalleryModeButton mode="list" icon="view_list" label="Listenansicht" />
+                                            <GalleryModeButton mode="map" icon="map" label="Kartenansicht" />
                                         </div>
 
                                         {/* New Project Button */}
                                         <Button
-                                            onClick={() => setShowNewProjectModal(true)}
+                                            onClick={() => setIsCreateModalOpen(true)}
                                             icon="add"
                                         >
                                             Neues Projekt
@@ -797,7 +797,7 @@
                                 <div className="flex items-center gap-3">
                                     {/* Search Input */}
                                     <div className="relative flex-1 max-w-md">
-                                        <Icon name="search" size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                        <MaterialIcon name="search" size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                                         <input
                                             type="text"
                                             placeholder="Projekt suchen..."
@@ -811,7 +811,7 @@
                                                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                                                 aria-label="Suche löschen"
                                             >
-                                                <Icon name="close" size={16} />
+                                                <MaterialIcon name="close" size={16} />
                                             </button>
                                         )}
                                     </div>
@@ -850,7 +850,7 @@
                                             }}
                                             className="px-3 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors flex items-center gap-1.5"
                                         >
-                                            <Icon name="filter_alt_off" size={16} />
+                                            <MaterialIcon name="filter_alt_off" size={16} />
                                             Filter zurücksetzen
                                         </button>
                                     )}
@@ -864,7 +864,7 @@
                             {filteredProjects.length === 0 ? (
                                 <div className="bg-white rounded-xl border p-12 text-center">
                                     <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <Icon name="search_off" size={32} className="text-slate-400" />
+                                        <MaterialIcon name="search_off" size={32} className="text-slate-400" />
                                     </div>
                                     <h3 className="text-lg font-medium text-slate-900 mb-2">Keine Projekte gefunden</h3>
                                     <p className="text-sm text-slate-500 mb-4">
@@ -928,7 +928,7 @@
                                                 {/* Map placeholder with project markers */}
                                                 <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
                                                     <div className="text-center">
-                                                        <Icon name="map" size={48} className="text-slate-400 mx-auto mb-3" />
+                                                        <MaterialIcon name="map" size={48} className="text-slate-400 mx-auto mb-3" />
                                                         <div className="text-lg font-medium text-slate-600">Kartenansicht</div>
                                                         <div className="text-sm text-slate-500 mt-1">Zeigt {filteredProjects.length} Projekte in der Region Zürich</div>
                                                     </div>
@@ -949,7 +949,7 @@
                                                             project.status === 'completed' ? 'bg-emerald-500' :
                                                             project.status === 'active' ? 'bg-amber-500' : 'bg-slate-500'
                                                         }`}>
-                                                            <Icon name="location_on" size={16} className="text-white" />
+                                                            <MaterialIcon name="location_on" size={16} className="text-white" />
                                                         </div>
                                                         <div className="absolute left-10 top-0 bg-white rounded-lg shadow-lg p-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
                                                             <div className="font-medium text-sm text-slate-900">{project.name}</div>
@@ -967,8 +967,8 @@
                 );
             };
 
-            // ============ NEW PROJECT MODAL ============
-            const NewProjectModal = () => {
+            // ============ CREATE PROJECT MODAL ============
+            const CreateProjectModal = () => {
                 const [formData, setFormData] = useState({
                     name: '',
                     address: '',
@@ -979,7 +979,7 @@
                 const [errors, setErrors] = useState({});
                 const [isSubmitting, setIsSubmitting] = useState(false);
 
-                if (!showNewProjectModal) return null;
+                if (!isCreateModalOpen) return null;
 
                 const usageOptions = [
                     { value: '', label: 'Bitte wählen...' },
@@ -1025,14 +1025,14 @@
                         // Simulate submission
                         setTimeout(() => {
                             setIsSubmitting(false);
-                            setShowNewProjectModal(false);
+                            setIsCreateModalOpen(false);
                             setFormData({ name: '', address: '', usageType: '', framework: '', phase: '' });
                         }, 500);
                     }
                 };
 
                 const handleClose = () => {
-                    setShowNewProjectModal(false);
+                    setIsCreateModalOpen(false);
                     setFormData({ name: '', address: '', usageType: '', framework: '', phase: '' });
                     setErrors({});
                 };
@@ -1061,13 +1061,13 @@
                                     className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500"
                                     aria-label="Modal schließen"
                                 >
-                                    <Icon name="close" size={20} />
+                                    <MaterialIcon name="close" size={20} />
                                 </button>
                             </div>
 
                             {/* Modal Body */}
                             <div className="p-6 space-y-4">
-                                <Input
+                                <TextInput
                                     label="Projektname"
                                     type="text"
                                     placeholder="z.B. Musterstrasse 123"
@@ -1080,7 +1080,7 @@
                                     }}
                                     error={errors.name}
                                 />
-                                <Input
+                                <TextInput
                                     label="Adresse"
                                     type="text"
                                     placeholder="Strasse, PLZ Ort"
@@ -1183,22 +1183,22 @@
             };
 
             // ============ HEADER ============
-            // Icon button for header with tooltip
-            const HeaderIconButton = ({ icon, label, onClick, badge }) => (
+            // Action button for header with tooltip
+            const HeaderActionButton = ({ icon, label, onClick, badge }) => (
                 <button
                     className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-emerald-500 relative"
                     onClick={onClick}
                     aria-label={label}
                     title={label}
                 >
-                    <Icon name={icon} size={20} />
+                    <MaterialIcon name={icon} size={20} />
                     {badge && (
                         <span className="absolute top-1 right-1 w-2 h-2 bg-emerald-500 rounded-full" />
                     )}
                 </button>
             );
 
-            const Header = () => (
+            const AppHeader = () => (
                 <header className="bg-slate-900 text-white h-14 flex items-center justify-between px-4" role="banner">
                     <div className="flex items-center gap-3">
                         <button
@@ -1207,7 +1207,7 @@
                             aria-label="Zur Projektübersicht"
                             title="Zur Projektübersicht"
                         >
-                            <Icon name="eco" size={18} />
+                            <MaterialIcon name="eco" size={18} />
                         </button>
                         <span className="font-semibold text-lg">Nachhaltigkeit</span>
                         {currentProject && (
@@ -1219,30 +1219,30 @@
                     </div>
 
                     <div className="flex items-center gap-1">
-                        <HeaderIconButton icon="help_outline" label="Hilfe" />
-                        <HeaderIconButton icon="notifications" label="Benachrichtigungen" badge />
-                        <HeaderIconButton icon="settings" label="Einstellungen" />
+                        <HeaderActionButton icon="help_outline" label="Hilfe" />
+                        <HeaderActionButton icon="notifications" label="Benachrichtigungen" badge />
+                        <HeaderActionButton icon="settings" label="Einstellungen" />
                         <div className="w-px h-6 bg-slate-700 mx-2" />
                         <button
                             className="flex items-center gap-2 p-1 rounded-lg hover:bg-slate-800 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                             aria-label="Benutzerprofil"
                         >
-                            <Avatar name="David Admin" size="md" className="bg-slate-700 text-slate-300" />
+                            <UserAvatar name="David Admin" size="md" className="bg-slate-700 text-slate-300" />
                         </button>
                     </div>
                 </header>
             );
 
             // ============ SIDEBAR ============
-            const Sidebar = () => {
+            const MainSidebar = () => {
                 const sidebarItems = [
-                    { id: 'uebersicht', label: 'Übersicht', icon: 'home', description: 'Projektübersicht' },
-                    { id: 'bewertung', label: 'Bewertung', icon: 'rate_review', description: 'Varianten bewerten' },
-                    { id: 'viewer', label: '3D Modell', icon: 'view_in_ar', requires3D: true, description: '3D Ansicht' },
-                    { id: 'dashboard', label: 'Vergleich', icon: 'compare', description: 'Varianten vergleichen' },
+                    { id: 'overview', label: 'Übersicht', icon: 'home', description: 'Projektübersicht' },
+                    { id: 'evaluation', label: 'Bewertung', icon: 'rate_review', description: 'Varianten bewerten' },
+                    { id: 'model3d', label: '3D Modell', icon: 'view_in_ar', requires3D: true, description: '3D Ansicht' },
+                    { id: 'comparison', label: 'Vergleich', icon: 'compare', description: 'Varianten vergleichen' },
                 ];
 
-                const filteredItems = sidebarItems.filter(item => !item.requires3D || projectHas3D);
+                const filteredItems = sidebarItems.filter(item => !item.requires3D || has3DModel);
 
                 return (
                     <aside className="w-20 bg-slate-700 rounded-2xl flex flex-col shadow-lg" role="navigation" aria-label="Hauptnavigation">
@@ -1287,12 +1287,12 @@
                 );
             };
 
-            // ============ VARIANT LIST ============
-            const VariantList = () => {
-                const isDashboard = sidebarView === 'dashboard';
+            // ============ VARIANT SELECTOR LIST ============
+            const VariantSelectorList = () => {
+                const isComparisonView = sidebarView === 'comparison';
 
                 const handleVariantClick = (index) => {
-                if (isDashboard) {
+                if (isComparisonView) {
                     if (selectedVariantsForCompare.includes(index)) {
                     if (selectedVariantsForCompare.length > 1) {
                         setSelectedVariantsForCompare(selectedVariantsForCompare.filter(i => i !== index));
@@ -1315,7 +1315,7 @@
                     </div>
                     <div className="max-h-[calc(100vh-280px)] overflow-y-auto">
                     {variants.map((v, i) => {
-                        const isSelected = isDashboard
+                        const isSelected = isComparisonView
                         ? selectedVariantsForCompare.includes(i)
                         : selectedVariant === i;
 
@@ -1359,8 +1359,8 @@
                 );
             };
 
-            // ============ ÜBERSICHT / PROJECT OVERVIEW ============
-            const Uebersicht = () => {
+            // ============ PROJECT OVERVIEW VIEW ============
+            const ProjectOverviewView = () => {
                 const [overviewTab, setOverviewTab] = useState('details');
 
                 const teamMembers = [
@@ -1395,7 +1395,7 @@
                 const TeamMemberRow = ({ member, isExpert = false }) => (
                     <div className="px-5 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors duration-150">
                         <div className="flex items-center gap-3">
-                            <Avatar
+                            <UserAvatar
                                 name={member.name}
                                 size="md"
                                 className={isExpert ? 'bg-emerald-100 text-emerald-700' : ''}
@@ -1425,14 +1425,14 @@
                                 <StatusBadge status="active" label="Bewertung läuft" />
                             </div>
                             <div className="grid grid-cols-4 gap-4">
-                                <StatCard
+                                <StatisticCard
                                     icon="apartment"
                                     iconBg="bg-blue-100"
                                     iconColor="text-blue-600"
                                     value="5"
                                     label="Varianten"
                                 />
-                                <StatCard
+                                <StatisticCard
                                     icon="check_circle"
                                     iconBg="bg-emerald-100"
                                     iconColor="text-emerald-600"
@@ -1440,7 +1440,7 @@
                                     valueColor="text-emerald-600"
                                     label="Bewertet"
                                 />
-                                <StatCard
+                                <StatisticCard
                                     icon="pending"
                                     iconBg="bg-amber-100"
                                     iconColor="text-amber-600"
@@ -1448,7 +1448,7 @@
                                     valueColor="text-amber-600"
                                     label="In Arbeit"
                                 />
-                                <StatCard
+                                <StatisticCard
                                     icon="groups"
                                     iconBg="bg-violet-100"
                                     iconColor="text-violet-600"
@@ -1473,7 +1473,7 @@
                                                     : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100'
                                             }`}
                                         >
-                                            <Icon name={tab.icon} size={18} />
+                                            <MaterialIcon name={tab.icon} size={18} />
                                             {tab.label}
                                             {tab.badge !== undefined && tab.badge > 0 && (
                                                 <span className={`text-xs px-1.5 py-0.5 rounded-full ${
@@ -1500,13 +1500,13 @@
                                                     className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
                                                     aria-label="Projektdetails bearbeiten"
                                                 >
-                                                    <Icon name="edit" size={18} />
+                                                    <MaterialIcon name="edit" size={18} />
                                                 </button>
                                             </div>
                                             <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4">
-                                                <DataLabel label="Nutzungstyp">Wohnen</DataLabel>
-                                                <DataLabel label="Bauphase SIA 102">Vorprojekt</DataLabel>
-                                                <DataLabel label="Framework">
+                                                <LabelValuePair label="Nutzungstyp">Wohnen</DataLabel>
+                                                <LabelValuePair label="Bauphase SIA 102">Vorprojekt</DataLabel>
+                                                <LabelValuePair label="Framework">
                                                     <span className="flex items-center gap-2">
                                                         SNAP
                                                         <StatusBadge status="success" label="15 Kriterien" showDot={false} size="sm" />
@@ -1522,9 +1522,9 @@
                                             <h3 className="font-semibold text-slate-900 mb-4">Bewertungsfortschritt</h3>
                                             <div className="grid grid-cols-2 gap-6">
                                                 {Object.values(themes).map(theme => {
-                                                    const progress = theme.id === 'funk' ? 100 :
-                                                        theme.id === 'komfort' ? 75 :
-                                                        theme.id === 'wirt' ? 40 : 20;
+                                                    const progress = theme.id === 'functionality' ? 100 :
+                                                        theme.id === 'comfort' ? 75 :
+                                                        theme.id === 'economics' ? 40 : 20;
                                                     return (
                                                         <div key={theme.id}>
                                                             <div className="flex justify-between text-sm mb-1.5">
@@ -1622,35 +1622,35 @@
 
 
             // ============ BREADCRUMB ============
-            const Breadcrumb = () => {
+            const NavigationBreadcrumb = () => {
                 // Don't show breadcrumb in gallery view
                 if (!currentProject) return null;
 
                 // Map sidebar views to human-readable labels
                 const viewLabels = {
-                    uebersicht: 'Übersicht',
-                    bewertung: 'Bewertung',
-                    viewer: '3D Modell',
-                    dashboard: 'Vergleich'
+                    overview: 'Übersicht',
+                    evaluation: 'Bewertung',
+                    model3d: '3D Modell',
+                    comparison: 'Vergleich'
                 };
 
                 const getBreadcrumbItems = () => {
                     const items = [
                         { label: 'Projekte', icon: 'folder', active: false, onClick: () => setCurrentProject(null) },
-                        { label: currentProject.name, active: sidebarView === 'uebersicht', onClick: () => setSidebarView('uebersicht') }
+                        { label: currentProject.name, active: sidebarView === 'overview', onClick: () => setSidebarView('overview') }
                     ];
 
-                    if (sidebarView === 'bewertung') {
+                    if (sidebarView === 'evaluation') {
                         items[1].active = false;
-                        items.push({ label: viewLabels.bewertung, active: false, onClick: () => {} });
+                        items.push({ label: viewLabels.evaluation, active: false, onClick: () => {} });
                         items.push({ label: currentVariant.name, active: true, isVariantSelector: true });
-                    } else if (sidebarView === 'viewer') {
+                    } else if (sidebarView === 'model3d') {
                         items[1].active = false;
-                        items.push({ label: viewLabels.viewer, active: false, onClick: () => {} });
+                        items.push({ label: viewLabels.model3d, active: false, onClick: () => {} });
                         items.push({ label: currentVariant.name, active: true, isVariantSelector: true });
-                    } else if (sidebarView === 'dashboard') {
+                    } else if (sidebarView === 'comparison') {
                         items[1].active = false;
-                        items.push({ label: viewLabels.dashboard, active: true });
+                        items.push({ label: viewLabels.comparison, active: true });
                     }
 
                     return items;
@@ -1658,8 +1658,8 @@
 
                 const items = getBreadcrumbItems();
 
-                // Variant selector dropdown component
-                const VariantSelector = ({ currentName }) => {
+                // Variant dropdown selector component
+                const VariantDropdownSelector = ({ currentName }) => {
                     const [isOpen, setIsOpen] = React.useState(false);
                     return (
                         <div className="relative">
@@ -1670,7 +1670,7 @@
                                 aria-expanded={isOpen}
                             >
                                 {currentName}
-                                <Icon name="expand_more" size={16} className="text-slate-500" />
+                                <MaterialIcon name="expand_more" size={16} className="text-slate-500" />
                             </button>
                             {isOpen && (
                                 <>
@@ -1695,7 +1695,7 @@
                                                     <div className="text-xs text-slate-500">{v.code}</div>
                                                 </div>
                                                 {selectedVariant === i && (
-                                                    <Icon name="check" size={16} className="text-emerald-600" />
+                                                    <MaterialIcon name="check" size={16} className="text-emerald-600" />
                                                 )}
                                             </button>
                                         ))}
@@ -1716,10 +1716,10 @@
                             {items.map((item, index) => (
                                 <li key={index} className="flex items-center">
                                     {index > 0 && (
-                                        <Icon name="chevron_right" size={16} className="text-slate-300 mx-1" />
+                                        <MaterialIcon name="chevron_right" size={16} className="text-slate-300 mx-1" />
                                     )}
                                     {item.isVariantSelector ? (
-                                        <VariantSelector currentName={item.label} />
+                                        <VariantDropdownSelector currentName={item.label} />
                                     ) : item.onClick ? (
                                         <button
                                             onClick={item.onClick}
@@ -1734,7 +1734,7 @@
                                             aria-current={item.active ? 'page' : undefined}
                                         >
                                             <span className="flex items-center gap-1.5">
-                                                {item.icon && <Icon name={item.icon} size={14} />}
+                                                {item.icon && <MaterialIcon name={item.icon} size={14} />}
                                                 {item.label}
                                             </span>
                                         </button>
@@ -1754,19 +1754,19 @@
                 );
             };
 
-            // ============ THEME TABS ============
-            const ThemeTabs = () => {
+            // ============ EVALUATION THEME TABS ============
+            const EvaluationThemeTabs = () => {
                 // Tab configuration with icons
                 const tabConfig = {
-                    allgemein: { icon: 'info' },
-                    funk: { icon: 'settings_accessibility' },
-                    komfort: { icon: 'spa' },
-                    wirt: { icon: 'payments' },
-                    ressourcen: { icon: 'bolt' }
+                    general: { icon: 'info' },
+                    functionality: { icon: 'settings_accessibility' },
+                    comfort: { icon: 'spa' },
+                    economics: { icon: 'payments' },
+                    resources: { icon: 'bolt' }
                 };
 
                 const tabs = [
-                    { id: 'allgemein', name: 'Allgemein', color: 'slate', ...tabConfig.allgemein },
+                    { id: 'general', name: 'Allgemein', color: 'slate', ...tabConfig.general },
                     ...Object.values(themes).map(t => ({
                         id: t.id,
                         name: t.name,
@@ -1788,7 +1788,7 @@
                                 : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100'
                             }`}
                         >
-                            <Icon name={tab.icon} size={18} />
+                            <MaterialIcon name={tab.icon} size={18} />
                             {tab.name}
                         </button>
                         ))}
@@ -1797,8 +1797,8 @@
                 );
             };
 
-            // ============ ALLGEMEIN TAB (Variant Overview) ============
-            const AllgemeinTab = () => {
+            // ============ VARIANT GENERAL TAB ============
+            const VariantGeneralTab = () => {
                 const variant = variants[selectedVariant];
                 
                 const variantTeam = [
@@ -1841,8 +1841,8 @@
                     }
                 };
 
-                // Reusable media section component
-                const MediaSection = ({ title, items, isImageSection = false }) => (
+                // Reusable media upload section component
+                const MediaUploadSection = ({ title, items, isImageSection = false }) => (
                     <div className="bg-white rounded-xl border overflow-hidden">
                         <div className="px-5 py-4 border-b flex items-center justify-between">
                             <div className="flex items-center gap-2">
@@ -1850,7 +1850,7 @@
                                 <span className="text-sm text-slate-400">{items.length}</span>
                             </div>
                             <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
-                                <Icon name="upload" size={14} />
+                                <MaterialIcon name="upload" size={14} />
                                 Hochladen
                             </button>
                         </div>
@@ -1872,13 +1872,13 @@
                                             </div>
                                             <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button className="p-1.5 bg-white rounded-lg shadow">
-                                                    <Icon name="fullscreen" size={16} className="text-slate-600" />
+                                                    <MaterialIcon name="fullscreen" size={16} className="text-slate-600" />
                                                 </button>
                                             </div>
                                         </div>
                                     ))}
                                     <div className="aspect-video rounded-lg border-2 border-dashed border-slate-200 flex flex-col items-center justify-center cursor-pointer hover:border-slate-300 hover:bg-slate-50 transition-colors">
-                                        <Icon name="add_photo_alternate" size={32} className="text-slate-300" />
+                                        <MaterialIcon name="add_photo_alternate" size={32} className="text-slate-300" />
                                         <span className="text-xs text-slate-400 mt-1">Hinzufügen</span>
                                     </div>
                                 </div>
@@ -1898,15 +1898,15 @@
                                                 <div className="text-xs text-slate-500">{item.filename || item.type}</div>
                                             </div>
                                             {item.status === 'uploaded' && (
-                                                <Icon name="check_circle" size={16} className="text-emerald-500" />
+                                                <MaterialIcon name="check_circle" size={16} className="text-emerald-500" />
                                             )}
                                             <button className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-all">
-                                                <Icon name="download" size={16} />
+                                                <MaterialIcon name="download" size={16} />
                                             </button>
                                         </div>
                                     ))}
                                     <button className="w-full flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-dashed border-slate-200 text-slate-400 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-500 transition-colors">
-                                        <Icon name="add" size={18} />
+                                        <MaterialIcon name="add" size={18} />
                                         <span className="text-sm">Datei hinzufügen</span>
                                     </button>
                                 </div>
@@ -1959,27 +1959,27 @@
                         </div>
 
                         {/* Bilder (Images) Section */}
-                        <MediaSection
+                        <MediaUploadSection
                             title={mediaSections.bilder.title}
                             items={mediaSections.bilder.items}
                             isImageSection={true}
                         />
 
                         {/* Grundrisse (Floor Plans) Section */}
-                        <MediaSection
+                        <MediaUploadSection
                             title={mediaSections.grundrisse.title}
                             items={mediaSections.grundrisse.items}
                             isImageSection={true}
                         />
 
                         {/* Dokumente Section */}
-                        <MediaSection
+                        <MediaUploadSection
                             title={mediaSections.dokumente.title}
                             items={mediaSections.dokumente.items}
                         />
 
                         {/* 3D Modelle Section */}
-                        <MediaSection
+                        <MediaUploadSection
                             title={mediaSections.modelle3d.title}
                             items={mediaSections.modelle3d.items}
                         />
@@ -2002,7 +2002,7 @@
                             <div>
                                 <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">BIM Modell</div>
                                 <div className="flex items-center gap-2">
-                                <Icon name="check_circle" size={16} className="text-emerald-500" />
+                                <MaterialIcon name="check_circle" size={16} className="text-emerald-500" />
                                 <span className="text-sm font-medium text-slate-900">Hochgeladen</span>
                                 </div>
                             </div>
@@ -2044,9 +2044,9 @@
                         </div>
                         <div className="p-5 space-y-3">
                             {Object.values(themes).map(theme => {
-                            const progress = theme.id === 'funk' ? 100 : 
-                                            theme.id === 'komfort' ? 75 : 
-                                            theme.id === 'wirt' ? 50 : 25;
+                            const progress = theme.id === 'functionality' ? 100 :
+                                            theme.id === 'comfort' ? 75 :
+                                            theme.id === 'economics' ? 50 : 25;
                             const done = progress === 100;
                             return (
                                 <div key={theme.id} className="flex items-center gap-3">
@@ -2076,19 +2076,19 @@
                         </div>
                         <div className="p-4 space-y-2">
                             <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg">
-                            <Icon name="add" size={18} className="text-blue-400" />
+                            <MaterialIcon name="add" size={18} className="text-blue-400" />
                             Neue Variante
                             </button>
                             <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
-                            <Icon name="download" size={18} className="text-slate-400" />
+                            <MaterialIcon name="download" size={18} className="text-slate-400" />
                             Daten exportieren
                             </button>
                             <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
-                            <Icon name="print" size={18} className="text-slate-400" />
+                            <MaterialIcon name="print" size={18} className="text-slate-400" />
                             Datenblatt drucken
                             </button>
                             <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg">
-                            <Icon name="delete" size={18} className="text-red-400" />
+                            <MaterialIcon name="delete" size={18} className="text-red-400" />
                             Variante löschen
                             </button>
                         </div>
@@ -2098,8 +2098,8 @@
                 );
             };
 
-            // ============ KENNWERTE SECTION ============
-            const KennwerteSection = () => (
+            // ============ METRICS SECTION ============
+            const MetricsSection = () => (
                 <div className="border rounded-lg overflow-hidden">
                 <div className="px-5 py-4 flex items-center justify-between border-b">
                     <h3 className="font-semibold text-slate-900">Kennwerte</h3>
@@ -2156,21 +2156,21 @@
                 </div>
             );
 
-            // ============ KRITERIEN SECTION ============
-            const KriterienSection = () => (
+            // ============ CRITERIA SECTION ============
+            const CriteriaSection = () => (
                 <div className="border rounded-lg overflow-hidden">
                 <div className="px-5 py-4 flex items-center justify-between border-b">
                     <h3 className="font-semibold text-slate-900">Kriterien</h3>
                     <button
-                        onClick={() => setEditMode(!editMode)}
+                        onClick={() => setIsEditMode(!isEditMode)}
                         className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg ${
-                        editMode
+                        isEditMode
                             ? 'bg-emerald-600 text-white hover:bg-emerald-700'
                             : 'text-slate-600 hover:bg-slate-100'
                         }`}
                     >
-                        <Icon name={editMode ? 'check' : 'edit'} size={14} />
-                        {editMode ? 'Speichern' : 'Bearbeiten'}
+                        <MaterialIcon name={isEditMode ? 'check' : 'edit'} size={14} />
+                        {isEditMode ? 'Speichern' : 'Bearbeiten'}
                     </button>
                 </div>
                 
@@ -2207,27 +2207,27 @@
                             <div 
                             className={`w-12 h-5 rounded ${
                                 k.rating === 'negative' ? 'bg-red-500' : 'bg-slate-200'
-                            } ${editMode ? 'cursor-pointer hover:ring-2 ring-slate-400' : ''}`}
+                            } ${isEditMode ? 'cursor-pointer hover:ring-2 ring-slate-400' : ''}`}
                             />
                         </td>
                         <td className="px-4 py-3 text-center align-top">
                             <div 
                             className={`w-12 h-5 rounded ${
                                 k.rating === 'neutral' ? 'bg-amber-400' : 'bg-slate-200'
-                            } ${editMode ? 'cursor-pointer hover:ring-2 ring-slate-400' : ''}`}
+                            } ${isEditMode ? 'cursor-pointer hover:ring-2 ring-slate-400' : ''}`}
                             />
                         </td>
                         <td className="px-4 py-3 text-center align-top">
                             <div 
                             className={`w-12 h-5 rounded ${
                                 k.rating === 'positive' ? 'bg-emerald-500' : 'bg-slate-200'
-                            } ${editMode ? 'cursor-pointer hover:ring-2 ring-slate-400' : ''}`}
+                            } ${isEditMode ? 'cursor-pointer hover:ring-2 ring-slate-400' : ''}`}
                             />
                         </td>
                         
                         {/* Comments */}
                         <td className="px-4 py-3 align-top">
-                            {editMode ? (
+                            {isEditMode ? (
                             <textarea 
                                 className="w-full text-sm text-slate-600 bg-slate-50 border rounded p-2 min-h-16"
                                 defaultValue={k.comment}
@@ -2243,31 +2243,31 @@
                 </div>
             );
 
-            // ============ 3D VIEWER ============
-            const Viewer3D = () => (
+            // ============ 3D MODEL VIEWER ============
+            const Model3DViewer = () => (
                 <div className="flex-1 bg-white rounded-xl border border-slate-200 flex flex-col min-h-[600px]">
                     {/* Toolbar */}
                     <div className="bg-slate-50 border-b px-4 py-2 flex items-center justify-between">
                         <div className="flex items-center gap-1">
                             <button className="px-3 py-1.5 text-sm bg-white border rounded hover:bg-slate-50 flex items-center gap-1.5">
-                                <Icon name="restart_alt" size={16} /> Reset
+                                <MaterialIcon name="restart_alt" size={16} /> Reset
                             </button>
                             <button className="px-3 py-1.5 text-sm bg-white border rounded hover:bg-slate-50 flex items-center gap-1.5">
-                                <Icon name="carpenter" size={16} /> Schnitt
+                                <MaterialIcon name="carpenter" size={16} /> Schnitt
                             </button>
                             <button className="px-3 py-1.5 text-sm bg-white border rounded hover:bg-slate-50 flex items-center gap-1.5">
-                                <Icon name="straighten" size={16} /> Messen
+                                <MaterialIcon name="straighten" size={16} /> Messen
                             </button>
                             <div className="w-px h-6 bg-slate-200 mx-2" />
                             <button className="px-3 py-1.5 text-sm bg-white border rounded hover:bg-slate-50 flex items-center gap-1.5">
-                                <Icon name="layers" size={16} /> Geschosse
+                                <MaterialIcon name="layers" size={16} /> Geschosse
                             </button>
                             <button className="px-3 py-1.5 text-sm bg-white border rounded hover:bg-slate-50 flex items-center gap-1.5">
-                                <Icon name="visibility" size={16} /> Sichtbarkeit
+                                <MaterialIcon name="visibility" size={16} /> Sichtbarkeit
                             </button>
                         </div>
                         <div className="flex items-center gap-2 text-sm text-slate-500">
-                            <Icon name="description" size={16} />
+                            <MaterialIcon name="description" size={16} />
                             <span>IFC Model</span>
                             <span className="text-slate-300">|</span>
                             <span>Hochgeladen: 25.03.2023</span>
@@ -2322,9 +2322,9 @@
 
                             {/* Controls hint */}
                             <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-2 rounded text-xs space-y-1">
-                                <div className="flex items-center gap-2"><Icon name="mouse" size={14} /> Drehen: Linksklick + Ziehen</div>
-                                <div className="flex items-center gap-2"><Icon name="zoom_in" size={14} /> Zoom: Scrollrad</div>
-                                <div className="flex items-center gap-2"><Icon name="pan_tool" size={14} /> Verschieben: Rechtsklick</div>
+                                <div className="flex items-center gap-2"><MaterialIcon name="mouse" size={14} /> Drehen: Linksklick + Ziehen</div>
+                                <div className="flex items-center gap-2"><MaterialIcon name="zoom_in" size={14} /> Zoom: Scrollrad</div>
+                                <div className="flex items-center gap-2"><MaterialIcon name="pan_tool" size={14} /> Verschieben: Rechtsklick</div>
                             </div>
 
                             {/* Model stats */}
@@ -2345,8 +2345,8 @@
                 </div>
             );
 
-            // ============ DASHBOARD / COMPARISON MATRIX ============
-            const Dashboard = () => {
+            // ============ VARIANT COMPARISON VIEW ============
+            const VariantComparisonView = () => {
                 const getRating = (variantIndex, criterionId) => {
                 // Generate consistent mock ratings based on indices
                 const hash = (variantIndex * 17 + parseInt(criterionId) * 13) % 10;
@@ -2541,19 +2541,19 @@
                 );
             };
 
-            // ============ MAIN CONTENT AREA ============
-            const MainContent = () => (
+            // ============ EVALUATION CONTENT VIEW ============
+            const EvaluationContentView = () => (
                 <div className="flex-1 bg-white rounded-xl border border-slate-200 overflow-hidden">
                     {/* Tabs header */}
-                    <ThemeTabs />
+                    <EvaluationThemeTabs />
                     {/* Content with consistent padding */}
                     <div className="p-6">
-                        {activeTheme === 'allgemein' ? (
-                            <AllgemeinTab />
+                        {activeTheme === 'general' ? (
+                            <VariantGeneralTab />
                         ) : (
                             <div className="space-y-6">
-                                <KennwerteSection />
-                                <KriterienSection />
+                                <MetricsSection />
+                                <CriteriaSection />
                             </div>
                         )}
                     </div>
@@ -2561,19 +2561,19 @@
             );
 
             // ============ RENDER ============
-            const showVariantList = currentProject && sidebarView !== 'uebersicht';
+            const showVariantList = currentProject && sidebarView !== 'overview';
 
-            // View header component - renders above the content area
-            const ViewHeader = () => {
+            // Section header component - renders above the content area
+            const SectionHeader = () => {
                 const getViewInfo = () => {
                     switch (sidebarView) {
-                        case 'uebersicht':
+                        case 'overview':
                             return { title: 'Übersicht', subtitle: 'Projekt' };
-                        case 'bewertung':
+                        case 'evaluation':
                             return { title: 'Bewertung', subtitle: 'Varianten' };
-                        case 'viewer':
+                        case 'model3d':
                             return { title: '3D Viewer', subtitle: 'Modelle' };
-                        case 'dashboard':
+                        case 'comparison':
                             return { title: 'Vergleich', subtitle: 'Dashboard' };
                         default:
                             return { title: '', subtitle: '' };
@@ -2595,9 +2595,9 @@
             if (!currentProject) {
                 return (
                     <div className="min-h-screen flex flex-col bg-slate-50">
-                        <Header />
-                        <ProjectsGallery />
-                        <NewProjectModal />
+                        <AppHeader />
+                        <ProjectGalleryView />
+                        <CreateProjectModal />
                     </div>
                 );
             }
@@ -2605,29 +2605,29 @@
             // Project view (project selected)
             return (
                 <div className="min-h-screen flex flex-col bg-slate-100">
-                <Header />
-                <Breadcrumb />
-                <ViewHeader />
+                <AppHeader />
+                <NavigationBreadcrumb />
+                <SectionHeader />
                 {/* Full-width background, max-width content container */}
                 <div className="flex-1">
                     <div className="max-w-[1400px] mx-auto p-6 flex gap-6">
-                        <Sidebar />
+                        <MainSidebar />
                         <div className="flex-1 flex gap-6 items-start">
-                            {showVariantList && <VariantList />}
-                            {sidebarView === 'uebersicht' ? <Uebersicht /> :
-                            sidebarView === 'dashboard' ? <Dashboard /> :
-                            sidebarView === 'viewer' ? <Viewer3D /> :
-                            <MainContent />}
+                            {showVariantList && <VariantSelectorList />}
+                            {sidebarView === 'overview' ? <ProjectOverviewView /> :
+                            sidebarView === 'comparison' ? <VariantComparisonView /> :
+                            sidebarView === 'model3d' ? <Model3DViewer /> :
+                            <EvaluationContentView />}
                         </div>
                     </div>
                 </div>
-                <NewProjectModal />
+                <CreateProjectModal />
                 </div>
             );
         };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<EvaluationPrototype />);
+        root.render(<SustainabilityApp />);
     </script>
 </body>
 </html>
