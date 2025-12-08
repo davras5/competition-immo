@@ -2411,23 +2411,23 @@
                                     </div>
                                 </div>
 
-                                {/* Rating Summary Badges - Neutral backgrounds with colored symbols */}
+                                {/* Rating Summary Badges - Material Icons matching comparison view */}
                                 <div className="flex items-center gap-1.5 mr-4">
                                     {ratingCounts.positive > 0 && (
                                         <span className="flex items-center gap-1 px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-medium">
-                                            <span className="text-emerald-500 font-bold">+</span>
+                                            <MaterialIcon name="check_circle" size={14} className="text-emerald-500" />
                                             {ratingCounts.positive}
                                         </span>
                                     )}
                                     {ratingCounts.neutral > 0 && (
                                         <span className="flex items-center gap-1 px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-medium">
-                                            <span className="text-slate-400 font-bold">○</span>
+                                            <MaterialIcon name="remove" size={14} className="text-slate-400" />
                                             {ratingCounts.neutral}
                                         </span>
                                     )}
                                     {ratingCounts.negative > 0 && (
                                         <span className="flex items-center gap-1 px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-medium">
-                                            <span className="text-red-500 font-bold">−</span>
+                                            <MaterialIcon name="cancel" size={14} className="text-red-500" />
                                             {ratingCounts.negative}
                                         </span>
                                     )}
@@ -2522,9 +2522,9 @@
                                                                         ? 'bg-red-500 text-white ring-2 ring-red-300 ring-offset-1'
                                                                         : 'bg-red-100 text-red-400 hover:bg-red-200 hover:text-red-500'
                                                                 }`}
-                                                                title="Negativ (−)"
+                                                                title="Negativ"
                                                             >
-                                                                <span className="text-sm font-bold">−</span>
+                                                                <MaterialIcon name="cancel" size={18} />
                                                             </button>
                                                             {/* Neutral button - gray instead of amber */}
                                                             <button
@@ -2534,9 +2534,9 @@
                                                                         ? 'bg-slate-500 text-white ring-2 ring-slate-300 ring-offset-1'
                                                                         : 'bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-500'
                                                                 }`}
-                                                                title="Neutral (○)"
+                                                                title="Neutral"
                                                             >
-                                                                <span className="text-sm font-bold">○</span>
+                                                                <MaterialIcon name="remove" size={18} />
                                                             </button>
                                                             {/* Positive button */}
                                                             <button
@@ -2546,23 +2546,25 @@
                                                                         ? 'bg-emerald-500 text-white ring-2 ring-emerald-300 ring-offset-1'
                                                                         : 'bg-emerald-100 text-emerald-400 hover:bg-emerald-200 hover:text-emerald-500'
                                                                 }`}
-                                                                title="Positiv (+)"
+                                                                title="Positiv"
                                                             >
-                                                                <span className="text-sm font-bold">+</span>
+                                                                <MaterialIcon name="check_circle" size={18} />
                                                             </button>
                                                         </div>
                                                     ) : (
-                                                        /* Read-only rating indicator - neutral uses gray */
+                                                        /* Read-only rating indicator - uses Material Icons matching comparison view */
                                                         <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
                                                             k.rating === 'positive' ? 'bg-emerald-100' :
                                                             k.rating === 'neutral' ? 'bg-slate-100' : 'bg-red-100'
                                                         }`}>
-                                                            <span className={`text-sm font-bold ${
-                                                                k.rating === 'positive' ? 'text-emerald-600' :
-                                                                k.rating === 'neutral' ? 'text-slate-500' : 'text-red-600'
-                                                            }`}>
-                                                                {k.rating === 'positive' ? '+' : k.rating === 'neutral' ? '○' : '−'}
-                                                            </span>
+                                                            <MaterialIcon
+                                                                name={k.rating === 'positive' ? 'check_circle' : k.rating === 'neutral' ? 'remove' : 'cancel'}
+                                                                size={20}
+                                                                className={
+                                                                    k.rating === 'positive' ? 'text-emerald-600' :
+                                                                    k.rating === 'neutral' ? 'text-slate-500' : 'text-red-600'
+                                                                }
+                                                            />
                                                         </div>
                                                     )}
 
