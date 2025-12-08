@@ -1979,6 +1979,23 @@
                             </div>
                         </div>
 
+                        {/* Quick Actions - Top Section */}
+                        <div className="bg-white rounded-xl border border-slate-200 p-5">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                                        <MaterialIcon name="bolt" size={18} className="text-slate-600" />
+                                    </div>
+                                    <span className="font-semibold text-slate-900">Schnellaktionen</span>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    <Button variant="secondary" size="sm" icon="download">Bericht exportieren</Button>
+                                    <Button variant="secondary" size="sm" icon="share">Projekt teilen</Button>
+                                    <Button variant="secondary" size="sm" icon="archive">Archivieren</Button>
+                                </div>
+                            </div>
+                        </div>
+
                         {/* Evaluation Progress Section */}
                         <div className="bg-white rounded-xl border border-slate-200 p-5">
                             <div className="flex items-center gap-3 mb-5">
@@ -2005,23 +2022,6 @@
                                         </div>
                                     );
                                 })}
-                            </div>
-                        </div>
-
-                        {/* Quick Actions - Position 3 */}
-                        <div className="bg-white rounded-xl border border-slate-200 p-5">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
-                                        <MaterialIcon name="bolt" size={18} className="text-slate-600" />
-                                    </div>
-                                    <span className="font-semibold text-slate-900">Schnellaktionen</span>
-                                </div>
-                                <div className="flex flex-wrap gap-2">
-                                    <Button variant="secondary" size="sm" icon="download">Bericht exportieren</Button>
-                                    <Button variant="secondary" size="sm" icon="share">Projekt teilen</Button>
-                                    <Button variant="secondary" size="sm" icon="archive">Archivieren</Button>
-                                </div>
                             </div>
                         </div>
 
