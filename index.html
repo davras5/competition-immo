@@ -1386,8 +1386,11 @@
                                     </SectionCard>
 
                                     {/* Quick actions */}
-                                    <div className="bg-white rounded-xl border p-4">
-                                        <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-3">Aktionen</div>
+                                    <div className="bg-white rounded-xl border overflow-hidden">
+                                        <div className="px-5 py-4 border-b">
+                                            <h3 className="font-semibold text-slate-900">Aktionen</h3>
+                                        </div>
+                                        <div className="p-4">
                                         <div className="space-y-2">
                                             <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
                                                 <Icon name="download" size={18} className="text-slate-400" />
@@ -1401,6 +1404,7 @@
                                                 <Icon name="archive" size={18} className="text-slate-400" />
                                                 Archivieren
                                             </button>
+                                        </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1553,16 +1557,15 @@
                 };
 
                 // Reusable media section component
-                const MediaSection = ({ title, icon, items, isImageSection = false }) => (
+                const MediaSection = ({ title, items, isImageSection = false }) => (
                     <div className="bg-white rounded-xl border overflow-hidden">
                         <div className="px-5 py-4 border-b flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                                <Icon name={icon} size={18} className="text-slate-400" />
-                                <h2 className="font-semibold text-slate-900">{title}</h2>
-                                <span className="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">{items.length}</span>
+                                <h3 className="font-semibold text-slate-900">{title}</h3>
+                                <span className="text-sm text-slate-400">{items.length}</span>
                             </div>
                             <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
-                                <Icon name="upload" size={16} />
+                                <Icon name="upload" size={14} />
                                 Hochladen
                             </button>
                         </div>
@@ -1673,7 +1676,6 @@
                         {/* Bilder (Images) Section */}
                         <MediaSection
                             title={mediaSections.bilder.title}
-                            icon={mediaSections.bilder.icon}
                             items={mediaSections.bilder.items}
                             isImageSection={true}
                         />
@@ -1681,7 +1683,6 @@
                         {/* Grundrisse (Floor Plans) Section */}
                         <MediaSection
                             title={mediaSections.grundrisse.title}
-                            icon={mediaSections.grundrisse.icon}
                             items={mediaSections.grundrisse.items}
                             isImageSection={true}
                         />
@@ -1689,21 +1690,19 @@
                         {/* Dokumente Section */}
                         <MediaSection
                             title={mediaSections.dokumente.title}
-                            icon={mediaSections.dokumente.icon}
                             items={mediaSections.dokumente.items}
                         />
 
                         {/* 3D Modelle Section */}
                         <MediaSection
                             title={mediaSections.modelle3d.title}
-                            icon={mediaSections.modelle3d.icon}
                             items={mediaSections.modelle3d.items}
                         />
 
                         {/* Submission details */}
                         <div className="bg-white rounded-xl border overflow-hidden">
-                        <div className="px-5 py-4 border-b">
-                            <h2 className="font-semibold text-slate-900">Einreichung</h2>
+                        <div className="px-5 py-4 border-b flex items-center justify-between">
+                            <h3 className="font-semibold text-slate-900">Einreichung</h3>
                         </div>
                         <div className="p-5">
                             <div className="grid grid-cols-2 gap-x-8 gap-y-4">
@@ -1735,8 +1734,8 @@
                     <div className="space-y-6">
                         {/* Team */}
                         <div className="bg-white rounded-xl border overflow-hidden">
-                        <div className="px-5 py-4 border-b">
-                            <h2 className="font-semibold text-slate-900">Teilnehmer Team</h2>
+                        <div className="px-5 py-4 border-b flex items-center justify-between">
+                            <h3 className="font-semibold text-slate-900">Teilnehmer Team</h3>
                         </div>
                         <div className="divide-y">
                             {variantTeam.map((m, i) => (
@@ -1755,8 +1754,8 @@
 
                         {/* Evaluation status */}
                         <div className="bg-white rounded-xl border overflow-hidden">
-                        <div className="px-5 py-4 border-b">
-                            <h2 className="font-semibold text-slate-900">Bewertungsstatus</h2>
+                        <div className="px-5 py-4 border-b flex items-center justify-between">
+                            <h3 className="font-semibold text-slate-900">Bewertungsstatus</h3>
                         </div>
                         <div className="p-5 space-y-3">
                             {Object.values(themes).map(theme => {
@@ -1786,9 +1785,11 @@
                         </div>
 
                         {/* Quick actions */}
-                        <div className="bg-white rounded-xl border p-4">
-                        <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-3">Aktionen</div>
-                        <div className="space-y-2">
+                        <div className="bg-white rounded-xl border overflow-hidden">
+                        <div className="px-5 py-4 border-b">
+                            <h3 className="font-semibold text-slate-900">Aktionen</h3>
+                        </div>
+                        <div className="p-4 space-y-2">
                             <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg">
                             <Icon name="add" size={18} className="text-blue-400" />
                             Neue Variante
@@ -1815,13 +1816,9 @@
             // ============ KENNWERTE SECTION ============
             const KennwerteSection = () => (
                 <div className="border rounded-lg overflow-hidden">
-                <div className="px-4 py-3 flex items-center justify-between border-b bg-slate-50">
-                    <div>
-                    <span className="text-sm font-semibold text-slate-700">ENERGIE- UND NACHHALTIGKEITSKENNWERTE</span>
-                    </div>
-                    <div className="text-sm text-slate-500">
-                    TEILNEHMER {currentVariant.code}
-                    </div>
+                <div className="px-5 py-4 flex items-center justify-between border-b">
+                    <h3 className="font-semibold text-slate-900">Kennwerte</h3>
+                    <span className="text-sm text-slate-500">Teilnehmer {currentVariant.code}</span>
                 </div>
                 
                 <div className="divide-y">
@@ -1877,17 +1874,18 @@
             // ============ KRITERIEN SECTION ============
             const KriterienSection = () => (
                 <div className="border rounded-lg overflow-hidden">
-                <div className="px-4 py-3 flex items-center justify-between border-b bg-slate-50">
-                    <span className="text-sm font-semibold text-slate-700">ENERGIE- UND NACHHALTIGKEITSKRITERIEN</span>
+                <div className="px-5 py-4 flex items-center justify-between border-b">
+                    <h3 className="font-semibold text-slate-900">Kriterien</h3>
                     <button
                         onClick={() => setEditMode(!editMode)}
-                        className={`px-3 py-1 text-xs font-medium rounded ${
-                        editMode 
-                            ? 'bg-emerald-600 text-white' 
-                            : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                        className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg ${
+                        editMode
+                            ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+                            : 'text-slate-600 hover:bg-slate-100'
                         }`}
                     >
-                        {editMode ? '✓ Speichern' : '✎ Bearbeiten'}
+                        <Icon name={editMode ? 'check' : 'edit'} size={14} />
+                        {editMode ? 'Speichern' : 'Bearbeiten'}
                     </button>
                 </div>
                 
@@ -2328,12 +2326,14 @@
                         <ViewHeader />
                         {/* Main content area - unified scroll */}
                         <div className="flex-1 overflow-auto p-6 bg-slate-100">
-                            <div className="flex gap-6 items-start">
-                                {showVariantList && <VariantList />}
-                                {sidebarView === 'uebersicht' ? <Uebersicht /> :
-                                sidebarView === 'dashboard' ? <Dashboard /> :
-                                sidebarView === 'viewer' ? <Viewer3D /> :
-                                <MainContent />}
+                            <div className="max-w-screen-xl mx-auto">
+                                <div className="flex gap-6 items-start">
+                                    {showVariantList && <VariantList />}
+                                    {sidebarView === 'uebersicht' ? <Uebersicht /> :
+                                    sidebarView === 'dashboard' ? <Dashboard /> :
+                                    sidebarView === 'viewer' ? <Viewer3D /> :
+                                    <MainContent />}
+                                </div>
                             </div>
                         </div>
                     </div>
