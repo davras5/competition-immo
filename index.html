@@ -1,1397 +1,1433 @@
-Hey Gemini, can you rewrite the react component as a single page html app? Code: import React, { useState } from 'react';
-
-// Material Icons component
-const Icon = ({ name, className = "", size = 20 }) => (
-  <span 
-    className={`material-symbols-outlined ${className}`}
-    style={{ fontSize: size, lineHeight: 1 }}
-  >
-    {name}
-  </span>
-);
-
-const EvaluationPrototype = () => {
-  const [role, setRole] = useState('admin'); // Always admin for now
-  const [sidebarView, setSidebarView] = useState('uebersicht'); // uebersicht, bewertung, viewer, dashboard
-  const [selectedVariant, setSelectedVariant] = useState(0);
-  const [selectedVariantsForCompare, setSelectedVariantsForCompare] = useState([0, 1, 2, 3, 4]); // For dashboard
-  const [activeTheme, setActiveTheme] = useState('allgemein');
-  const [editMode, setEditMode] = useState(false);
-
-  // Variants data with images
-  const variants = [
-    { id: 1, name: 'Baukontor', firm: 'Baukontor AG', code: '1001', 
-      thumbnail: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400&h=300&fit=crop',
-      images: [
-        'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop',
-      ]
-    },
-    { id: 2, name: 'Berrel_Kräutler', firm: 'Berrel Kräutler', code: '1002',
-      thumbnail: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop',
-      images: [
-        'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1494526585095-c41746248156?w=800&h=600&fit=crop',
-      ]
-    },
-    { id: 3, name: 'Meier_Hug', firm: 'Meier und Hug', code: '1003',
-      thumbnail: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop',
-      images: [
-        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1448630360428-65456885c650?w=800&h=600&fit=crop',
-      ]
-    },
-    { id: 4, name: 'Spillmann_Echsle', firm: 'Spillmann Echsle', code: '1004',
-      thumbnail: 'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=400&h=300&fit=crop',
-      images: [
-        'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1494526585095-c41746248156?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop',
-      ]
-    },
-    { id: 5, name: 'Z2G', firm: 'Planer', code: '1005',
-      thumbnail: 'https://images.unsplash.com/photo-1494526585095-c41746248156?w=400&h=300&fit=crop',
-      images: [
-        'https://images.unsplash.com/photo-1494526585095-c41746248156?w=800&h=600&fit=crop',
-      ]
-    },
-  ];
-
-  // SNAP themes with Kennwerte and Kriterien
-  const themes = {
-    funk: {
-      id: 'funk',
-      name: 'Funktionalität',
-      color: 'blue',
-      kennwerte: [
-        { id: 'fk-01', label: 'Fahrradstellplätze (Anzahl)', unit: 'St.' },
-        { id: 'fk-02', label: 'Entfernung Fahrrad → Eingang', unit: 'm' },
-        { id: 'fk-03', label: 'Anteil barrierefreie Wohnungen', unit: '%' },
-      ],
-      kriterien: [
-        { id: '01', name: 'Erschliessung', 
-          desc: 'Vorfahrt, Ver-/Entsorgung, TG-Erschliessung, Fahrradstellplätze, Haupteingang, interne Wege' },
-        { id: '02', name: 'Öffentliche Zugänglichkeit',
-          desc: 'Öffentliche Zugänglichkeit Gebäude + Grundstück, bauliche Voraussetzungen' },
-        { id: '03', name: 'Barrierefreiheit',
-          desc: 'Barrierefreiheit Gebäude und Aussenanlagen' },
-        { id: '04', name: 'Kommunikationsfördernde Flächen',
-          desc: 'Angebot im Gebäude und im Aussenraum' },
-      ]
-    },
-    komfort: {
-      id: 'komfort',
-      name: 'Komfort & Gesundheit',
-      color: 'emerald',
-      kennwerte: [
-        { id: 'ko-01', label: 'Gesamtfensterflächenanteil', unit: '%' },
-        { id: 'ko-02', label: 'Fensterflächenanteil Ost/West', unit: '%' },
-        { id: 'ko-03', label: 'Mittlere Raumtiefe Hauptnutzung', unit: 'm' },
-      ],
-      kriterien: [
-        { id: '05', name: 'Sicherheit',
-          desc: 'Brandschutz, projektspezifische Sicherheit, Übersichtlichkeit und Orientierung' },
-        { id: '06', name: 'Schallschutz',
-          desc: 'Orientierung schutzbedürftiger Räume, bauliche Massnahmen, Nutzungskonflikte' },
-        { id: '07', name: 'Tageslicht',
-          desc: 'Tageslichtversorgung Hauptnutzungen, Raumtiefe, Sturzausbildung, Sichtbeziehungen' },
-        { id: '08', name: 'Raumklima',
-          desc: 'Orientierung, Sonnenschutzkonzept, Brüstungsbereich, bauliche Massnahmen' },
-      ]
-    },
-    wirt: {
-      id: 'wirt',
-      name: 'Wirtschaftlichkeit',
-      color: 'amber',
-      kennwerte: [
-        { id: 'wi-01', label: 'NF/BGF (Flächeneffizienz)', unit: '' },
-        { id: 'wi-02', label: 'BRI/BGF (Volumeneffizienz)', unit: '' },
-        { id: 'wi-03', label: 'A/V-Verhältnis', unit: '' },
-        { id: 'wi-04', label: 'Hüllflächenanteil', unit: '%' },
-      ],
-      kriterien: [
-        { id: '09', name: 'Flächeneffizienz',
-          desc: 'NF/BGF, BRI/BGF Verhältnisse' },
-        { id: '10', name: 'Nutzungsflexibilität',
-          desc: 'Lichte Raumhöhe, Umnutzungsfähigkeit, Teilbarkeit, Nutzung durch Dritte' },
-        { id: '11', name: 'Lebenszykluskosten',
-          desc: 'Kubatur, Fassade, Energiebedarf, Energiekosten, Dauerhaftigkeit' },
-      ]
-    },
-    ressourcen: {
-      id: 'ressourcen',
-      name: 'Ressourcen & Energie',
-      color: 'violet',
-      kennwerte: [
-        { id: 're-01', label: 'Versiegelungsgrad Grundstück', unit: '%' },
-        { id: 're-02', label: 'Primärenergiebedarf', unit: '%' },
-        { id: 're-03', label: 'Endenergiebedarf', unit: 'kWh/m²a' },
-        { id: 're-04', label: 'Energiebedarfsdeckung Solar (Strom)', unit: '%' },
-        { id: 're-05', label: 'Energiebedarfsdeckung Solar (Wärme)', unit: '%' },
-      ],
-      kriterien: [
-        { id: '12', name: 'Flächenversiegelung',
-          desc: 'Versiegelungsgrad, Gründach, unterbaute Fläche, Ausgleichsmassnahmen' },
-        { id: '13', name: 'Baustoffe',
-          desc: 'BRI, Hüllflächenanteil, Baumasse unter Gelände, nachwachsende Rohstoffe' },
-        { id: '14', name: 'Endenergiebedarf',
-          desc: 'Heizwärmebedarf, A/V, solare Gewinne, Kunstlichtbedarf' },
-        { id: '15', name: 'Energiebedarfsdeckung',
-          desc: 'Solartechnik Strom/Wärme, Gebäudeintegration, lokale Energiepotenziale' },
-      ]
-    }
-  };
-
-  // Generate mock data for variants
-  const generateKennwertData = (variantIndex, kennwerte) => {
-    return kennwerte.map((k, i) => {
-      const baseValue = 50 + (variantIndex * 7 + i * 13) % 50;
-      const avgValue = 60 + (i * 11) % 30;
-      const rank = ((variantIndex + i) % 5) + 1;
-      const delta = baseValue - avgValue;
-      return {
-        ...k,
-        value: baseValue,
-        avg: avgValue,
-        rank: rank,
-        total: 5,
-        delta: delta
-      };
-    });
-  };
-
-  const generateKriterienData = (variantIndex, kriterien) => {
-    const ratings = ['positive', 'neutral', 'negative'];
-    const comments = [
-      'Vorfahrt eingeschränkt berücksichtigt; Ver- und Entsorgung bedingt funktionstüchtig; günstige Positionierung Fahrradabstellplätze; Anzahl erfüllt; Haupteingang erkennbar; kurze interne Wege;',
-      'Gebäude eingeschränkt barrierefrei; Barrierefreiheit Aussenraum k. A. / unklar (Freitreppe);',
-      'vielfältiges Angebot im Gebäude (Ausstellung, Präsentation); vielfältiges Angebot im Aussenraum;',
-      'Brandschutzanforderungen berücksichtigt; Sicherheitsanforderungen teilw. erfüllt; überwiegend übersichtliche Wege;',
-      'ungünstige Orientierung schutzbedürftiger Räume; ungünstige Orientierung privater Freiräume; bauliche Schallschutzmassnahmen teilw. berücksichtigt; ggf. Nutzungskonflikte;',
-      'hoher Gesamtfensterflächenanteil; mässige Tageslichtversorgung Hauptnutzungen; opake Sturzausbildung; mässige TL-Versorgung Flure; Sichtbeziehungen zum Aussenraum;',
-    ];
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nachhaltigkeit Evaluation Dashboard</title>
     
-    return kriterien.map((k, i) => ({
-      ...k,
-      rating: ratings[(variantIndex + i) % 3],
-      score: [33, 66][(variantIndex + i) % 2],
-      comment: comments[(variantIndex + i) % comments.length]
-    }));
-  };
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  const currentTheme = themes[activeTheme] || themes['funk']; // fallback for 'allgemein'
-  const currentVariant = variants[selectedVariant];
-  const kennwertData = currentTheme ? generateKennwertData(selectedVariant, currentTheme.kennwerte) : [];
-  const kriterienData = currentTheme ? generateKriterienData(selectedVariant, currentTheme.kriterien) : [];
-
-  // ============ HEADER ============
-  const Header = () => (
-    <header className="bg-slate-900 text-white h-14 flex items-center justify-between px-4">
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 bg-emerald-500 rounded flex items-center justify-center">
-          <Icon name="eco" size={18} />
-        </div>
-        <span className="font-semibold">Nachhaltigkeit</span>
-        <span className="text-slate-500">|</span>
-        <span className="text-slate-300">Badenerstrasse 501</span>
-      </div>
-      
-      <div className="flex items-center gap-2">
-        <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg">
-          <Icon name="help_outline" size={20} />
-        </button>
-        <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg">
-          <Icon name="notifications" size={20} />
-        </button>
-        <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg">
-          <Icon name="settings" size={20} />
-        </button>
-        <div className="w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center text-sm ml-2">DA</div>
-      </div>
-    </header>
-  );
-
-  // Project settings - some projects have 3D models, some don't
-  const [projectHas3D, setProjectHas3D] = useState(true);
-
-  // ============ SIDEBAR ============
-  const Sidebar = () => {
-    const sidebarItems = [
-      { id: 'uebersicht', label: 'Übersicht', sublabel: 'Projekt', icon: 'dashboard' },
-      { id: 'bewertung', label: 'Bewertung', sublabel: 'Varianten', icon: 'balance' },
-      { id: 'viewer', label: '3D Viewer', sublabel: 'Modelle', icon: 'view_in_ar', requires3D: true },
-      { id: 'dashboard', label: 'Vergleich', sublabel: 'Dashboard', icon: 'leaderboard' },
-    ];
-
-    const filteredItems = sidebarItems.filter(item => !item.requires3D || projectHas3D);
-
-    return (
-      <aside className="w-48 bg-slate-100 border-r flex flex-col">
-        <nav className="flex-1 py-2">
-          {filteredItems.map(item => (
-            <button
-              key={item.id}
-              onClick={() => setSidebarView(item.id)}
-              className={`w-full px-4 py-3 text-left flex items-center gap-3 transition-all ${
-                sidebarView === item.id
-                  ? 'bg-white border-r-2 border-emerald-600 text-slate-900'
-                  : 'text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              <Icon 
-                name={item.icon} 
-                size={20} 
-                className={sidebarView === item.id ? 'text-emerald-600' : 'text-slate-400'}
-              />
-              <div>
-                <div className="font-medium text-sm">{item.label}</div>
-                <div className="text-xs text-slate-500">{item.sublabel}</div>
-              </div>
-            </button>
-          ))}
-        </nav>
-      </aside>
-    );
-  };
-
-  // ============ VARIANT LIST ============
-  const VariantList = () => {
-    const isDashboard = sidebarView === 'dashboard';
-
-    const handleVariantClick = (index) => {
-      if (isDashboard) {
-        // Multi-select mode for dashboard
-        if (selectedVariantsForCompare.includes(index)) {
-          if (selectedVariantsForCompare.length > 1) {
-            setSelectedVariantsForCompare(selectedVariantsForCompare.filter(i => i !== index));
-          }
-        } else {
-          setSelectedVariantsForCompare([...selectedVariantsForCompare, index].sort((a, b) => a - b));
+    <style>
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
         }
-      } else {
-        // Single select for other views
-        setSelectedVariant(index);
-      }
-    };
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
 
-    return (
-      <div className="w-52 bg-white border-r flex flex-col">
-        <div className="px-4 py-3 border-b bg-slate-50">
-          <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">Varianten</div>
-          {isDashboard && (
-            <div className="text-xs text-slate-400 mt-1">
-              {selectedVariantsForCompare.length} ausgewählt
-            </div>
-          )}
-        </div>
-        <div className="flex-1 overflow-y-auto">
-          {variants.map((v, i) => {
-            const isSelected = isDashboard 
-              ? selectedVariantsForCompare.includes(i)
-              : selectedVariant === i;
+    <script type="text/babel">
+        const { useState } = React;
+
+        // Material Icons component
+        const Icon = ({ name, className = "", size = 20 }) => (
+            <span 
+                className={`material-symbols-outlined ${className}`}
+                style={{ fontSize: size, lineHeight: 1, userSelect: 'none' }}
+            >
+                {name}
+            </span>
+        );
+
+        const EvaluationPrototype = () => {
+            const [role, setRole] = useState('admin');
+            const [sidebarView, setSidebarView] = useState('uebersicht'); // uebersicht, bewertung, viewer, dashboard
+            const [selectedVariant, setSelectedVariant] = useState(0);
+            const [selectedVariantsForCompare, setSelectedVariantsForCompare] = useState([0, 1, 2, 3, 4]); // For dashboard
+            const [activeTheme, setActiveTheme] = useState('allgemein');
+            const [editMode, setEditMode] = useState(false);
+            const [projectHas3D, setProjectHas3D] = useState(true);
+
+            // Variants data with images
+            const variants = [
+                { id: 1, name: 'Baukontor', firm: 'Baukontor AG', code: '1001', 
+                thumbnail: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400&h=300&fit=crop',
+                images: [
+                    'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&h=600&fit=crop',
+                    'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop',
+                    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop',
+                ]
+                },
+                { id: 2, name: 'Berrel_Kräutler', firm: 'Berrel Kräutler', code: '1002',
+                thumbnail: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop',
+                images: [
+                    'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop',
+                    'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&h=600&fit=crop',
+                    'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=800&h=600&fit=crop',
+                    'https://images.unsplash.com/photo-1494526585095-c41746248156?w=800&h=600&fit=crop',
+                ]
+                },
+                { id: 3, name: 'Meier_Hug', firm: 'Meier und Hug', code: '1003',
+                thumbnail: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop',
+                images: [
+                    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop',
+                    'https://images.unsplash.com/photo-1448630360428-65456885c650?w=800&h=600&fit=crop',
+                ]
+                },
+                { id: 4, name: 'Spillmann_Echsle', firm: 'Spillmann Echsle', code: '1004',
+                thumbnail: 'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=400&h=300&fit=crop',
+                images: [
+                    'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=800&h=600&fit=crop',
+                    'https://images.unsplash.com/photo-1494526585095-c41746248156?w=800&h=600&fit=crop',
+                    'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&h=600&fit=crop',
+                    'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop',
+                    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop',
+                ]
+                },
+                { id: 5, name: 'Z2G', firm: 'Planer', code: '1005',
+                thumbnail: 'https://images.unsplash.com/photo-1494526585095-c41746248156?w=400&h=300&fit=crop',
+                images: [
+                    'https://images.unsplash.com/photo-1494526585095-c41746248156?w=800&h=600&fit=crop',
+                ]
+                },
+            ];
+
+            // SNAP themes
+            const themes = {
+                funk: {
+                id: 'funk',
+                name: 'Funktionalität',
+                color: 'blue',
+                kennwerte: [
+                    { id: 'fk-01', label: 'Fahrradstellplätze (Anzahl)', unit: 'St.' },
+                    { id: 'fk-02', label: 'Entfernung Fahrrad → Eingang', unit: 'm' },
+                    { id: 'fk-03', label: 'Anteil barrierefreie Wohnungen', unit: '%' },
+                ],
+                kriterien: [
+                    { id: '01', name: 'Erschliessung', 
+                    desc: 'Vorfahrt, Ver-/Entsorgung, TG-Erschliessung, Fahrradstellplätze, Haupteingang, interne Wege' },
+                    { id: '02', name: 'Öffentliche Zugänglichkeit',
+                    desc: 'Öffentliche Zugänglichkeit Gebäude + Grundstück, bauliche Voraussetzungen' },
+                    { id: '03', name: 'Barrierefreiheit',
+                    desc: 'Barrierefreiheit Gebäude und Aussenanlagen' },
+                    { id: '04', name: 'Kommunikationsfördernde Flächen',
+                    desc: 'Angebot im Gebäude und im Aussenraum' },
+                ]
+                },
+                komfort: {
+                id: 'komfort',
+                name: 'Komfort & Gesundheit',
+                color: 'emerald',
+                kennwerte: [
+                    { id: 'ko-01', label: 'Gesamtfensterflächenanteil', unit: '%' },
+                    { id: 'ko-02', label: 'Fensterflächenanteil Ost/West', unit: '%' },
+                    { id: 'ko-03', label: 'Mittlere Raumtiefe Hauptnutzung', unit: 'm' },
+                ],
+                kriterien: [
+                    { id: '05', name: 'Sicherheit',
+                    desc: 'Brandschutz, projektspezifische Sicherheit, Übersichtlichkeit und Orientierung' },
+                    { id: '06', name: 'Schallschutz',
+                    desc: 'Orientierung schutzbedürftiger Räume, bauliche Massnahmen, Nutzungskonflikte' },
+                    { id: '07', name: 'Tageslicht',
+                    desc: 'Tageslichtversorgung Hauptnutzungen, Raumtiefe, Sturzausbildung, Sichtbeziehungen' },
+                    { id: '08', name: 'Raumklima',
+                    desc: 'Orientierung, Sonnenschutzkonzept, Brüstungsbereich, bauliche Massnahmen' },
+                ]
+                },
+                wirt: {
+                id: 'wirt',
+                name: 'Wirtschaftlichkeit',
+                color: 'amber',
+                kennwerte: [
+                    { id: 'wi-01', label: 'NF/BGF (Flächeneffizienz)', unit: '' },
+                    { id: 'wi-02', label: 'BRI/BGF (Volumeneffizienz)', unit: '' },
+                    { id: 'wi-03', label: 'A/V-Verhältnis', unit: '' },
+                    { id: 'wi-04', label: 'Hüllflächenanteil', unit: '%' },
+                ],
+                kriterien: [
+                    { id: '09', name: 'Flächeneffizienz',
+                    desc: 'NF/BGF, BRI/BGF Verhältnisse' },
+                    { id: '10', name: 'Nutzungsflexibilität',
+                    desc: 'Lichte Raumhöhe, Umnutzungsfähigkeit, Teilbarkeit, Nutzung durch Dritte' },
+                    { id: '11', name: 'Lebenszykluskosten',
+                    desc: 'Kubatur, Fassade, Energiebedarf, Energiekosten, Dauerhaftigkeit' },
+                ]
+                },
+                ressourcen: {
+                id: 'ressourcen',
+                name: 'Ressourcen & Energie',
+                color: 'violet',
+                kennwerte: [
+                    { id: 're-01', label: 'Versiegelungsgrad Grundstück', unit: '%' },
+                    { id: 're-02', label: 'Primärenergiebedarf', unit: '%' },
+                    { id: 're-03', label: 'Endenergiebedarf', unit: 'kWh/m²a' },
+                    { id: 're-04', label: 'Energiebedarfsdeckung Solar (Strom)', unit: '%' },
+                    { id: 're-05', label: 'Energiebedarfsdeckung Solar (Wärme)', unit: '%' },
+                ],
+                kriterien: [
+                    { id: '12', name: 'Flächenversiegelung',
+                    desc: 'Versiegelungsgrad, Gründach, unterbaute Fläche, Ausgleichsmassnahmen' },
+                    { id: '13', name: 'Baustoffe',
+                    desc: 'BRI, Hüllflächenanteil, Baumasse unter Gelände, nachwachsende Rohstoffe' },
+                    { id: '14', name: 'Endenergiebedarf',
+                    desc: 'Heizwärmebedarf, A/V, solare Gewinne, Kunstlichtbedarf' },
+                    { id: '15', name: 'Energiebedarfsdeckung',
+                    desc: 'Solartechnik Strom/Wärme, Gebäudeintegration, lokale Energiepotenziale' },
+                ]
+                }
+            };
+
+            // Generate mock data for variants
+            const generateKennwertData = (variantIndex, kennwerte) => {
+                return kennwerte.map((k, i) => {
+                const baseValue = 50 + (variantIndex * 7 + i * 13) % 50;
+                const avgValue = 60 + (i * 11) % 30;
+                const rank = ((variantIndex + i) % 5) + 1;
+                const delta = baseValue - avgValue;
+                return {
+                    ...k,
+                    value: baseValue,
+                    avg: avgValue,
+                    rank: rank,
+                    total: 5,
+                    delta: delta
+                };
+                });
+            };
+
+            const generateKriterienData = (variantIndex, kriterien) => {
+                const ratings = ['positive', 'neutral', 'negative'];
+                const comments = [
+                'Vorfahrt eingeschränkt berücksichtigt; Ver- und Entsorgung bedingt funktionstüchtig; günstige Positionierung Fahrradabstellplätze; Anzahl erfüllt; Haupteingang erkennbar; kurze interne Wege;',
+                'Gebäude eingeschränkt barrierefrei; Barrierefreiheit Aussenraum k. A. / unklar (Freitreppe);',
+                'vielfältiges Angebot im Gebäude (Ausstellung, Präsentation); vielfältiges Angebot im Aussenraum;',
+                'Brandschutzanforderungen berücksichtigt; Sicherheitsanforderungen teilw. erfüllt; überwiegend übersichtliche Wege;',
+                'ungünstige Orientierung schutzbedürftiger Räume; ungünstige Orientierung privater Freiräume; bauliche Schallschutzmassnahmen teilw. berücksichtigt; ggf. Nutzungskonflikte;',
+                'hoher Gesamtfensterflächenanteil; mässige Tageslichtversorgung Hauptnutzungen; opake Sturzausbildung; mässige TL-Versorgung Flure; Sichtbeziehungen zum Aussenraum;',
+                ];
+                
+                return kriterien.map((k, i) => ({
+                ...k,
+                rating: ratings[(variantIndex + i) % 3],
+                score: [33, 66][(variantIndex + i) % 2],
+                comment: comments[(variantIndex + i) % comments.length]
+                }));
+            };
+
+            const currentTheme = themes[activeTheme] || themes['funk']; 
+            const currentVariant = variants[selectedVariant];
+            const kennwertData = currentTheme ? generateKennwertData(selectedVariant, currentTheme.kennwerte) : [];
+            const kriterienData = currentTheme ? generateKriterienData(selectedVariant, currentTheme.kriterien) : [];
+
+            // ============ HEADER ============
+            const Header = () => (
+                <header className="bg-slate-900 text-white h-14 flex items-center justify-between px-4">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-emerald-500 rounded flex items-center justify-center">
+                    <Icon name="eco" size={18} />
+                    </div>
+                    <span className="font-semibold">Nachhaltigkeit</span>
+                    <span className="text-slate-500">|</span>
+                    <span className="text-slate-300">Badenerstrasse 501</span>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                    <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg">
+                    <Icon name="help_outline" size={20} />
+                    </button>
+                    <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg">
+                    <Icon name="notifications" size={20} />
+                    </button>
+                    <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg">
+                    <Icon name="settings" size={20} />
+                    </button>
+                    <div className="w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center text-sm ml-2">DA</div>
+                </div>
+                </header>
+            );
+
+            // ============ SIDEBAR ============
+            const Sidebar = () => {
+                const sidebarItems = [
+                { id: 'uebersicht', label: 'Übersicht', sublabel: 'Projekt', icon: 'dashboard' },
+                { id: 'bewertung', label: 'Bewertung', sublabel: 'Varianten', icon: 'balance' },
+                { id: 'viewer', label: '3D Viewer', sublabel: 'Modelle', icon: 'view_in_ar', requires3D: true },
+                { id: 'dashboard', label: 'Vergleich', sublabel: 'Dashboard', icon: 'leaderboard' },
+                ];
+
+                const filteredItems = sidebarItems.filter(item => !item.requires3D || projectHas3D);
+
+                return (
+                <aside className="w-48 bg-slate-100 border-r flex flex-col">
+                    <nav className="flex-1 py-2">
+                    {filteredItems.map(item => (
+                        <button
+                        key={item.id}
+                        onClick={() => setSidebarView(item.id)}
+                        className={`w-full px-4 py-3 text-left flex items-center gap-3 transition-all ${
+                            sidebarView === item.id
+                            ? 'bg-white border-r-2 border-emerald-600 text-slate-900'
+                            : 'text-slate-600 hover:bg-slate-50'
+                        }`}
+                        >
+                        <Icon 
+                            name={item.icon} 
+                            size={20} 
+                            className={sidebarView === item.id ? 'text-emerald-600' : 'text-slate-400'}
+                        />
+                        <div>
+                            <div className="font-medium text-sm">{item.label}</div>
+                            <div className="text-xs text-slate-500">{item.sublabel}</div>
+                        </div>
+                        </button>
+                    ))}
+                    </nav>
+                </aside>
+                );
+            };
+
+            // ============ VARIANT LIST ============
+            const VariantList = () => {
+                const isDashboard = sidebarView === 'dashboard';
+
+                const handleVariantClick = (index) => {
+                if (isDashboard) {
+                    if (selectedVariantsForCompare.includes(index)) {
+                    if (selectedVariantsForCompare.length > 1) {
+                        setSelectedVariantsForCompare(selectedVariantsForCompare.filter(i => i !== index));
+                    }
+                    } else {
+                    setSelectedVariantsForCompare([...selectedVariantsForCompare, index].sort((a, b) => a - b));
+                    }
+                } else {
+                    setSelectedVariant(index);
+                }
+                };
+
+                return (
+                <div className="w-52 bg-white border-r flex flex-col">
+                    <div className="px-4 py-3 border-b bg-slate-50">
+                    <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">Varianten</div>
+                    {isDashboard && (
+                        <div className="text-xs text-slate-400 mt-1">
+                        {selectedVariantsForCompare.length} ausgewählt
+                        </div>
+                    )}
+                    </div>
+                    <div className="flex-1 overflow-y-auto">
+                    {variants.map((v, i) => {
+                        const isSelected = isDashboard 
+                        ? selectedVariantsForCompare.includes(i)
+                        : selectedVariant === i;
+                        
+                        return (
+                        <button
+                            key={v.id}
+                            onClick={() => handleVariantClick(i)}
+                            className={`w-full p-3 text-left border-b transition-all ${
+                            isSelected
+                                ? 'bg-emerald-50 border-l-2 border-l-emerald-600'
+                                : 'hover:bg-slate-50 border-l-2 border-l-transparent'
+                            }`}
+                        >
+                            <div className="flex items-start gap-3">
+                            {isDashboard && (
+                                <div className={`w-4 h-4 mt-1 rounded border flex-shrink-0 flex items-center justify-center text-xs ${
+                                isSelected 
+                                    ? 'bg-emerald-600 border-emerald-600 text-white' 
+                                    : 'border-slate-300'
+                                }`}>
+                                {isSelected && <Icon name="check" size={12} />}
+                                </div>
+                            )}
+                            <div className="flex-1 min-w-0">
+                                {/* Thumbnail */}
+                                <div className="w-full h-16 rounded-lg bg-slate-200 mb-2 overflow-hidden relative">
+                                <img 
+                                    src={v.thumbnail} 
+                                    alt={v.name}
+                                    className="w-full h-full object-cover"
+                                />
+                                {isSelected && !isDashboard && (
+                                    <div className="absolute inset-0 border-2 border-emerald-500 rounded-lg"></div>
+                                )}
+                                </div>
+                                <div className="font-medium text-sm text-slate-900 truncate">{v.name}</div>
+                                <div className="text-xs text-slate-500 truncate">{v.firm}</div>
+                            </div>
+                            </div>
+                        </button>
+                        );
+                    })}
+                    </div>
+                </div>
+                );
+            };
+
+            // ============ ÜBERSICHT / PROJECT OVERVIEW ============
+            const Uebersicht = () => {
+                const teamMembers = [
+                { name: 'David Rasner', email: 'david.rasner@example.ch', role: 'Projektleiter', initials: 'DR' },
+                { name: 'Matthias Spiss', email: 'matthias.spiss@allreal.ch', role: 'Admin', initials: 'MS' },
+                { name: 'Adrian Schmid', email: 'adrian.schmid@allreal.ch', role: 'Admin', initials: 'AS' },
+                ];
+
+                const experts = [
+                { name: 'Dr. Eva Müller', role: 'Tageslicht, Raumklima', initials: 'EM' },
+                { name: 'Thomas Weber', role: 'Lebenszykluskosten', initials: 'TW' },
+                { name: 'Sarah Koch', role: 'Energie', initials: 'SK' },
+                ];
+
+                const milestones = [
+                { date: '15.07.2024', label: 'Abgabe BIM Modelle (90%)', done: true },
+                { date: '21.07.2024', label: 'Abgabe definitive BIM Modelle', done: true },
+                { date: '15.08.2024', label: 'Bewertung Funktionalität', done: true },
+                { date: '30.08.2024', label: 'Bewertung Komfort & Wirtschaftlichkeit', done: false },
+                { date: '15.09.2024', label: 'Abgabe Kosten Kalkulation', done: false },
+                { date: '30.09.2024', label: 'Jurysitzung', done: false },
+                ];
+
+                return (
+                <div className="flex-1 flex flex-col overflow-hidden">
+                    {/* Breadcrumb */}
+                    <div className="h-10 bg-white border-b px-4 flex items-center gap-2 text-sm">
+                    <span className="text-slate-400">Projekte</span>
+                    <span className="text-slate-300">/</span>
+                    <span className="text-slate-900 font-medium">Badenerstrasse 501</span>
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 overflow-auto p-6 bg-slate-50">
+                    {/* Stats row */}
+                    <div className="grid grid-cols-4 gap-4 mb-6">
+                        <div className="bg-white rounded-xl p-5 border">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <Icon name="apartment" size={20} className="text-blue-600" />
+                            </div>
+                            <div>
+                            <div className="text-2xl font-bold text-slate-900">5</div>
+                            <div className="text-sm text-slate-500">Varianten</div>
+                            </div>
+                        </div>
+                        </div>
+                        <div className="bg-white rounded-xl p-5 border">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                            <Icon name="check_circle" size={20} className="text-emerald-600" />
+                            </div>
+                            <div>
+                            <div className="text-2xl font-bold text-emerald-600">2</div>
+                            <div className="text-sm text-slate-500">Bewertet</div>
+                            </div>
+                        </div>
+                        </div>
+                        <div className="bg-white rounded-xl p-5 border">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                            <Icon name="pending" size={20} className="text-amber-600" />
+                            </div>
+                            <div>
+                            <div className="text-2xl font-bold text-amber-600">3</div>
+                            <div className="text-sm text-slate-500">In Arbeit</div>
+                            </div>
+                        </div>
+                        </div>
+                        <div className="bg-white rounded-xl p-5 border">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center">
+                            <Icon name="groups" size={20} className="text-violet-600" />
+                            </div>
+                            <div>
+                            <div className="text-2xl font-bold text-slate-900">6</div>
+                            <div className="text-sm text-slate-500">Teammitglieder</div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-6">
+                        {/* Left column */}
+                        <div className="col-span-2 space-y-6">
+                        {/* Project details */}
+                        <div className="bg-white rounded-xl border overflow-hidden">
+                            <div className="px-5 py-4 border-b flex items-center justify-between">
+                            <h2 className="font-semibold text-slate-900">Projektdetails</h2>
+                            <button className="text-slate-400 hover:text-slate-600">
+                                <Icon name="edit" size={18} />
+                            </button>
+                            </div>
+                            <div className="p-5">
+                            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                                <div>
+                                <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Projektname</div>
+                                <div className="text-sm font-medium text-slate-900">Badenerstrasse 501</div>
+                                </div>
+                                <div>
+                                <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Adresse</div>
+                                <div className="text-sm font-medium text-slate-900">Badenerstrasse 501, 8048 Zürich</div>
+                                </div>
+                                <div>
+                                <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Nutzungstyp</div>
+                                <div className="text-sm font-medium text-slate-900">Wohnen</div>
+                                </div>
+                                <div>
+                                <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Bauphase SIA 102</div>
+                                <div className="text-sm font-medium text-slate-900">Vorprojekt</div>
+                                </div>
+                                <div>
+                                <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Framework</div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm font-medium text-slate-900">SNAP</span>
+                                    <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">15 Kriterien</span>
+                                </div>
+                                </div>
+                                <div>
+                                <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Status</div>
+                                <div className="flex items-center gap-2">
+                                    <span className="w-2 h-2 bg-amber-400 rounded-full"></span>
+                                    <span className="text-sm font-medium text-slate-900">Bewertung läuft</span>
+                                </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+
+                        {/* Evaluation progress */}
+                        <div className="bg-white rounded-xl border overflow-hidden">
+                            <div className="px-5 py-4 border-b">
+                            <h2 className="font-semibold text-slate-900">Bewertungsfortschritt</h2>
+                            </div>
+                            <div className="p-5">
+                            <div className="space-y-4">
+                                {Object.values(themes).map(theme => {
+                                const progress = theme.id === 'funk' ? 100 : 
+                                                theme.id === 'komfort' ? 75 : 
+                                                theme.id === 'wirt' ? 40 : 20;
+                                return (
+                                    <div key={theme.id}>
+                                    <div className="flex justify-between text-sm mb-1">
+                                        <span className="text-slate-700">{theme.name}</span>
+                                        <span className="text-slate-500">{progress}%</span>
+                                    </div>
+                                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                                        <div 
+                                        className={`h-full rounded-full ${
+                                            progress === 100 ? 'bg-emerald-500' : 'bg-amber-400'
+                                        }`}
+                                        style={{ width: `${progress}%` }}
+                                        />
+                                    </div>
+                                    </div>
+                                );
+                                })}
+                            </div>
+                            </div>
+                        </div>
+
+                        {/* Team */}
+                        <div className="bg-white rounded-xl border overflow-hidden">
+                            <div className="px-5 py-4 border-b flex items-center justify-between">
+                            <h2 className="font-semibold text-slate-900">Team</h2>
+                            <button className="text-sm text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1">
+                                <Icon name="person_add" size={16} />
+                                Einladen
+                            </button>
+                            </div>
+                            <div className="divide-y">
+                            <div className="px-5 py-3 bg-slate-50">
+                                <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">Projektteam</div>
+                            </div>
+                            {teamMembers.map((m, i) => (
+                                <div key={i} className="px-5 py-3 flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center text-xs font-medium text-slate-600">
+                                    {m.initials}
+                                    </div>
+                                    <div>
+                                    <div className="text-sm font-medium text-slate-900">{m.name}</div>
+                                    <div className="text-xs text-slate-500">{m.email}</div>
+                                    </div>
+                                </div>
+                                <span className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded">{m.role}</span>
+                                </div>
+                            ))}
+                            <div className="px-5 py-3 bg-slate-50">
+                                <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">Experten</div>
+                            </div>
+                            {experts.map((m, i) => (
+                                <div key={i} className="px-5 py-3 flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center text-xs font-medium text-emerald-700">
+                                    {m.initials}
+                                    </div>
+                                    <div>
+                                    <div className="text-sm font-medium text-slate-900">{m.name}</div>
+                                    <div className="text-xs text-slate-500">{m.role}</div>
+                                    </div>
+                                </div>
+                                <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded">Experte</span>
+                                </div>
+                            ))}
+                            </div>
+                        </div>
+                        </div>
+
+                        {/* Right column */}
+                        <div className="space-y-6">
+                        {/* Map */}
+                        <div className="bg-white rounded-xl border overflow-hidden">
+                            <div className="h-48 bg-slate-200 relative">
+                            {/* Map placeholder */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+                                <div className="text-center">
+                                <Icon name="map" size={32} className="text-slate-400 mx-auto mb-2" />
+                                <div className="text-sm text-slate-500">Karte</div>
+                                </div>
+                            </div>
+                            <div className="absolute top-3 right-3">
+                                <button className="p-1.5 bg-white rounded shadow-sm hover:shadow">
+                                <Icon name="fullscreen" size={18} className="text-slate-600" />
+                                </button>
+                            </div>
+                            </div>
+                            <div className="p-4">
+                            <div className="flex items-start gap-2">
+                                <Icon name="location_on" size={18} className="text-slate-400 mt-0.5" />
+                                <div>
+                                <div className="text-sm font-medium text-slate-900">Badenerstrasse 501</div>
+                                <div className="text-xs text-slate-500">8048 Zürich, Schweiz</div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+
+                        {/* Milestones */}
+                        <div className="bg-white rounded-xl border overflow-hidden">
+                            <div className="px-5 py-4 border-b flex items-center justify-between">
+                            <h2 className="font-semibold text-slate-900">Meilensteine</h2>
+                            <button className="text-slate-400 hover:text-slate-600">
+                                <Icon name="edit" size={18} />
+                            </button>
+                            </div>
+                            <div className="p-4">
+                            <div className="space-y-3">
+                                {milestones.map((m, i) => (
+                                <div key={i} className="flex items-start gap-3">
+                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                    m.done ? 'bg-emerald-100' : 'bg-slate-100'
+                                    }`}>
+                                    <Icon 
+                                        name={m.done ? 'check' : 'schedule'} 
+                                        size={14} 
+                                        className={m.done ? 'text-emerald-600' : 'text-slate-400'}
+                                    />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                    <div className={`text-sm ${m.done ? 'text-slate-500' : 'text-slate-900'}`}>
+                                        {m.label}
+                                    </div>
+                                    <div className="text-xs text-slate-400">{m.date}</div>
+                                    </div>
+                                </div>
+                                ))}
+                            </div>
+                            </div>
+                        </div>
+
+                        {/* Quick actions */}
+                        <div className="bg-white rounded-xl border p-4">
+                            <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-3">Aktionen</div>
+                            <div className="space-y-2">
+                            <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
+                                <Icon name="download" size={18} className="text-slate-400" />
+                                Bericht exportieren
+                            </button>
+                            <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
+                                <Icon name="share" size={18} className="text-slate-400" />
+                                Projekt teilen
+                            </button>
+                            <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
+                                <Icon name="archive" size={18} className="text-slate-400" />
+                                Archivieren
+                            </button>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                );
+            };
+
+            // ============ BREADCRUMB ============
+            const Breadcrumb = () => (
+                <div className="h-10 bg-white border-b px-4 flex items-center gap-2 text-sm">
+                <span className="text-slate-400">Projekte</span>
+                <span className="text-slate-300">/</span>
+                <span className="text-slate-400">Badenerstrasse 501</span>
+                <span className="text-slate-300">/</span>
+                <span className="text-slate-700 font-medium">Bewertung</span>
+                <span className="text-slate-300">/</span>
+                <span className="text-slate-900 font-medium">{currentVariant.name}</span>
+                </div>
+            );
+
+            // ============ THEME TABS ============
+            const ThemeTabs = () => {
+                const tabs = [
+                { id: 'allgemein', name: 'Allgemein', color: 'slate' },
+                ...Object.values(themes).map(t => ({ id: t.id, name: t.name, color: t.color }))
+                ];
+
+                return (
+                <div className="bg-slate-50 border-b px-4 flex">
+                    {tabs.map(tab => (
+                    <button
+                        key={tab.id}
+                        onClick={() => setActiveTheme(tab.id)}
+                        className={`px-5 py-3 text-sm font-medium transition-all border-b-2 -mb-px ${
+                        activeTheme === tab.id
+                            ? 'border-emerald-600 text-emerald-700 bg-white'
+                            : 'border-transparent text-slate-500 hover:text-slate-700'
+                        }`}
+                        style={{
+                        borderBottomColor: activeTheme === tab.id ? '#059669' : 'transparent',
+                        backgroundColor: activeTheme === tab.id ? 'white' : undefined
+                        }}
+                    >
+                        {tab.name}
+                    </button>
+                    ))}
+                </div>
+                );
+            };
+
+            // ============ ALLGEMEIN TAB (Variant Overview) ============
+            const AllgemeinTab = () => {
+                const variant = variants[selectedVariant];
+                
+                const variantTeam = [
+                { name: 'Peter Baukontor', role: 'Projektleiter', initials: 'PB' },
+                { name: 'Maria Schmidt', role: 'Architektin', initials: 'MS' },
+                { name: 'Hans Weber', role: 'BIM Manager', initials: 'HW' },
+                ];
+
+                const imageLabels = [
+                { type: 'Rendering', label: 'Perspektive Süd' },
+                { type: 'Rendering', label: 'Perspektive Nord' },
+                { type: 'Plan', label: 'Grundriss EG' },
+                { type: 'Plan', label: 'Grundriss 1.OG' },
+                { type: 'Plan', label: 'Schnitt A-A' },
+                ];
+
+                return (
+                <div className="flex-1 overflow-y-auto p-6 bg-slate-50">
+                    <div className="grid grid-cols-3 gap-6">
+                    {/* Left column - Main content */}
+                    <div className="col-span-2 space-y-6">
+                        {/* Variant header card */}
+                        <div className="bg-white rounded-xl border overflow-hidden">
+                        <div className="h-40 relative">
+                            <img 
+                            src={variant.thumbnail} 
+                            alt={variant.name}
+                            className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                            <div className="absolute bottom-4 left-5 text-white">
+                            <div className="text-2xl font-semibold">{variant.name}</div>
+                            <div className="text-white/80">{variant.firm}</div>
+                            </div>
+                            <div className="absolute top-4 right-4">
+                            <span className="px-3 py-1 bg-white/20 backdrop-blur rounded-full text-white text-sm">
+                                Code: {variant.code}
+                            </span>
+                            </div>
+                        </div>
+                        <div className="p-5 grid grid-cols-4 gap-4">
+                            <div className="text-center">
+                            <div className="text-2xl font-bold text-slate-900">7'816</div>
+                            <div className="text-xs text-slate-500">GF (m²)</div>
+                            </div>
+                            <div className="text-center">
+                            <div className="text-2xl font-bold text-slate-900">23'332</div>
+                            <div className="text-xs text-slate-500">GV (m³)</div>
+                            </div>
+                            <div className="text-center">
+                            <div className="text-2xl font-bold text-slate-900">0.64</div>
+                            <div className="text-xs text-slate-500">Effizienz</div>
+                            </div>
+                            <div className="text-center">
+                            <div className="text-2xl font-bold text-slate-900">14</div>
+                            <div className="text-xs text-slate-500">Geschosse</div>
+                            </div>
+                        </div>
+                        </div>
+
+                        {/* Images & Documents */}
+                        <div className="bg-white rounded-xl border overflow-hidden">
+                        <div className="px-5 py-4 border-b flex items-center justify-between">
+                            <h2 className="font-semibold text-slate-900">Bilder & Pläne</h2>
+                            <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
+                            <Icon name="upload" size={16} />
+                            Hochladen
+                            </button>
+                        </div>
+                        <div className="p-5">
+                            <div className="grid grid-cols-3 gap-4">
+                            {variant.images.map((imgUrl, i) => (
+                                <div key={i} className="group relative">
+                                <div className="aspect-video rounded-lg bg-slate-200 overflow-hidden cursor-pointer">
+                                    <img 
+                                    src={imgUrl} 
+                                    alt={imageLabels[i]?.label || `Bild ${i + 1}`}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                    />
+                                </div>
+                                <div className="mt-2">
+                                    <div className="text-sm font-medium text-slate-900">{imageLabels[i]?.label || `Bild ${i + 1}`}</div>
+                                    <div className="text-xs text-slate-500">{imageLabels[i]?.type || 'Dokument'}</div>
+                                </div>
+                                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button className="p-1.5 bg-white rounded-lg shadow">
+                                    <Icon name="fullscreen" size={16} className="text-slate-600" />
+                                    </button>
+                                </div>
+                                </div>
+                            ))}
+                            {/* Upload placeholder */}
+                            <div className="aspect-video rounded-lg border-2 border-dashed border-slate-200 flex flex-col items-center justify-center cursor-pointer hover:border-slate-300 hover:bg-slate-50 transition-colors">
+                                <Icon name="add_photo_alternate" size={32} className="text-slate-300" />
+                                <span className="text-xs text-slate-400 mt-1">Hinzufügen</span>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+
+                        {/* Submission details */}
+                        <div className="bg-white rounded-xl border overflow-hidden">
+                        <div className="px-5 py-4 border-b">
+                            <h2 className="font-semibold text-slate-900">Einreichung</h2>
+                        </div>
+                        <div className="p-5">
+                            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                            <div>
+                                <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Eingereicht am</div>
+                                <div className="text-sm font-medium text-slate-900">25.03.2023, 10:37</div>
+                            </div>
+                            <div>
+                                <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Letzte Änderung</div>
+                                <div className="text-sm font-medium text-slate-900">18.04.2023, 14:22</div>
+                            </div>
+                            <div>
+                                <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">BIM Modell</div>
+                                <div className="flex items-center gap-2">
+                                <Icon name="check_circle" size={16} className="text-emerald-500" />
+                                <span className="text-sm font-medium text-slate-900">Hochgeladen</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Dokumente</div>
+                                <div className="text-sm font-medium text-slate-900">{variant.images.length} Dateien</div>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                    {/* Right column */}
+                    <div className="space-y-6">
+                        {/* Team */}
+                        <div className="bg-white rounded-xl border overflow-hidden">
+                        <div className="px-5 py-4 border-b">
+                            <h2 className="font-semibold text-slate-900">Teilnehmer Team</h2>
+                        </div>
+                        <div className="divide-y">
+                            {variantTeam.map((m, i) => (
+                            <div key={i} className="px-5 py-3 flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-medium text-slate-600">
+                                {m.initials}
+                                </div>
+                                <div>
+                                <div className="text-sm font-medium text-slate-900">{m.name}</div>
+                                <div className="text-xs text-slate-500">{m.role}</div>
+                                </div>
+                            </div>
+                            ))}
+                        </div>
+                        </div>
+
+                        {/* Evaluation status */}
+                        <div className="bg-white rounded-xl border overflow-hidden">
+                        <div className="px-5 py-4 border-b">
+                            <h2 className="font-semibold text-slate-900">Bewertungsstatus</h2>
+                        </div>
+                        <div className="p-5 space-y-3">
+                            {Object.values(themes).map(theme => {
+                            const progress = theme.id === 'funk' ? 100 : 
+                                            theme.id === 'komfort' ? 75 : 
+                                            theme.id === 'wirt' ? 50 : 25;
+                            const done = progress === 100;
+                            return (
+                                <div key={theme.id} className="flex items-center gap-3">
+                                <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                                    done ? 'bg-emerald-100' : 'bg-slate-100'
+                                }`}>
+                                    <Icon 
+                                    name={done ? 'check' : 'schedule'} 
+                                    size={14} 
+                                    className={done ? 'text-emerald-600' : 'text-slate-400'}
+                                    />
+                                </div>
+                                <div className="flex-1">
+                                    <div className="text-sm text-slate-700">{theme.name}</div>
+                                </div>
+                                <div className="text-xs text-slate-500">{progress}%</div>
+                                </div>
+                            );
+                            })}
+                        </div>
+                        </div>
+
+                        {/* Quick actions */}
+                        <div className="bg-white rounded-xl border p-4">
+                        <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-3">Aktionen</div>
+                        <div className="space-y-2">
+                            <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
+                            <Icon name="download" size={18} className="text-slate-400" />
+                            Daten exportieren
+                            </button>
+                            <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
+                            <Icon name="print" size={18} className="text-slate-400" />
+                            Datenblatt drucken
+                            </button>
+                            <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg">
+                            <Icon name="delete" size={18} className="text-red-400" />
+                            Variante löschen
+                            </button>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                );
+            };
+
+            // ============ KENNWERTE SECTION ============
+            const KennwerteSection = () => (
+                <div className="bg-white border-b">
+                <div className="px-4 py-3 flex items-center justify-between border-b bg-slate-50">
+                    <div>
+                    <span className="text-sm font-semibold text-slate-700">ENERGIE- UND NACHHALTIGKEITSKENNWERTE</span>
+                    </div>
+                    <div className="text-sm text-slate-500">
+                    TEILNEHMER {currentVariant.code}
+                    </div>
+                </div>
+                
+                <div className="divide-y">
+                    {kennwertData.map(k => (
+                    <div key={k.id} className="px-4 py-2 grid grid-cols-12 gap-4 items-center">
+                        {/* Label */}
+                        <div className="col-span-4 text-sm text-slate-600">
+                        {k.label} {k.unit && `(${k.unit})`}
+                        </div>
+                        
+                        {/* Value */}
+                        <div className="col-span-1 text-sm font-medium text-slate-900">
+                        {k.value}{k.unit === '%' ? '%' : ''}
+                        </div>
+                        
+                        {/* Bar visualization */}
+                        <div className="col-span-5 flex items-center gap-2">
+                        <div className="flex-1 h-6 bg-slate-100 rounded relative">
+                            {/* Value bar */}
+                            <div 
+                            className={`absolute top-0 left-0 h-full rounded ${
+                                k.delta >= 0 ? 'bg-emerald-400' : 'bg-red-400'
+                            }`}
+                            style={{ width: `${k.value}%` }}
+                            />
+                            {/* Average marker */}
+                            <div 
+                            className="absolute top-0 h-full w-0.5 bg-slate-800"
+                            style={{ left: `${k.avg}%` }}
+                            >
+                            <div className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-slate-500 whitespace-nowrap">
+                                Ø {k.avg}%
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                        
+                        {/* Delta & Rank */}
+                        <div className="col-span-1 text-right">
+                        <span className={`text-sm font-medium ${k.delta >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                            {k.delta >= 0 ? '+' : ''}{k.delta}%
+                        </span>
+                        </div>
+                        <div className="col-span-1 text-right text-sm text-slate-500">
+                        {k.rank} / {k.total}
+                        </div>
+                    </div>
+                    ))}
+                </div>
+                </div>
+            );
+
+            // ============ KRITERIEN SECTION ============
+            const KriterienSection = () => (
+                <div className="bg-white flex-1 overflow-y-auto">
+                <div className="px-4 py-3 flex items-center justify-between border-b bg-slate-50">
+                    <span className="text-sm font-semibold text-slate-700">ENERGIE- UND NACHHALTIGKEITSKRITERIEN</span>
+                    <button
+                        onClick={() => setEditMode(!editMode)}
+                        className={`px-3 py-1 text-xs font-medium rounded ${
+                        editMode 
+                            ? 'bg-emerald-600 text-white' 
+                            : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                        }`}
+                    >
+                        {editMode ? '✓ Speichern' : '✎ Bearbeiten'}
+                    </button>
+                </div>
+                
+                <table className="w-full">
+                    <thead className="bg-slate-50 text-xs text-slate-500 uppercase">
+                    <tr>
+                        <th className="px-4 py-2 text-left font-medium w-32">Thema</th>
+                        <th className="px-4 py-2 text-left font-medium w-48">Kriterium</th>
+                        <th className="px-4 py-2 text-center font-medium w-8">−</th>
+                        <th className="px-4 py-2 text-center font-medium w-8">○</th>
+                        <th className="px-4 py-2 text-center font-medium w-8">+</th>
+                        <th className="px-4 py-2 text-left font-medium">Anmerkungen</th>
+                    </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                    {kriterienData.map((k, i) => (
+                        <tr key={k.id} className="hover:bg-slate-50">
+                        {/* Theme label - only show for first criterion */}
+                        <td className="px-4 py-3 text-sm text-slate-600 align-top">
+                            {i === 0 && (
+                            <div className="font-medium">
+                                {currentTheme.name}
+                            </div>
+                            )}
+                        </td>
+                        
+                        {/* Criterion name */}
+                        <td className="px-4 py-3 align-top">
+                            <div className="text-sm font-medium text-slate-900">{k.id} {k.name}</div>
+                        </td>
+                        
+                        {/* Rating indicators */}
+                        <td className="px-4 py-3 text-center align-top">
+                            <div 
+                            className={`w-12 h-5 rounded ${
+                                k.rating === 'negative' ? 'bg-red-500' : 'bg-slate-200'
+                            } ${editMode ? 'cursor-pointer hover:ring-2 ring-slate-400' : ''}`}
+                            />
+                        </td>
+                        <td className="px-4 py-3 text-center align-top">
+                            <div 
+                            className={`w-12 h-5 rounded ${
+                                k.rating === 'neutral' ? 'bg-amber-400' : 'bg-slate-200'
+                            } ${editMode ? 'cursor-pointer hover:ring-2 ring-slate-400' : ''}`}
+                            />
+                        </td>
+                        <td className="px-4 py-3 text-center align-top">
+                            <div 
+                            className={`w-12 h-5 rounded ${
+                                k.rating === 'positive' ? 'bg-emerald-500' : 'bg-slate-200'
+                            } ${editMode ? 'cursor-pointer hover:ring-2 ring-slate-400' : ''}`}
+                            />
+                        </td>
+                        
+                        {/* Comments */}
+                        <td className="px-4 py-3 align-top">
+                            {editMode ? (
+                            <textarea 
+                                className="w-full text-sm text-slate-600 bg-slate-50 border rounded p-2 min-h-16"
+                                defaultValue={k.comment}
+                            />
+                            ) : (
+                            <div className="text-sm text-slate-600 leading-relaxed">{k.comment}</div>
+                            )}
+                        </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+                </div>
+            );
+
+            // ============ 3D VIEWER ============
+            const Viewer3D = () => (
+                <div className="flex-1 flex flex-col overflow-hidden">
+                {/* Breadcrumb */}
+                <div className="h-10 bg-white border-b px-4 flex items-center gap-2 text-sm">
+                    <span className="text-slate-400">Projekte</span>
+                    <span className="text-slate-300">/</span>
+                    <span className="text-slate-400">Badenerstrasse 501</span>
+                    <span className="text-slate-300">/</span>
+                    <span className="text-slate-700 font-medium">3D Viewer</span>
+                    <span className="text-slate-300">/</span>
+                    <span className="text-slate-900 font-medium">{currentVariant.name}</span>
+                </div>
+                
+                {/* Viewer toolbar */}
+                <div className="bg-white border-b px-4 py-2 flex items-center justify-between">
+                    <div className="flex items-center gap-1">
+                    <button className="px-3 py-1.5 text-sm bg-slate-100 rounded hover:bg-slate-200 flex items-center gap-1.5">
+                        <Icon name="restart_alt" size={16} /> Reset
+                    </button>
+                    <button className="px-3 py-1.5 text-sm bg-slate-100 rounded hover:bg-slate-200 flex items-center gap-1.5">
+                        <Icon name="carpenter" size={16} /> Schnitt
+                    </button>
+                    <button className="px-3 py-1.5 text-sm bg-slate-100 rounded hover:bg-slate-200 flex items-center gap-1.5">
+                        <Icon name="straighten" size={16} /> Messen
+                    </button>
+                    <div className="w-px h-6 bg-slate-200 mx-2" />
+                    <button className="px-3 py-1.5 text-sm bg-slate-100 rounded hover:bg-slate-200 flex items-center gap-1.5">
+                        <Icon name="layers" size={16} /> Geschosse
+                    </button>
+                    <button className="px-3 py-1.5 text-sm bg-slate-100 rounded hover:bg-slate-200 flex items-center gap-1.5">
+                        <Icon name="visibility" size={16} /> Sichtbarkeit
+                    </button>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-slate-500">
+                    <Icon name="description" size={16} />
+                    <span>IFC Model</span>
+                    <span className="text-slate-300">|</span>
+                    <span>Hochgeladen: 25.03.2023</span>
+                    </div>
+                </div>
+                
+                {/* 3D Canvas placeholder */}
+                <div className="flex-1 bg-slate-900 relative">
+                    {/* Fake 3D building visualization */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="relative" style={{ perspective: '1000px' }}>
+                        <div 
+                        className="w-64 h-80 relative"
+                        style={{ 
+                            transformStyle: 'preserve-3d',
+                            transform: 'rotateX(-15deg) rotateY(-25deg)'
+                        }}
+                        >
+                        {/* Building floors */}
+                        {[...Array(12)].map((_, i) => (
+                            <div
+                            key={i}
+                            className="absolute w-full bg-gradient-to-r from-slate-600 to-slate-700 border border-slate-500"
+                            style={{
+                                height: '20px',
+                                bottom: `${i * 22}px`,
+                                transform: `translateZ(${20}px)`,
+                                boxShadow: '4px 4px 0 rgba(0,0,0,0.3)'
+                            }}
+                            >
+                            {/* Windows */}
+                            <div className="absolute inset-1 flex gap-1">
+                                {[...Array(8)].map((_, j) => (
+                                <div 
+                                    key={j} 
+                                    className="flex-1 bg-amber-200 opacity-60"
+                                    style={{ opacity: Math.random() > 0.3 ? 0.7 : 0.2 }}
+                                />
+                                ))}
+                            </div>
+                            </div>
+                        ))}
+                        </div>
+                    </div>
+                    </div>
+                    
+                    {/* Viewer info overlay */}
+                    <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-2 rounded text-sm">
+                    <div className="font-medium">{currentVariant.name}</div>
+                    <div className="text-slate-300 text-xs">{currentVariant.firm}</div>
+                    </div>
+                    
+                    {/* Controls hint */}
+                    <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-2 rounded text-xs space-y-1">
+                    <div className="flex items-center gap-2"><Icon name="mouse" size={14} /> Drehen: Linksklick + Ziehen</div>
+                    <div className="flex items-center gap-2"><Icon name="zoom_in" size={14} /> Zoom: Scrollrad</div>
+                    <div className="flex items-center gap-2"><Icon name="pan_tool" size={14} /> Verschieben: Rechtsklick</div>
+                    </div>
+                    
+                    {/* Model stats */}
+                    <div className="absolute top-4 right-4 bg-black/50 text-white px-4 py-3 rounded">
+                    <div className="text-xs text-slate-400 uppercase tracking-wide mb-2">Modell-Daten</div>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+                        <span className="text-slate-400">GF Total:</span>
+                        <span className="font-medium">7'816 m²</span>
+                        <span className="text-slate-400">GV Total:</span>
+                        <span className="font-medium">23'332 m³</span>
+                        <span className="text-slate-400">Geschosse:</span>
+                        <span className="font-medium">14</span>
+                        <span className="text-slate-400">Elemente:</span>
+                        <span className="font-medium">12'847</span>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            );
+
+            // ============ DASHBOARD / COMPARISON MATRIX ============
+            const Dashboard = () => {
+                const getRating = (variantIndex, criterionId) => {
+                // Generate consistent mock ratings based on indices
+                const hash = (variantIndex * 17 + parseInt(criterionId) * 13) % 10;
+                if (hash < 3) return 'negative';
+                if (hash < 6) return 'neutral';
+                return 'positive';
+                };
+
+                const allKriterien = Object.values(themes).flatMap(theme => 
+                theme.kriterien.map(k => ({ ...k, theme: theme.name, themeColor: theme.color }))
+                );
+
+                const filteredVariants = variants.filter((_, i) => selectedVariantsForCompare.includes(i));
+
+                return (
+                <div className="flex-1 flex flex-col overflow-hidden">
+                    {/* Breadcrumb */}
+                    <div className="h-10 bg-white border-b px-4 flex items-center gap-2 text-sm">
+                    <span className="text-slate-400">Projekte</span>
+                    <span className="text-slate-300">/</span>
+                    <span className="text-slate-400">Badenerstrasse 501</span>
+                    <span className="text-slate-300">/</span>
+                    <span className="text-slate-900 font-medium">Dashboard</span>
+                    </div>
+
+                    {/* Matrix */}
+                    <div className="flex-1 overflow-auto bg-slate-50 p-4">
+                    <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
+                        <table className="w-full border-collapse">
+                        {/* Header row with variant names */}
+                        <thead>
+                            <tr className="bg-slate-50">
+                            <th className="sticky left-0 bg-slate-50 px-4 py-3 text-left text-sm font-medium text-slate-600 border-b border-r w-64 z-10">
+                                Kriterium
+                            </th>
+                            {filteredVariants.map((v, i) => (
+                                <th key={v.id} className="px-4 py-3 text-center border-b min-w-32">
+                                <div className="text-sm font-semibold text-slate-900">{v.name}</div>
+                                <div className="text-xs text-slate-500 font-normal">{v.firm}</div>
+                                </th>
+                            ))}
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {/* Variant images row */}
+                            <tr className="bg-white">
+                            <td className="sticky left-0 bg-white px-4 py-3 border-b border-r z-10"></td>
+                            {filteredVariants.map((v) => (
+                                <td key={v.id} className="px-4 py-3 border-b">
+                                <div className="w-full h-20 rounded-lg bg-slate-200 overflow-hidden">
+                                    <img 
+                                    src={v.thumbnail} 
+                                    alt={v.name}
+                                    className="w-full h-full object-cover"
+                                    />
+                                </div>
+                                </td>
+                            ))}
+                            </tr>
+
+                            {/* Summary row */}
+                            <tr className="bg-emerald-50">
+                            <td className="sticky left-0 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 border-b border-r z-10">
+                                Gesamtbewertung
+                            </td>
+                            {filteredVariants.map((v, i) => {
+                                const score = 60 + (selectedVariantsForCompare[i] * 7) % 30;
+                                return (
+                                <td key={v.id} className="px-4 py-3 text-center border-b">
+                                    <div className="inline-flex items-center gap-2">
+                                    <div className="w-16 h-2 bg-slate-200 rounded-full overflow-hidden">
+                                        <div 
+                                        className="h-full bg-emerald-500 rounded-full"
+                                        style={{ width: `${score}%` }}
+                                        />
+                                    </div>
+                                    <span className="text-sm font-semibold text-emerald-700">{score}%</span>
+                                    </div>
+                                </td>
+                                );
+                            })}
+                            </tr>
+
+                            {/* Criteria rows grouped by theme */}
+                            {Object.values(themes).map((theme, themeIndex) => (
+                            <React.Fragment key={theme.id}>
+                                {/* Theme header row */}
+                                <tr className="bg-slate-100">
+                                <td 
+                                    colSpan={filteredVariants.length + 1}
+                                    className="px-4 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b"
+                                >
+                                    {theme.name}
+                                </td>
+                                </tr>
+
+                                {/* Criteria rows */}
+                                {theme.kriterien.map((criterion, criterionIndex) => (
+                                <tr key={criterion.id} className="hover:bg-slate-50">
+                                    <td className="sticky left-0 bg-white hover:bg-slate-50 px-4 py-2.5 text-sm text-slate-700 border-b border-r z-10">
+                                    <span className="text-slate-400 mr-2">{criterion.id}</span>
+                                    {criterion.name}
+                                    </td>
+                                    {filteredVariants.map((v, variantIndex) => {
+                                    const actualIndex = selectedVariantsForCompare[variantIndex];
+                                    const rating = getRating(actualIndex, parseInt(criterion.id));
+                                    return (
+                                        <td key={v.id} className="px-4 py-2.5 text-center border-b">
+                                        <div className="flex justify-center">
+                                            <div 
+                                            className={`w-6 h-6 rounded-full ${
+                                                rating === 'positive' ? 'bg-emerald-500' :
+                                                rating === 'neutral' ? 'bg-amber-400' :
+                                                'bg-red-500'
+                                            }`}
+                                            title={
+                                                rating === 'positive' ? 'Gut' :
+                                                rating === 'neutral' ? 'Mittel' : 'Schwach'
+                                            }
+                                            />
+                                        </div>
+                                        </td>
+                                    );
+                                    })}
+                                </tr>
+                                ))}
+                            </React.Fragment>
+                            ))}
+
+                            {/* Kennwerte section */}
+                            <tr className="bg-slate-100">
+                            <td 
+                                colSpan={filteredVariants.length + 1}
+                                className="px-4 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b"
+                            >
+                                Kennwerte
+                            </td>
+                            </tr>
+
+                            {/* Key Kennwerte rows */}
+                            {[
+                            { id: 1, name: 'Geschossfläche GF', unit: 'm²', values: [7816, 7444, 7864, 8171, 7988] },
+                            { id: 2, name: 'Gebäudevolumen GV', unit: 'm³', values: [23332, 23210, 22202, 24644, 23920] },
+                            { id: 3, name: 'Flächeneffizienz NF/BGF', unit: '', values: [0.64, 0.66, 0.61, 0.61, 0.63] },
+                            { id: 4, name: 'A/V-Verhältnis', unit: '', values: [0.29, 0.31, 0.28, 0.32, 0.30] },
+                            { id: 5, name: 'Fensterflächenanteil', unit: '%', values: [47, 52, 44, 49, 51] },
+                            { id: 6, name: 'Primärenergiebedarf', unit: '%', values: [107, 95, 112, 98, 103] },
+                            ].map(kw => {
+                            const selectedValues = selectedVariantsForCompare.map(i => kw.values[i]);
+                            const best = kw.id === 6 ? Math.min(...selectedValues) : Math.max(...selectedValues);
+                            
+                            return (
+                                <tr key={kw.id} className="hover:bg-slate-50">
+                                <td className="sticky left-0 bg-white hover:bg-slate-50 px-4 py-2.5 text-sm text-slate-700 border-b border-r z-10">
+                                    {kw.name} {kw.unit && <span className="text-slate-400">({kw.unit})</span>}
+                                </td>
+                                {filteredVariants.map((v, i) => {
+                                    const actualIndex = selectedVariantsForCompare[i];
+                                    const value = kw.values[actualIndex];
+                                    const isBest = value === best;
+                                    return (
+                                    <td key={v.id} className="px-4 py-2.5 text-center border-b">
+                                        <span className={`text-sm font-medium ${isBest ? 'text-emerald-600' : 'text-slate-700'}`}>
+                                        {typeof value === 'number' && value % 1 !== 0 ? value.toFixed(2) : value.toLocaleString()}
+                                        {kw.unit === '%' && '%'}
+                                        </span>
+                                        {isBest && <span className="ml-1 text-emerald-500">★</span>}
+                                    </td>
+                                    );
+                                })}
+                                </tr>
+                            );
+                            })}
+                        </tbody>
+                        </table>
+                    </div>
+
+                    {/* Legend */}
+                    <div className="mt-4 flex items-center gap-6 text-sm text-slate-600">
+                        <span className="font-medium">Legende:</span>
+                        <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 rounded-full bg-emerald-500" />
+                        <span>Gut (+)</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 rounded-full bg-amber-400" />
+                        <span>Mittel (○)</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 rounded-full bg-red-500" />
+                        <span>Schwach (−)</span>
+                        </div>
+                        <div className="flex items-center gap-2 ml-4">
+                        <span className="text-emerald-500">★</span>
+                        <span>Bester Wert</span>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                );
+            };
+
+            // ============ MAIN CONTENT AREA ============
+            const MainContent = () => (
+                <div className="flex-1 flex flex-col overflow-hidden">
+                <Breadcrumb />
+                <ThemeTabs />
+                {activeTheme === 'allgemein' ? (
+                    <AllgemeinTab />
+                ) : (
+                    <div className="flex-1 overflow-y-auto">
+                    <KennwerteSection />
+                    <KriterienSection />
+                    </div>
+                )}
+                </div>
+            );
+
+            // ============ RENDER ============
+            const showVariantList = sidebarView !== 'uebersicht';
             
             return (
-              <button
-                key={v.id}
-                onClick={() => handleVariantClick(i)}
-                className={`w-full p-3 text-left border-b transition-all ${
-                  isSelected
-                    ? 'bg-emerald-50 border-l-2 border-l-emerald-600'
-                    : 'hover:bg-slate-50 border-l-2 border-l-transparent'
-                }`}
-              >
-                <div className="flex items-start gap-3">
-                  {isDashboard && (
-                    <div className={`w-4 h-4 mt-1 rounded border flex-shrink-0 flex items-center justify-center text-xs ${
-                      isSelected 
-                        ? 'bg-emerald-600 border-emerald-600 text-white' 
-                        : 'border-slate-300'
-                    }`}>
-                      {isSelected && <Icon name="check" size={12} />}
-                    </div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    {/* Thumbnail */}
-                    <div className="w-full h-16 rounded-lg bg-slate-200 mb-2 overflow-hidden relative">
-                      <img 
-                        src={v.thumbnail} 
-                        alt={v.name}
-                        className="w-full h-full object-cover"
-                      />
-                      {isSelected && !isDashboard && (
-                        <div className="absolute inset-0 border-2 border-emerald-500 rounded-lg"></div>
-                      )}
-                    </div>
-                    <div className="font-medium text-sm text-slate-900 truncate">{v.name}</div>
-                    <div className="text-xs text-slate-500 truncate">{v.firm}</div>
-                  </div>
+                <div className="h-screen flex flex-col bg-slate-50">
+                <Header />
+                <div className="flex-1 flex overflow-hidden">
+                    <Sidebar />
+                    {showVariantList && <VariantList />}
+                    {sidebarView === 'uebersicht' ? <Uebersicht /> :
+                    sidebarView === 'dashboard' ? <Dashboard /> : 
+                    sidebarView === 'viewer' ? <Viewer3D /> : 
+                    <MainContent />}
                 </div>
-              </button>
+                </div>
             );
-          })}
-        </div>
-      </div>
-    );
-  };
+        };
 
-  // ============ ÜBERSICHT / PROJECT OVERVIEW ============
-  const Uebersicht = () => {
-    const teamMembers = [
-      { name: 'David Rasner', email: 'david.rasner@example.ch', role: 'Projektleiter', initials: 'DR' },
-      { name: 'Matthias Spiss', email: 'matthias.spiss@allreal.ch', role: 'Admin', initials: 'MS' },
-      { name: 'Adrian Schmid', email: 'adrian.schmid@allreal.ch', role: 'Admin', initials: 'AS' },
-    ];
-
-    const experts = [
-      { name: 'Dr. Eva Müller', role: 'Tageslicht, Raumklima', initials: 'EM' },
-      { name: 'Thomas Weber', role: 'Lebenszykluskosten', initials: 'TW' },
-      { name: 'Sarah Koch', role: 'Energie', initials: 'SK' },
-    ];
-
-    const milestones = [
-      { date: '15.07.2024', label: 'Abgabe BIM Modelle (90%)', done: true },
-      { date: '21.07.2024', label: 'Abgabe definitive BIM Modelle', done: true },
-      { date: '15.08.2024', label: 'Bewertung Funktionalität', done: true },
-      { date: '30.08.2024', label: 'Bewertung Komfort & Wirtschaftlichkeit', done: false },
-      { date: '15.09.2024', label: 'Abgabe Kosten Kalkulation', done: false },
-      { date: '30.09.2024', label: 'Jurysitzung', done: false },
-    ];
-
-    return (
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Breadcrumb */}
-        <div className="h-10 bg-white border-b px-4 flex items-center gap-2 text-sm">
-          <span className="text-slate-400">Projekte</span>
-          <span className="text-slate-300">/</span>
-          <span className="text-slate-900 font-medium">Badenerstrasse 501</span>
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 overflow-auto p-6 bg-slate-50">
-          {/* Stats row */}
-          <div className="grid grid-cols-4 gap-4 mb-6">
-            <div className="bg-white rounded-xl p-5 border">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Icon name="apartment" size={20} className="text-blue-600" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-slate-900">5</div>
-                  <div className="text-sm text-slate-500">Varianten</div>
-                </div>
-              </div>
-            </div>
-            <div className="bg-white rounded-xl p-5 border">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                  <Icon name="check_circle" size={20} className="text-emerald-600" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-emerald-600">2</div>
-                  <div className="text-sm text-slate-500">Bewertet</div>
-                </div>
-              </div>
-            </div>
-            <div className="bg-white rounded-xl p-5 border">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                  <Icon name="pending" size={20} className="text-amber-600" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-amber-600">3</div>
-                  <div className="text-sm text-slate-500">In Arbeit</div>
-                </div>
-              </div>
-            </div>
-            <div className="bg-white rounded-xl p-5 border">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center">
-                  <Icon name="groups" size={20} className="text-violet-600" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-slate-900">6</div>
-                  <div className="text-sm text-slate-500">Teammitglieder</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-6">
-            {/* Left column */}
-            <div className="col-span-2 space-y-6">
-              {/* Project details */}
-              <div className="bg-white rounded-xl border overflow-hidden">
-                <div className="px-5 py-4 border-b flex items-center justify-between">
-                  <h2 className="font-semibold text-slate-900">Projektdetails</h2>
-                  <button className="text-slate-400 hover:text-slate-600">
-                    <Icon name="edit" size={18} />
-                  </button>
-                </div>
-                <div className="p-5">
-                  <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                    <div>
-                      <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Projektname</div>
-                      <div className="text-sm font-medium text-slate-900">Badenerstrasse 501</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Adresse</div>
-                      <div className="text-sm font-medium text-slate-900">Badenerstrasse 501, 8048 Zürich</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Nutzungstyp</div>
-                      <div className="text-sm font-medium text-slate-900">Wohnen</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Bauphase SIA 102</div>
-                      <div className="text-sm font-medium text-slate-900">Vorprojekt</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Framework</div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-slate-900">SNAP</span>
-                        <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">15 Kriterien</span>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Status</div>
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 bg-amber-400 rounded-full"></span>
-                        <span className="text-sm font-medium text-slate-900">Bewertung läuft</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Evaluation progress */}
-              <div className="bg-white rounded-xl border overflow-hidden">
-                <div className="px-5 py-4 border-b">
-                  <h2 className="font-semibold text-slate-900">Bewertungsfortschritt</h2>
-                </div>
-                <div className="p-5">
-                  <div className="space-y-4">
-                    {Object.values(themes).map(theme => {
-                      const progress = theme.id === 'funk' ? 100 : 
-                                       theme.id === 'komfort' ? 75 : 
-                                       theme.id === 'wirt' ? 40 : 20;
-                      return (
-                        <div key={theme.id}>
-                          <div className="flex justify-between text-sm mb-1">
-                            <span className="text-slate-700">{theme.name}</span>
-                            <span className="text-slate-500">{progress}%</span>
-                          </div>
-                          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                            <div 
-                              className={`h-full rounded-full ${
-                                progress === 100 ? 'bg-emerald-500' : 'bg-amber-400'
-                              }`}
-                              style={{ width: `${progress}%` }}
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-
-              {/* Team */}
-              <div className="bg-white rounded-xl border overflow-hidden">
-                <div className="px-5 py-4 border-b flex items-center justify-between">
-                  <h2 className="font-semibold text-slate-900">Team</h2>
-                  <button className="text-sm text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1">
-                    <Icon name="person_add" size={16} />
-                    Einladen
-                  </button>
-                </div>
-                <div className="divide-y">
-                  <div className="px-5 py-3 bg-slate-50">
-                    <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">Projektteam</div>
-                  </div>
-                  {teamMembers.map((m, i) => (
-                    <div key={i} className="px-5 py-3 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center text-xs font-medium text-slate-600">
-                          {m.initials}
-                        </div>
-                        <div>
-                          <div className="text-sm font-medium text-slate-900">{m.name}</div>
-                          <div className="text-xs text-slate-500">{m.email}</div>
-                        </div>
-                      </div>
-                      <span className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded">{m.role}</span>
-                    </div>
-                  ))}
-                  <div className="px-5 py-3 bg-slate-50">
-                    <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">Experten</div>
-                  </div>
-                  {experts.map((m, i) => (
-                    <div key={i} className="px-5 py-3 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center text-xs font-medium text-emerald-700">
-                          {m.initials}
-                        </div>
-                        <div>
-                          <div className="text-sm font-medium text-slate-900">{m.name}</div>
-                          <div className="text-xs text-slate-500">{m.role}</div>
-                        </div>
-                      </div>
-                      <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded">Experte</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Right column */}
-            <div className="space-y-6">
-              {/* Map */}
-              <div className="bg-white rounded-xl border overflow-hidden">
-                <div className="h-48 bg-slate-200 relative">
-                  {/* Map placeholder */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
-                    <div className="text-center">
-                      <Icon name="map" size={32} className="text-slate-400 mx-auto mb-2" />
-                      <div className="text-sm text-slate-500">Karte</div>
-                    </div>
-                  </div>
-                  <div className="absolute top-3 right-3">
-                    <button className="p-1.5 bg-white rounded shadow-sm hover:shadow">
-                      <Icon name="fullscreen" size={18} className="text-slate-600" />
-                    </button>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <div className="flex items-start gap-2">
-                    <Icon name="location_on" size={18} className="text-slate-400 mt-0.5" />
-                    <div>
-                      <div className="text-sm font-medium text-slate-900">Badenerstrasse 501</div>
-                      <div className="text-xs text-slate-500">8048 Zürich, Schweiz</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Milestones */}
-              <div className="bg-white rounded-xl border overflow-hidden">
-                <div className="px-5 py-4 border-b flex items-center justify-between">
-                  <h2 className="font-semibold text-slate-900">Meilensteine</h2>
-                  <button className="text-slate-400 hover:text-slate-600">
-                    <Icon name="edit" size={18} />
-                  </button>
-                </div>
-                <div className="p-4">
-                  <div className="space-y-3">
-                    {milestones.map((m, i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          m.done ? 'bg-emerald-100' : 'bg-slate-100'
-                        }`}>
-                          <Icon 
-                            name={m.done ? 'check' : 'schedule'} 
-                            size={14} 
-                            className={m.done ? 'text-emerald-600' : 'text-slate-400'}
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className={`text-sm ${m.done ? 'text-slate-500' : 'text-slate-900'}`}>
-                            {m.label}
-                          </div>
-                          <div className="text-xs text-slate-400">{m.date}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Quick actions */}
-              <div className="bg-white rounded-xl border p-4">
-                <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-3">Aktionen</div>
-                <div className="space-y-2">
-                  <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
-                    <Icon name="download" size={18} className="text-slate-400" />
-                    Bericht exportieren
-                  </button>
-                  <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
-                    <Icon name="share" size={18} className="text-slate-400" />
-                    Projekt teilen
-                  </button>
-                  <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
-                    <Icon name="archive" size={18} className="text-slate-400" />
-                    Archivieren
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // ============ BREADCRUMB ============
-  const Breadcrumb = () => (
-    <div className="h-10 bg-white border-b px-4 flex items-center gap-2 text-sm">
-      <span className="text-slate-400">Projekte</span>
-      <span className="text-slate-300">/</span>
-      <span className="text-slate-400">Badenerstrasse 501</span>
-      <span className="text-slate-300">/</span>
-      <span className="text-slate-700 font-medium">Bewertung</span>
-      <span className="text-slate-300">/</span>
-      <span className="text-slate-900 font-medium">{currentVariant.name}</span>
-    </div>
-  );
-
-  // ============ THEME TABS ============
-  const ThemeTabs = () => {
-    const tabs = [
-      { id: 'allgemein', name: 'Allgemein', color: 'slate' },
-      ...Object.values(themes).map(t => ({ id: t.id, name: t.name, color: t.color }))
-    ];
-
-    return (
-      <div className="bg-slate-50 border-b px-4 flex">
-        {tabs.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTheme(tab.id)}
-            className={`px-5 py-3 text-sm font-medium transition-all border-b-2 -mb-px ${
-              activeTheme === tab.id
-                ? 'border-emerald-600 text-emerald-700 bg-white'
-                : 'border-transparent text-slate-500 hover:text-slate-700'
-            }`}
-            style={{
-              borderBottomColor: activeTheme === tab.id ? '#059669' : 'transparent',
-              backgroundColor: activeTheme === tab.id ? 'white' : undefined
-            }}
-          >
-            {tab.name}
-          </button>
-        ))}
-      </div>
-    );
-  };
-
-  // ============ ALLGEMEIN TAB (Variant Overview) ============
-  const AllgemeinTab = () => {
-    const variant = variants[selectedVariant];
-    
-    const variantTeam = [
-      { name: 'Peter Baukontor', role: 'Projektleiter', initials: 'PB' },
-      { name: 'Maria Schmidt', role: 'Architektin', initials: 'MS' },
-      { name: 'Hans Weber', role: 'BIM Manager', initials: 'HW' },
-    ];
-
-    const imageLabels = [
-      { type: 'Rendering', label: 'Perspektive Süd' },
-      { type: 'Rendering', label: 'Perspektive Nord' },
-      { type: 'Plan', label: 'Grundriss EG' },
-      { type: 'Plan', label: 'Grundriss 1.OG' },
-      { type: 'Plan', label: 'Schnitt A-A' },
-    ];
-
-    return (
-      <div className="flex-1 overflow-y-auto p-6 bg-slate-50">
-        <div className="grid grid-cols-3 gap-6">
-          {/* Left column - Main content */}
-          <div className="col-span-2 space-y-6">
-            {/* Variant header card */}
-            <div className="bg-white rounded-xl border overflow-hidden">
-              <div className="h-40 relative">
-                <img 
-                  src={variant.thumbnail} 
-                  alt={variant.name}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-                <div className="absolute bottom-4 left-5 text-white">
-                  <div className="text-2xl font-semibold">{variant.name}</div>
-                  <div className="text-white/80">{variant.firm}</div>
-                </div>
-                <div className="absolute top-4 right-4">
-                  <span className="px-3 py-1 bg-white/20 backdrop-blur rounded-full text-white text-sm">
-                    Code: {variant.code}
-                  </span>
-                </div>
-              </div>
-              <div className="p-5 grid grid-cols-4 gap-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-slate-900">7'816</div>
-                  <div className="text-xs text-slate-500">GF (m²)</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-slate-900">23'332</div>
-                  <div className="text-xs text-slate-500">GV (m³)</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-slate-900">0.64</div>
-                  <div className="text-xs text-slate-500">Effizienz</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-slate-900">14</div>
-                  <div className="text-xs text-slate-500">Geschosse</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Images & Documents */}
-            <div className="bg-white rounded-xl border overflow-hidden">
-              <div className="px-5 py-4 border-b flex items-center justify-between">
-                <h2 className="font-semibold text-slate-900">Bilder & Pläne</h2>
-                <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
-                  <Icon name="upload" size={16} />
-                  Hochladen
-                </button>
-              </div>
-              <div className="p-5">
-                <div className="grid grid-cols-3 gap-4">
-                  {variant.images.map((imgUrl, i) => (
-                    <div key={i} className="group relative">
-                      <div className="aspect-video rounded-lg bg-slate-200 overflow-hidden cursor-pointer">
-                        <img 
-                          src={imgUrl} 
-                          alt={imageLabels[i]?.label || `Bild ${i + 1}`}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                        />
-                      </div>
-                      <div className="mt-2">
-                        <div className="text-sm font-medium text-slate-900">{imageLabels[i]?.label || `Bild ${i + 1}`}</div>
-                        <div className="text-xs text-slate-500">{imageLabels[i]?.type || 'Dokument'}</div>
-                      </div>
-                      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="p-1.5 bg-white rounded-lg shadow">
-                          <Icon name="fullscreen" size={16} className="text-slate-600" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                  {/* Upload placeholder */}
-                  <div className="aspect-video rounded-lg border-2 border-dashed border-slate-200 flex flex-col items-center justify-center cursor-pointer hover:border-slate-300 hover:bg-slate-50 transition-colors">
-                    <Icon name="add_photo_alternate" size={32} className="text-slate-300" />
-                    <span className="text-xs text-slate-400 mt-1">Hinzufügen</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Submission details */}
-            <div className="bg-white rounded-xl border overflow-hidden">
-              <div className="px-5 py-4 border-b">
-                <h2 className="font-semibold text-slate-900">Einreichung</h2>
-              </div>
-              <div className="p-5">
-                <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                  <div>
-                    <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Eingereicht am</div>
-                    <div className="text-sm font-medium text-slate-900">25.03.2023, 10:37</div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Letzte Änderung</div>
-                    <div className="text-sm font-medium text-slate-900">18.04.2023, 14:22</div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">BIM Modell</div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="check_circle" size={16} className="text-emerald-500" />
-                      <span className="text-sm font-medium text-slate-900">Hochgeladen</span>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Dokumente</div>
-                    <div className="text-sm font-medium text-slate-900">{variant.images.length} Dateien</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right column */}
-          <div className="space-y-6">
-            {/* Team */}
-            <div className="bg-white rounded-xl border overflow-hidden">
-              <div className="px-5 py-4 border-b">
-                <h2 className="font-semibold text-slate-900">Teilnehmer Team</h2>
-              </div>
-              <div className="divide-y">
-                {variantTeam.map((m, i) => (
-                  <div key={i} className="px-5 py-3 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-medium text-slate-600">
-                      {m.initials}
-                    </div>
-                    <div>
-                      <div className="text-sm font-medium text-slate-900">{m.name}</div>
-                      <div className="text-xs text-slate-500">{m.role}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Evaluation status */}
-            <div className="bg-white rounded-xl border overflow-hidden">
-              <div className="px-5 py-4 border-b">
-                <h2 className="font-semibold text-slate-900">Bewertungsstatus</h2>
-              </div>
-              <div className="p-5 space-y-3">
-                {Object.values(themes).map(theme => {
-                  const progress = theme.id === 'funk' ? 100 : 
-                                   theme.id === 'komfort' ? 75 : 
-                                   theme.id === 'wirt' ? 50 : 25;
-                  const done = progress === 100;
-                  return (
-                    <div key={theme.id} className="flex items-center gap-3">
-                      <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                        done ? 'bg-emerald-100' : 'bg-slate-100'
-                      }`}>
-                        <Icon 
-                          name={done ? 'check' : 'schedule'} 
-                          size={14} 
-                          className={done ? 'text-emerald-600' : 'text-slate-400'}
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <div className="text-sm text-slate-700">{theme.name}</div>
-                      </div>
-                      <div className="text-xs text-slate-500">{progress}%</div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Quick actions */}
-            <div className="bg-white rounded-xl border p-4">
-              <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-3">Aktionen</div>
-              <div className="space-y-2">
-                <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
-                  <Icon name="download" size={18} className="text-slate-400" />
-                  Daten exportieren
-                </button>
-                <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
-                  <Icon name="print" size={18} className="text-slate-400" />
-                  Datenblatt drucken
-                </button>
-                <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg">
-                  <Icon name="delete" size={18} className="text-red-400" />
-                  Variante löschen
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // ============ KENNWERTE SECTION ============
-  const KennwerteSection = () => (
-    <div className="bg-white border-b">
-      <div className="px-4 py-3 flex items-center justify-between border-b bg-slate-50">
-        <div>
-          <span className="text-sm font-semibold text-slate-700">ENERGIE- UND NACHHALTIGKEITSKENNWERTE</span>
-        </div>
-        <div className="text-sm text-slate-500">
-          TEILNEHMER {currentVariant.code}
-        </div>
-      </div>
-      
-      <div className="divide-y">
-        {kennwertData.map(k => (
-          <div key={k.id} className="px-4 py-2 grid grid-cols-12 gap-4 items-center">
-            {/* Label */}
-            <div className="col-span-4 text-sm text-slate-600">
-              {k.label} {k.unit && `(${k.unit})`}
-            </div>
-            
-            {/* Value */}
-            <div className="col-span-1 text-sm font-medium text-slate-900">
-              {k.value}{k.unit === '%' ? '%' : ''}
-            </div>
-            
-            {/* Bar visualization */}
-            <div className="col-span-5 flex items-center gap-2">
-              <div className="flex-1 h-6 bg-slate-100 rounded relative">
-                {/* Value bar */}
-                <div 
-                  className={`absolute top-0 left-0 h-full rounded ${
-                    k.delta >= 0 ? 'bg-emerald-400' : 'bg-red-400'
-                  }`}
-                  style={{ width: `${k.value}%` }}
-                />
-                {/* Average marker */}
-                <div 
-                  className="absolute top-0 h-full w-0.5 bg-slate-800"
-                  style={{ left: `${k.avg}%` }}
-                >
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs text-slate-500 whitespace-nowrap">
-                    Ø {k.avg}%
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Delta & Rank */}
-            <div className="col-span-1 text-right">
-              <span className={`text-sm font-medium ${k.delta >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                {k.delta >= 0 ? '+' : ''}{k.delta}%
-              </span>
-            </div>
-            <div className="col-span-1 text-right text-sm text-slate-500">
-              {k.rank} / {k.total}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  // ============ KRITERIEN SECTION ============
-  const KriterienSection = () => (
-    <div className="bg-white flex-1 overflow-y-auto">
-      <div className="px-4 py-3 flex items-center justify-between border-b bg-slate-50">
-        <span className="text-sm font-semibold text-slate-700">ENERGIE- UND NACHHALTIGKEITSKRITERIEN</span>
-        <button
-            onClick={() => setEditMode(!editMode)}
-            className={`px-3 py-1 text-xs font-medium rounded ${
-              editMode 
-                ? 'bg-emerald-600 text-white' 
-                : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
-            }`}
-          >
-            {editMode ? '✓ Speichern' : '✎ Bearbeiten'}
-          </button>
-      </div>
-      
-      <table className="w-full">
-        <thead className="bg-slate-50 text-xs text-slate-500 uppercase">
-          <tr>
-            <th className="px-4 py-2 text-left font-medium w-32">Thema</th>
-            <th className="px-4 py-2 text-left font-medium w-48">Kriterium</th>
-            <th className="px-4 py-2 text-center font-medium w-8">−</th>
-            <th className="px-4 py-2 text-center font-medium w-8">○</th>
-            <th className="px-4 py-2 text-center font-medium w-8">+</th>
-            <th className="px-4 py-2 text-left font-medium">Anmerkungen</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y">
-          {kriterienData.map((k, i) => (
-            <tr key={k.id} className="hover:bg-slate-50">
-              {/* Theme label - only show for first criterion */}
-              <td className="px-4 py-3 text-sm text-slate-600 align-top">
-                {i === 0 && (
-                  <div className="font-medium">
-                    {currentTheme.name}
-                  </div>
-                )}
-              </td>
-              
-              {/* Criterion name */}
-              <td className="px-4 py-3 align-top">
-                <div className="text-sm font-medium text-slate-900">{k.id} {k.name}</div>
-              </td>
-              
-              {/* Rating indicators */}
-              <td className="px-4 py-3 text-center align-top">
-                <div 
-                  className={`w-12 h-5 rounded ${
-                    k.rating === 'negative' ? 'bg-red-500' : 'bg-slate-200'
-                  } ${editMode ? 'cursor-pointer hover:ring-2 ring-slate-400' : ''}`}
-                />
-              </td>
-              <td className="px-4 py-3 text-center align-top">
-                <div 
-                  className={`w-12 h-5 rounded ${
-                    k.rating === 'neutral' ? 'bg-amber-400' : 'bg-slate-200'
-                  } ${editMode ? 'cursor-pointer hover:ring-2 ring-slate-400' : ''}`}
-                />
-              </td>
-              <td className="px-4 py-3 text-center align-top">
-                <div 
-                  className={`w-12 h-5 rounded ${
-                    k.rating === 'positive' ? 'bg-emerald-500' : 'bg-slate-200'
-                  } ${editMode ? 'cursor-pointer hover:ring-2 ring-slate-400' : ''}`}
-                />
-              </td>
-              
-              {/* Comments */}
-              <td className="px-4 py-3 align-top">
-                {editMode ? (
-                  <textarea 
-                    className="w-full text-sm text-slate-600 bg-slate-50 border rounded p-2 min-h-16"
-                    defaultValue={k.comment}
-                  />
-                ) : (
-                  <div className="text-sm text-slate-600 leading-relaxed">{k.comment}</div>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-
-  // ============ 3D VIEWER ============
-  const Viewer3D = () => (
-    <div className="flex-1 flex flex-col overflow-hidden">
-      {/* Breadcrumb */}
-      <div className="h-10 bg-white border-b px-4 flex items-center gap-2 text-sm">
-        <span className="text-slate-400">Projekte</span>
-        <span className="text-slate-300">/</span>
-        <span className="text-slate-400">Badenerstrasse 501</span>
-        <span className="text-slate-300">/</span>
-        <span className="text-slate-700 font-medium">3D Viewer</span>
-        <span className="text-slate-300">/</span>
-        <span className="text-slate-900 font-medium">{currentVariant.name}</span>
-      </div>
-      
-      {/* Viewer toolbar */}
-      <div className="bg-white border-b px-4 py-2 flex items-center justify-between">
-        <div className="flex items-center gap-1">
-          <button className="px-3 py-1.5 text-sm bg-slate-100 rounded hover:bg-slate-200 flex items-center gap-1.5">
-            <Icon name="restart_alt" size={16} /> Reset
-          </button>
-          <button className="px-3 py-1.5 text-sm bg-slate-100 rounded hover:bg-slate-200 flex items-center gap-1.5">
-            <Icon name="carpenter" size={16} /> Schnitt
-          </button>
-          <button className="px-3 py-1.5 text-sm bg-slate-100 rounded hover:bg-slate-200 flex items-center gap-1.5">
-            <Icon name="straighten" size={16} /> Messen
-          </button>
-          <div className="w-px h-6 bg-slate-200 mx-2" />
-          <button className="px-3 py-1.5 text-sm bg-slate-100 rounded hover:bg-slate-200 flex items-center gap-1.5">
-            <Icon name="layers" size={16} /> Geschosse
-          </button>
-          <button className="px-3 py-1.5 text-sm bg-slate-100 rounded hover:bg-slate-200 flex items-center gap-1.5">
-            <Icon name="visibility" size={16} /> Sichtbarkeit
-          </button>
-        </div>
-        <div className="flex items-center gap-2 text-sm text-slate-500">
-          <Icon name="description" size={16} />
-          <span>IFC Model</span>
-          <span className="text-slate-300">|</span>
-          <span>Hochgeladen: 25.03.2023</span>
-        </div>
-      </div>
-      
-      {/* 3D Canvas placeholder */}
-      <div className="flex-1 bg-slate-900 relative">
-        {/* Fake 3D building visualization */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative" style={{ perspective: '1000px' }}>
-            <div 
-              className="w-64 h-80 relative"
-              style={{ 
-                transformStyle: 'preserve-3d',
-                transform: 'rotateX(-15deg) rotateY(-25deg)'
-              }}
-            >
-              {/* Building floors */}
-              {[...Array(12)].map((_, i) => (
-                <div
-                  key={i}
-                  className="absolute w-full bg-gradient-to-r from-slate-600 to-slate-700 border border-slate-500"
-                  style={{
-                    height: '20px',
-                    bottom: `${i * 22}px`,
-                    transform: `translateZ(${20}px)`,
-                    boxShadow: '4px 4px 0 rgba(0,0,0,0.3)'
-                  }}
-                >
-                  {/* Windows */}
-                  <div className="absolute inset-1 flex gap-1">
-                    {[...Array(8)].map((_, j) => (
-                      <div 
-                        key={j} 
-                        className="flex-1 bg-amber-200 opacity-60"
-                        style={{ opacity: Math.random() > 0.3 ? 0.7 : 0.2 }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        
-        {/* Viewer info overlay */}
-        <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-2 rounded text-sm">
-          <div className="font-medium">{currentVariant.name}</div>
-          <div className="text-slate-300 text-xs">{currentVariant.firm}</div>
-        </div>
-        
-        {/* Controls hint */}
-        <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-2 rounded text-xs space-y-1">
-          <div className="flex items-center gap-2"><Icon name="mouse" size={14} /> Drehen: Linksklick + Ziehen</div>
-          <div className="flex items-center gap-2"><Icon name="zoom_in" size={14} /> Zoom: Scrollrad</div>
-          <div className="flex items-center gap-2"><Icon name="pan_tool" size={14} /> Verschieben: Rechtsklick</div>
-        </div>
-        
-        {/* Model stats */}
-        <div className="absolute top-4 right-4 bg-black/50 text-white px-4 py-3 rounded">
-          <div className="text-xs text-slate-400 uppercase tracking-wide mb-2">Modell-Daten</div>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-            <span className="text-slate-400">GF Total:</span>
-            <span className="font-medium">7'816 m²</span>
-            <span className="text-slate-400">GV Total:</span>
-            <span className="font-medium">23'332 m³</span>
-            <span className="text-slate-400">Geschosse:</span>
-            <span className="font-medium">14</span>
-            <span className="text-slate-400">Elemente:</span>
-            <span className="font-medium">12'847</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  // ============ DASHBOARD / COMPARISON MATRIX ============
-  const Dashboard = () => {
-    const getRating = (variantIndex, criterionId) => {
-      // Generate consistent mock ratings based on indices
-      const hash = (variantIndex * 17 + parseInt(criterionId) * 13) % 10;
-      if (hash < 3) return 'negative';
-      if (hash < 6) return 'neutral';
-      return 'positive';
-    };
-
-    const allKriterien = Object.values(themes).flatMap(theme => 
-      theme.kriterien.map(k => ({ ...k, theme: theme.name, themeColor: theme.color }))
-    );
-
-    const filteredVariants = variants.filter((_, i) => selectedVariantsForCompare.includes(i));
-
-    return (
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Breadcrumb */}
-        <div className="h-10 bg-white border-b px-4 flex items-center gap-2 text-sm">
-          <span className="text-slate-400">Projekte</span>
-          <span className="text-slate-300">/</span>
-          <span className="text-slate-400">Badenerstrasse 501</span>
-          <span className="text-slate-300">/</span>
-          <span className="text-slate-900 font-medium">Dashboard</span>
-        </div>
-
-        {/* Matrix */}
-        <div className="flex-1 overflow-auto bg-slate-50 p-4">
-          <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
-            <table className="w-full border-collapse">
-              {/* Header row with variant names */}
-              <thead>
-                <tr className="bg-slate-50">
-                  <th className="sticky left-0 bg-slate-50 px-4 py-3 text-left text-sm font-medium text-slate-600 border-b border-r w-64 z-10">
-                    Kriterium
-                  </th>
-                  {filteredVariants.map((v, i) => (
-                    <th key={v.id} className="px-4 py-3 text-center border-b min-w-32">
-                      <div className="text-sm font-semibold text-slate-900">{v.name}</div>
-                      <div className="text-xs text-slate-500 font-normal">{v.firm}</div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-
-              <tbody>
-                {/* Variant images row */}
-                <tr className="bg-white">
-                  <td className="sticky left-0 bg-white px-4 py-3 border-b border-r z-10"></td>
-                  {filteredVariants.map((v) => (
-                    <td key={v.id} className="px-4 py-3 border-b">
-                      <div className="w-full h-20 rounded-lg bg-slate-200 overflow-hidden">
-                        <img 
-                          src={v.thumbnail} 
-                          alt={v.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    </td>
-                  ))}
-                </tr>
-
-                {/* Summary row */}
-                <tr className="bg-emerald-50">
-                  <td className="sticky left-0 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 border-b border-r z-10">
-                    Gesamtbewertung
-                  </td>
-                  {filteredVariants.map((v, i) => {
-                    const score = 60 + (selectedVariantsForCompare[i] * 7) % 30;
-                    return (
-                      <td key={v.id} className="px-4 py-3 text-center border-b">
-                        <div className="inline-flex items-center gap-2">
-                          <div className="w-16 h-2 bg-slate-200 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-emerald-500 rounded-full"
-                              style={{ width: `${score}%` }}
-                            />
-                          </div>
-                          <span className="text-sm font-semibold text-emerald-700">{score}%</span>
-                        </div>
-                      </td>
-                    );
-                  })}
-                </tr>
-
-                {/* Criteria rows grouped by theme */}
-                {Object.values(themes).map((theme, themeIndex) => (
-                  <React.Fragment key={theme.id}>
-                    {/* Theme header row */}
-                    <tr className="bg-slate-100">
-                      <td 
-                        colSpan={filteredVariants.length + 1}
-                        className="px-4 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b"
-                      >
-                        {theme.name}
-                      </td>
-                    </tr>
-
-                    {/* Criteria rows */}
-                    {theme.kriterien.map((criterion, criterionIndex) => (
-                      <tr key={criterion.id} className="hover:bg-slate-50">
-                        <td className="sticky left-0 bg-white hover:bg-slate-50 px-4 py-2.5 text-sm text-slate-700 border-b border-r z-10">
-                          <span className="text-slate-400 mr-2">{criterion.id}</span>
-                          {criterion.name}
-                        </td>
-                        {filteredVariants.map((v, variantIndex) => {
-                          const actualIndex = selectedVariantsForCompare[variantIndex];
-                          const rating = getRating(actualIndex, parseInt(criterion.id));
-                          return (
-                            <td key={v.id} className="px-4 py-2.5 text-center border-b">
-                              <div className="flex justify-center">
-                                <div 
-                                  className={`w-6 h-6 rounded-full ${
-                                    rating === 'positive' ? 'bg-emerald-500' :
-                                    rating === 'neutral' ? 'bg-amber-400' :
-                                    'bg-red-500'
-                                  }`}
-                                  title={
-                                    rating === 'positive' ? 'Gut' :
-                                    rating === 'neutral' ? 'Mittel' : 'Schwach'
-                                  }
-                                />
-                              </div>
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                  </React.Fragment>
-                ))}
-
-                {/* Kennwerte section */}
-                <tr className="bg-slate-100">
-                  <td 
-                    colSpan={filteredVariants.length + 1}
-                    className="px-4 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b"
-                  >
-                    Kennwerte
-                  </td>
-                </tr>
-
-                {/* Key Kennwerte rows */}
-                {[
-                  { id: 1, name: 'Geschossfläche GF', unit: 'm²', values: [7816, 7444, 7864, 8171, 7988] },
-                  { id: 2, name: 'Gebäudevolumen GV', unit: 'm³', values: [23332, 23210, 22202, 24644, 23920] },
-                  { id: 3, name: 'Flächeneffizienz NF/BGF', unit: '', values: [0.64, 0.66, 0.61, 0.61, 0.63] },
-                  { id: 4, name: 'A/V-Verhältnis', unit: '', values: [0.29, 0.31, 0.28, 0.32, 0.30] },
-                  { id: 5, name: 'Fensterflächenanteil', unit: '%', values: [47, 52, 44, 49, 51] },
-                  { id: 6, name: 'Primärenergiebedarf', unit: '%', values: [107, 95, 112, 98, 103] },
-                ].map(kw => {
-                  const selectedValues = selectedVariantsForCompare.map(i => kw.values[i]);
-                  const best = kw.id === 6 ? Math.min(...selectedValues) : Math.max(...selectedValues);
-                  
-                  return (
-                    <tr key={kw.id} className="hover:bg-slate-50">
-                      <td className="sticky left-0 bg-white hover:bg-slate-50 px-4 py-2.5 text-sm text-slate-700 border-b border-r z-10">
-                        {kw.name} {kw.unit && <span className="text-slate-400">({kw.unit})</span>}
-                      </td>
-                      {filteredVariants.map((v, i) => {
-                        const actualIndex = selectedVariantsForCompare[i];
-                        const value = kw.values[actualIndex];
-                        const isBest = value === best;
-                        return (
-                          <td key={v.id} className="px-4 py-2.5 text-center border-b">
-                            <span className={`text-sm font-medium ${isBest ? 'text-emerald-600' : 'text-slate-700'}`}>
-                              {typeof value === 'number' && value % 1 !== 0 ? value.toFixed(2) : value.toLocaleString()}
-                              {kw.unit === '%' && '%'}
-                            </span>
-                            {isBest && <span className="ml-1 text-emerald-500">★</span>}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Legend */}
-          <div className="mt-4 flex items-center gap-6 text-sm text-slate-600">
-            <span className="font-medium">Legende:</span>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-emerald-500" />
-              <span>Gut (+)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-amber-400" />
-              <span>Mittel (○)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-red-500" />
-              <span>Schwach (−)</span>
-            </div>
-            <div className="flex items-center gap-2 ml-4">
-              <span className="text-emerald-500">★</span>
-              <span>Bester Wert</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // ============ MAIN CONTENT AREA ============
-  const MainContent = () => (
-    <div className="flex-1 flex flex-col overflow-hidden">
-      <Breadcrumb />
-      <ThemeTabs />
-      {activeTheme === 'allgemein' ? (
-        <AllgemeinTab />
-      ) : (
-        <div className="flex-1 overflow-y-auto">
-          <KennwerteSection />
-          <KriterienSection />
-        </div>
-      )}
-    </div>
-  );
-
-  // ============ RENDER ============
-  const showVariantList = sidebarView !== 'uebersicht';
-  
-  return (
-    <div className="h-screen flex flex-col bg-slate-50">
-      {/* Material Icons stylesheet */}
-      <link 
-        rel="stylesheet" 
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" 
-      />
-      <Header />
-      <div className="flex-1 flex overflow-hidden">
-        <Sidebar />
-        {showVariantList && <VariantList />}
-        {sidebarView === 'uebersicht' ? <Uebersicht /> :
-         sidebarView === 'dashboard' ? <Dashboard /> : 
-         sidebarView === 'viewer' ? <Viewer3D /> : 
-         <MainContent />}
-      </div>
-    </div>
-  );
-};
-
-export default EvaluationPrototype;
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<EvaluationPrototype />);
+    </script>
+</body>
+</html>
