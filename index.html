@@ -1245,7 +1245,7 @@
                 const filteredItems = sidebarItems.filter(item => !item.requires3D || has3DModel);
 
                 return (
-                    <aside className="w-20 bg-slate-700 rounded-2xl flex flex-col shadow-lg" role="navigation" aria-label="Hauptnavigation">
+                    <aside className="w-20 h-fit bg-slate-700 rounded-2xl flex flex-col shadow-lg" role="navigation" aria-label="Hauptnavigation">
                         <nav className="flex-1 py-4 flex flex-col gap-1">
                             {filteredItems.map(item => {
                                 const isActive = sidebarView === item.id;
