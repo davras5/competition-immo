@@ -367,6 +367,38 @@
             const [has3DModel, setHas3DModel] = useState(true);
             const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
+            // State for storing criterion ratings and comments per variant
+            // Structure: { variantIndex: { criterionId: { rating: 'positive'|'neutral'|'negative', comment: string } } }
+            const [criteriaData, setCriteriaData] = useState({});
+
+            // Function to update a criterion's rating
+            const updateCriterionRating = (variantIndex, criterionId, newRating) => {
+                setCriteriaData(prev => ({
+                    ...prev,
+                    [variantIndex]: {
+                        ...prev[variantIndex],
+                        [criterionId]: {
+                            ...prev[variantIndex]?.[criterionId],
+                            rating: newRating
+                        }
+                    }
+                }));
+            };
+
+            // Function to update a criterion's comment
+            const updateCriterionComment = (variantIndex, criterionId, newComment) => {
+                setCriteriaData(prev => ({
+                    ...prev,
+                    [variantIndex]: {
+                        ...prev[variantIndex],
+                        [criterionId]: {
+                            ...prev[variantIndex]?.[criterionId],
+                            comment: newComment
+                        }
+                    }
+                }));
+            };
+
             // Variants data with images
             const variants = [
                 { id: 1, name: 'Baukontor', firm: 'Baukontor AG', code: '1001', 
@@ -609,8 +641,8 @@
             };
 
             const generateKriterienData = (variantIndex, kriterien) => {
-                const ratings = ['positive', 'neutral', 'negative'];
-                const comments = [
+                const defaultRatings = ['positive', 'neutral', 'negative'];
+                const defaultComments = [
                 'Vorfahrt eingeschränkt berücksichtigt; Ver- und Entsorgung bedingt funktionstüchtig; günstige Positionierung Fahrradabstellplätze; Anzahl erfüllt; Haupteingang erkennbar; kurze interne Wege;',
                 'Gebäude eingeschränkt barrierefrei; Barrierefreiheit Aussenraum k. A. / unklar (Freitreppe);',
                 'vielfältiges Angebot im Gebäude (Ausstellung, Präsentation); vielfältiges Angebot im Aussenraum;',
@@ -618,12 +650,19 @@
                 'ungünstige Orientierung schutzbedürftiger Räume; ungünstige Orientierung privater Freiräume; bauliche Schallschutzmassnahmen teilw. berücksichtigt; ggf. Nutzungskonflikte;',
                 'hoher Gesamtfensterflächenanteil; mässige Tageslichtversorgung Hauptnutzungen; opake Sturzausbildung; mässige TL-Versorgung Flure; Sichtbeziehungen zum Aussenraum;',
                 ];
-                
-                return kriterien.map((k, i) => ({
-                ...k,
-                rating: ratings[(variantIndex + i) % 3],
-                score: [33, 66][(variantIndex + i) % 2],
-                comment: comments[(variantIndex + i) % comments.length]
+
+                return kriterien.map((k, i) => {
+                // Check if we have stored data for this criterion
+                const storedData = criteriaData[variantIndex]?.[k.id];
+                const defaultRating = defaultRatings[(variantIndex + i) % 3];
+                const defaultComment = defaultComments[(variantIndex + i) % defaultComments.length];
+
+                return {
+                    ...k,
+                    rating: storedData?.rating || defaultRating,
+                    score: [33, 66][(variantIndex + i) % 2],
+                    comment: storedData?.comment !== undefined ? storedData.comment : defaultComment
+                };
                 }));
             };
 
@@ -2044,19 +2083,61 @@
                                         </div>
                                         <div className="space-y-2">
                                             {themeKriterien.map(k => (
-                                                <div key={k.id} className="flex items-start gap-4 p-3 rounded-lg hover:bg-slate-50 transition-colors">
-                                                    {/* Rating indicator */}
-                                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                                                        k.rating === 'positive' ? 'bg-emerald-100' :
-                                                        k.rating === 'neutral' ? 'bg-amber-100' : 'bg-red-100'
-                                                    }`}>
-                                                        <span className={`text-sm font-bold ${
-                                                            k.rating === 'positive' ? 'text-emerald-600' :
-                                                            k.rating === 'neutral' ? 'text-amber-600' : 'text-red-600'
+                                                <div key={k.id} className={`flex items-start gap-4 p-3 rounded-lg transition-colors ${isEditMode ? 'bg-slate-50' : 'hover:bg-slate-50'}`}>
+                                                    {/* Traffic Light Rating Selector */}
+                                                    {isEditMode ? (
+                                                        <div className="flex gap-1 flex-shrink-0" onClick={e => e.stopPropagation()}>
+                                                            {/* Negative button */}
+                                                            <button
+                                                                onClick={() => updateCriterionRating(selectedVariant, k.id, 'negative')}
+                                                                className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
+                                                                    k.rating === 'negative'
+                                                                        ? 'bg-red-500 text-white ring-2 ring-red-300 ring-offset-1'
+                                                                        : 'bg-red-100 text-red-400 hover:bg-red-200 hover:text-red-500'
+                                                                }`}
+                                                                title="Negativ (−)"
+                                                            >
+                                                                <span className="text-sm font-bold">−</span>
+                                                            </button>
+                                                            {/* Neutral button */}
+                                                            <button
+                                                                onClick={() => updateCriterionRating(selectedVariant, k.id, 'neutral')}
+                                                                className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
+                                                                    k.rating === 'neutral'
+                                                                        ? 'bg-amber-500 text-white ring-2 ring-amber-300 ring-offset-1'
+                                                                        : 'bg-amber-100 text-amber-400 hover:bg-amber-200 hover:text-amber-500'
+                                                                }`}
+                                                                title="Neutral (○)"
+                                                            >
+                                                                <span className="text-sm font-bold">○</span>
+                                                            </button>
+                                                            {/* Positive button */}
+                                                            <button
+                                                                onClick={() => updateCriterionRating(selectedVariant, k.id, 'positive')}
+                                                                className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
+                                                                    k.rating === 'positive'
+                                                                        ? 'bg-emerald-500 text-white ring-2 ring-emerald-300 ring-offset-1'
+                                                                        : 'bg-emerald-100 text-emerald-400 hover:bg-emerald-200 hover:text-emerald-500'
+                                                                }`}
+                                                                title="Positiv (+)"
+                                                            >
+                                                                <span className="text-sm font-bold">+</span>
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        /* Read-only rating indicator */
+                                                        <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                                                            k.rating === 'positive' ? 'bg-emerald-100' :
+                                                            k.rating === 'neutral' ? 'bg-amber-100' : 'bg-red-100'
                                                         }`}>
-                                                            {k.rating === 'positive' ? '+' : k.rating === 'neutral' ? '○' : '−'}
-                                                        </span>
-                                                    </div>
+                                                            <span className={`text-sm font-bold ${
+                                                                k.rating === 'positive' ? 'text-emerald-600' :
+                                                                k.rating === 'neutral' ? 'text-amber-600' : 'text-red-600'
+                                                            }`}>
+                                                                {k.rating === 'positive' ? '+' : k.rating === 'neutral' ? '○' : '−'}
+                                                            </span>
+                                                        </div>
+                                                    )}
 
                                                     {/* Criterion details */}
                                                     <div className="flex-1 min-w-0">
@@ -2066,9 +2147,11 @@
                                                         </div>
                                                         {isEditMode ? (
                                                             <textarea
-                                                                className="w-full text-sm text-slate-600 bg-slate-50 border border-slate-200 rounded p-2 min-h-16"
+                                                                className="w-full text-sm text-slate-600 bg-white border border-slate-200 rounded-lg p-2.5 min-h-20 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
                                                                 defaultValue={k.comment}
+                                                                placeholder="Anmerkungen eingeben..."
                                                                 onClick={e => e.stopPropagation()}
+                                                                onBlur={e => updateCriterionComment(selectedVariant, k.id, e.target.value)}
                                                             />
                                                         ) : (
                                                             <div className="text-sm text-slate-500 leading-relaxed">{k.comment}</div>
