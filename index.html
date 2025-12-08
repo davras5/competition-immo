@@ -1770,26 +1770,50 @@
 
             // ============ THEME TABS ============
             const ThemeTabs = () => {
+                // Tab configuration with icons
+                const tabConfig = {
+                    allgemein: { icon: 'info', badge: null },
+                    funk: { icon: 'settings_accessibility', badge: 4 },
+                    komfort: { icon: 'spa', badge: 4 },
+                    wirt: { icon: 'payments', badge: 3 },
+                    ressourcen: { icon: 'bolt', badge: 4 }
+                };
+
                 const tabs = [
-                { id: 'allgemein', name: 'Allgemein', color: 'slate' },
-                ...Object.values(themes).map(t => ({ id: t.id, name: t.name, color: t.color }))
+                    { id: 'allgemein', name: 'Allgemein', color: 'slate', ...tabConfig.allgemein },
+                    ...Object.values(themes).map(t => ({
+                        id: t.id,
+                        name: t.name,
+                        color: t.color,
+                        ...tabConfig[t.id]
+                    }))
                 ];
 
                 return (
-                <div className="px-4 flex">
-                    {tabs.map(tab => (
-                    <button
-                        key={tab.id}
-                        onClick={() => setActiveTheme(tab.id)}
-                        className={`px-5 py-3 text-sm font-medium transition-all border-b-2 -mb-px ${
-                        activeTheme === tab.id
-                            ? 'border-emerald-600 text-emerald-700'
-                            : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50'
-                        }`}
-                    >
-                        {tab.name}
-                    </button>
-                    ))}
+                <div className="border-b border-slate-200 bg-slate-50">
+                    <div className="flex">
+                        {tabs.map(tab => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTheme(tab.id)}
+                            className={`px-6 py-3 text-sm font-medium transition-all flex items-center gap-2 border-b-2 -mb-px ${
+                            activeTheme === tab.id
+                                ? 'border-emerald-600 text-emerald-700 bg-white'
+                                : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100'
+                            }`}
+                        >
+                            <Icon name={tab.icon} size={18} />
+                            {tab.name}
+                            {tab.badge !== null && (
+                                <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+                                    activeTheme === tab.id ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'
+                                }`}>
+                                    {tab.badge}
+                                </span>
+                            )}
+                        </button>
+                        ))}
+                    </div>
                 </div>
                 );
             };
@@ -2540,11 +2564,9 @@
 
             // ============ MAIN CONTENT AREA ============
             const MainContent = () => (
-                <div className="flex-1 bg-white rounded-xl border border-slate-200">
+                <div className="flex-1 bg-white rounded-xl border border-slate-200 overflow-hidden">
                     {/* Tabs header */}
-                    <div className="border-b">
-                        <ThemeTabs />
-                    </div>
+                    <ThemeTabs />
                     {/* Content with consistent padding */}
                     <div className="p-6">
                         {activeTheme === 'allgemein' ? (
