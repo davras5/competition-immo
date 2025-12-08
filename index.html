@@ -1245,7 +1245,7 @@
                 const filteredItems = sidebarItems.filter(item => !item.requires3D || has3DModel);
 
                 return (
-                    <aside className="w-20 h-fit bg-slate-700 rounded-2xl flex flex-col shadow-lg" role="navigation" aria-label="Hauptnavigation">
+                    <aside className="w-20 h-fit bg-white border border-slate-200 rounded-2xl flex flex-col shadow-sm" role="navigation" aria-label="Hauptnavigation">
                         <nav className="flex-1 py-4 flex flex-col gap-1">
                             {filteredItems.map(item => {
                                 const isActive = sidebarView === item.id;
@@ -1257,10 +1257,10 @@
                                         className={`
                                             mx-2 px-2 py-3 flex flex-col items-center gap-1.5 rounded-xl
                                             transition-all duration-150
-                                            focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-700
+                                            focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-white
                                             ${isActive
-                                                ? 'bg-white text-slate-900 shadow-md'
-                                                : 'text-slate-300 hover:bg-slate-600 hover:text-white'
+                                                ? 'bg-emerald-50 border-l-2 border-emerald-500'
+                                                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700 border-l-2 border-transparent'
                                             }
                                         `}
                                         aria-current={isActive ? 'page' : undefined}
@@ -1268,15 +1268,15 @@
                                     >
                                         <div className={`
                                             w-10 h-10 rounded-xl flex items-center justify-center transition-colors duration-150
-                                            ${isActive ? 'bg-emerald-100' : 'bg-slate-600'}
+                                            ${isActive ? 'bg-emerald-100' : 'bg-slate-100'}
                                         `}>
                                             <MaterialIcon
                                                 name={item.icon}
                                                 size={22}
-                                                className={isActive ? 'text-emerald-600' : 'text-slate-300'}
+                                                className={isActive ? 'text-emerald-600' : 'text-slate-400'}
                                             />
                                         </div>
-                                        <span className={`text-xs font-medium ${isActive ? 'text-slate-700' : 'text-slate-400'}`}>
+                                        <span className={`text-xs font-medium ${isActive ? 'text-emerald-700' : 'text-slate-500'}`}>
                                             {item.label}
                                         </span>
                                     </button>
