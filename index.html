@@ -1822,12 +1822,13 @@
                             <div className="border-t border-slate-100 pt-5">
                                 <div className="flex items-center justify-between mb-4">
                                     <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">Projektdetails</h3>
-                                    <button
-                                        className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-                                        aria-label="Projektdetails bearbeiten"
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        icon="edit"
                                     >
-                                        <MaterialIcon name="edit" size={16} />
-                                    </button>
+                                        Bearbeiten
+                                    </Button>
                                 </div>
                                 <div className="grid grid-cols-3 gap-6">
                                     <LabelValuePair label="Nutzungstyp">Wohnen</LabelValuePair>
@@ -2361,17 +2362,16 @@
                                     <div className="px-5 py-4">
                                         <div className="flex items-center justify-between mb-3">
                                             <h4 className="text-sm font-semibold text-slate-700">Kriterien</h4>
-                                            <button
-                                                onClick={(e) => { e.stopPropagation(); setIsEditMode(!isEditMode); }}
-                                                className={`flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-lg transition-colors ${
-                                                    isEditMode
-                                                        ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-                                                        : 'text-slate-500 hover:bg-slate-100'
-                                                }`}
-                                            >
-                                                <MaterialIcon name={isEditMode ? 'check' : 'edit'} size={14} />
-                                                {isEditMode ? 'Speichern' : 'Bearbeiten'}
-                                            </button>
+                                            <div onClick={e => e.stopPropagation()}>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    icon={isEditMode ? "check" : "edit"}
+                                                    onClick={() => setIsEditMode(!isEditMode)}
+                                                >
+                                                    {isEditMode ? 'Speichern' : 'Bearbeiten'}
+                                                </Button>
+                                            </div>
                                         </div>
                                         <div className="space-y-2">
                                             {themeKriterien.map(k => (
