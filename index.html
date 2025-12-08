@@ -377,6 +377,7 @@
             const [selectedVariant, setSelectedVariant] = useState(0);
             const [selectedVariantsForCompare, setSelectedVariantsForCompare] = useState([0, 1, 2, 3, 4]); // For comparison view
             const [isEditMode, setIsEditMode] = useState(false);
+            const [expandedThemes, setExpandedThemes] = useState(['functionality']); // Track which themes are expanded
             const [has3DModel, setHas3DModel] = useState(true);
             const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
@@ -2342,9 +2343,6 @@
 
             // ============ SNAP KRITERIEN SECTION ============
             const SNAPKriterienSection = () => {
-                // Track which themes are expanded
-                const [expandedThemes, setExpandedThemes] = useState(['functionality']);
-
                 const toggleTheme = (themeId) => {
                     setExpandedThemes(prev =>
                         prev.includes(themeId)
