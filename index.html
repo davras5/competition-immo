@@ -377,6 +377,7 @@
             const [selectedVariant, setSelectedVariant] = useState(0);
             const [selectedVariantsForCompare, setSelectedVariantsForCompare] = useState([0, 1, 2, 3, 4]); // For comparison view
             const [isEditMode, setIsEditMode] = useState(false);
+            const [expandedThemes, setExpandedThemes] = useState(['functionality']); // Track which themes are expanded
             const [has3DModel, setHas3DModel] = useState(true);
             const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
@@ -2342,9 +2343,6 @@
 
             // ============ SNAP KRITERIEN SECTION ============
             const SNAPKriterienSection = () => {
-                // Track which themes are expanded
-                const [expandedThemes, setExpandedThemes] = useState(['functionality']);
-
                 const toggleTheme = (themeId) => {
                     setExpandedThemes(prev =>
                         prev.includes(themeId)
@@ -2353,19 +2351,16 @@
                     );
                 };
 
-                // Theme styling configuration
+                // Theme styling configuration - neutral slate colors for consistency
                 const themeConfig = {
-                    functionality: { icon: 'settings_accessibility', color: 'blue', progress: 100 },
-                    comfort: { icon: 'spa', color: 'emerald', progress: 75 },
-                    economics: { icon: 'payments', color: 'amber', progress: 40 },
-                    resources: { icon: 'bolt', color: 'violet', progress: 20 }
+                    functionality: { icon: 'settings_accessibility', color: 'slate', progress: 100 },
+                    comfort: { icon: 'spa', color: 'slate', progress: 75 },
+                    economics: { icon: 'payments', color: 'slate', progress: 40 },
+                    resources: { icon: 'bolt', color: 'slate', progress: 20 }
                 };
 
                 const colorClasses = {
-                    blue: { bg: 'bg-blue-500', bgLight: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-200' },
-                    emerald: { bg: 'bg-emerald-500', bgLight: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-200' },
-                    amber: { bg: 'bg-amber-500', bgLight: 'bg-amber-50', text: 'text-amber-600', border: 'border-amber-200' },
-                    violet: { bg: 'bg-violet-500', bgLight: 'bg-violet-50', text: 'text-violet-600', border: 'border-violet-200' }
+                    slate: { bg: 'bg-slate-400', bgLight: 'bg-slate-50', text: 'text-slate-500', border: 'border-slate-200' }
                 };
 
                 // Theme Card Component
@@ -2389,12 +2384,12 @@
                                 onClick={() => toggleTheme(theme.id)}
                                 className={`w-full px-5 py-4 flex items-center gap-4 hover:bg-slate-50 transition-colors ${isExpanded ? 'bg-slate-50' : ''}`}
                             >
-                                {/* Subtle color indicator - reduced opacity */}
-                                <div className={`w-1 h-12 rounded-full ${colors.bg} opacity-40`}></div>
+                                {/* Subtle color indicator */}
+                                <div className={`w-1 h-12 rounded-full ${colors.bg}`}></div>
 
-                                {/* Icon - neutral background */}
+                                {/* Icon - matching line color */}
                                 <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
-                                    <MaterialIcon name={config.icon} size={22} className="text-slate-500" />
+                                    <MaterialIcon name={config.icon} size={22} className={colors.text} />
                                 </div>
 
                                 {/* Title & Progress */}
@@ -2415,7 +2410,7 @@
                                     )}
                                     {ratingCounts.neutral > 0 && (
                                         <span className="flex items-center gap-1 px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-medium">
-                                            <MaterialIcon name="remove" size={14} className="text-slate-400" />
+                                            <MaterialIcon name="sentiment_neutral" size={14} className="text-amber-500" />
                                             {ratingCounts.neutral}
                                         </span>
                                     )}
@@ -2544,12 +2539,12 @@
                                                                 onClick={() => updateCriterionRating(selectedVariant, k.id, 'neutral')}
                                                                 className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
                                                                     k.rating === 'neutral'
-                                                                        ? 'bg-slate-500 text-white ring-2 ring-slate-300 ring-offset-1'
-                                                                        : 'bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-500'
+                                                                        ? 'bg-amber-500 text-white ring-2 ring-amber-300 ring-offset-1'
+                                                                        : 'bg-amber-100 text-amber-400 hover:bg-amber-200 hover:text-amber-500'
                                                                 }`}
                                                                 title="Neutral"
                                                             >
-                                                                <MaterialIcon name="remove" size={18} />
+                                                                <MaterialIcon name="sentiment_neutral" size={18} />
                                                             </button>
                                                             {/* Positive button */}
                                                             <button
@@ -2568,14 +2563,14 @@
                                                         /* Read-only rating indicator - uses Material Icons matching comparison view */
                                                         <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
                                                             k.rating === 'positive' ? 'bg-emerald-100' :
-                                                            k.rating === 'neutral' ? 'bg-slate-100' : 'bg-red-100'
+                                                            k.rating === 'neutral' ? 'bg-amber-100' : 'bg-red-100'
                                                         }`}>
                                                             <MaterialIcon
-                                                                name={k.rating === 'positive' ? 'thumb_up' : k.rating === 'neutral' ? 'remove' : 'thumb_down'}
+                                                                name={k.rating === 'positive' ? 'thumb_up' : k.rating === 'neutral' ? 'sentiment_neutral' : 'thumb_down'}
                                                                 size={20}
                                                                 className={
                                                                     k.rating === 'positive' ? 'text-emerald-600' :
-                                                                    k.rating === 'neutral' ? 'text-slate-500' : 'text-red-600'
+                                                                    k.rating === 'neutral' ? 'text-amber-500' : 'text-red-600'
                                                                 }
                                                             />
                                                         </div>
@@ -2590,7 +2585,7 @@
                                                             </div>
                                                             {/* SNAP criterion description */}
                                                             {k.desc && (
-                                                                <div className="text-xs text-slate-400 mt-0.5 ml-7">
+                                                                <div className="text-xs text-slate-400 mt-0.5">
                                                                     {k.desc}
                                                                 </div>
                                                             )}
@@ -2847,9 +2842,9 @@
                                     {filteredVariants.map((v, variantIndex) => {
                                     const actualIndex = selectedVariantsForCompare[variantIndex];
                                     const rating = getRating(actualIndex, parseInt(criterion.id));
-                                    const ratingIcon = rating === 'positive' ? 'thumb_up' : rating === 'neutral' ? 'remove' : 'thumb_down';
+                                    const ratingIcon = rating === 'positive' ? 'thumb_up' : rating === 'neutral' ? 'sentiment_neutral' : 'thumb_down';
                                     const ratingLabel = rating === 'positive' ? 'Gut' : rating === 'neutral' ? 'Mittel' : 'Schwach';
-                                    const ratingColor = rating === 'positive' ? 'text-emerald-500' : rating === 'neutral' ? 'text-slate-400' : 'text-red-500';
+                                    const ratingColor = rating === 'positive' ? 'text-emerald-500' : rating === 'neutral' ? 'text-amber-500' : 'text-red-500';
                                     return (
                                         <td key={v.id} className="px-4 py-2.5 text-center border-b">
                                         <div className="flex justify-center items-center">
@@ -2924,7 +2919,7 @@
                             <span>Gut</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <MaterialIcon name="remove" size={20} className="text-slate-400" />
+                            <MaterialIcon name="sentiment_neutral" size={20} className="text-amber-500" />
                             <span>Mittel</span>
                         </div>
                         <div className="flex items-center gap-1.5">
