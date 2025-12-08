@@ -1418,6 +1418,53 @@
             // ============ MAPBOX MAP SECTION ============
             const MAPBOX_TOKEN = 'pk.eyJ1IjoiZGF2aWRyYXNuZXI1IiwiYSI6ImNtMm5yamVkdjA5MDcycXMyZ2I2MHRhamgifQ.m651j7WIX7MyxNh8KIQ1Gg';
 
+            // Inline Map Widget (non-collapsible, compact version for Project Header Card)
+            const InlineMapWidget = ({ coordinates }) => {
+                const mapContainerRef = useRef(null);
+                const mapRef = useRef(null);
+                const markerRef = useRef(null);
+
+                useEffect(() => {
+                    if (!mapContainerRef.current || mapRef.current) return;
+
+                    mapboxgl.accessToken = MAPBOX_TOKEN;
+                    mapRef.current = new mapboxgl.Map({
+                        container: mapContainerRef.current,
+                        style: 'mapbox://styles/mapbox/light-v11',
+                        center: coordinates,
+                        zoom: 15
+                    });
+
+                    mapRef.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+                    markerRef.current = new mapboxgl.Marker({ color: '#10b981' })
+                        .setLngLat(coordinates)
+                        .addTo(mapRef.current);
+
+                    return () => {
+                        if (mapRef.current) {
+                            mapRef.current.remove();
+                            mapRef.current = null;
+                        }
+                    };
+                }, []);
+
+                useEffect(() => {
+                    if (mapRef.current && markerRef.current) {
+                        mapRef.current.flyTo({ center: coordinates, zoom: 15 });
+                        markerRef.current.setLngLat(coordinates);
+                    }
+                }, [coordinates]);
+
+                return (
+                    <div
+                        ref={mapContainerRef}
+                        className="w-full h-full rounded-lg"
+                        style={{ minHeight: '120px' }}
+                    />
+                );
+            };
+
             const MapSection = ({ address, coordinates, onAddressChange }) => {
                 const mapContainerRef = useRef(null);
                 const mapRef = useRef(null);
@@ -1896,6 +1943,23 @@
 
                 return (
                     <div className="flex-1 space-y-4">
+                        {/* Quick Actions - Top Section */}
+                        <div className="bg-white rounded-xl border border-slate-200 p-5">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                                        <MaterialIcon name="bolt" size={18} className="text-slate-600" />
+                                    </div>
+                                    <span className="font-semibold text-slate-900">Schnellaktionen</span>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    <Button variant="secondary" size="sm" icon="download">Bericht exportieren</Button>
+                                    <Button variant="secondary" size="sm" icon="share">Projekt teilen</Button>
+                                    <Button variant="secondary" size="sm" icon="archive">Archivieren</Button>
+                                </div>
+                            </div>
+                        </div>
+
                         {/* Project Header Card */}
                         <div className="bg-white rounded-xl border border-slate-200 p-5">
                             <div className="flex items-start justify-between mb-6">
@@ -1977,6 +2041,102 @@
                                     </LabelValuePair>
                                 </div>
                             </div>
+
+                            {/* Inline Widgets Row - Bilder & Standort */}
+                            <div className="border-t border-slate-100 pt-5 mt-5">
+                                <div className="grid grid-cols-2 gap-4">
+                                    {/* Bilder Widget - Inline */}
+                                    <div className="border border-slate-200 rounded-xl overflow-hidden">
+                                        <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <MaterialIcon name="photo_library" size={18} className="text-slate-500" />
+                                                <span className="font-medium text-slate-900 text-sm">Bilder</span>
+                                                {projectImages.length > 0 && (
+                                                    <span className="text-xs px-2 py-0.5 rounded-full bg-slate-200 text-slate-600">
+                                                        {projectImages.length}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <Button variant="ghost" size="sm" icon="edit">Bearbeiten</Button>
+                                        </div>
+                                        <div className="p-4 h-48">
+                                            <input
+                                                type="file"
+                                                id="inline-image-upload"
+                                                onChange={(e) => {
+                                                    const files = Array.from(e.target.files);
+                                                    const newImages = files.map(file => ({
+                                                        id: Date.now() + Math.random(),
+                                                        name: file.name,
+                                                        url: URL.createObjectURL(file),
+                                                        file: file
+                                                    }));
+                                                    setProjectImages([...projectImages, ...newImages]);
+                                                    e.target.value = '';
+                                                }}
+                                                accept="image/*"
+                                                multiple
+                                                className="hidden"
+                                            />
+                                            {projectImages.length === 0 ? (
+                                                <label
+                                                    htmlFor="inline-image-upload"
+                                                    className="h-full border-2 border-dashed border-slate-200 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-slate-400 hover:bg-slate-50 transition-colors"
+                                                >
+                                                    <MaterialIcon name="add_photo_alternate" size={28} className="text-slate-400 mb-2" />
+                                                    <p className="text-sm text-slate-600">Klicken zum Hochladen</p>
+                                                    <p className="text-xs text-slate-400 mt-1">oder Dateien hierher ziehen</p>
+                                                </label>
+                                            ) : (
+                                                <div className="h-full flex flex-col">
+                                                    <div className="grid grid-cols-3 gap-2 flex-1 overflow-hidden">
+                                                        {projectImages.slice(0, 6).map((image) => (
+                                                            <div key={image.id} className="relative group aspect-square">
+                                                                <img
+                                                                    src={image.url}
+                                                                    alt={image.name}
+                                                                    className="w-full h-full object-cover rounded-lg"
+                                                                />
+                                                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors rounded-lg" />
+                                                            </div>
+                                                        ))}
+                                                        {projectImages.length > 6 && (
+                                                            <div className="aspect-square bg-slate-100 rounded-lg flex items-center justify-center">
+                                                                <span className="text-sm font-medium text-slate-600">+{projectImages.length - 6}</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <label
+                                                        htmlFor="inline-image-upload"
+                                                        className="mt-2 text-xs text-slate-500 hover:text-slate-700 cursor-pointer flex items-center gap-1"
+                                                    >
+                                                        <MaterialIcon name="add" size={14} />
+                                                        Weitere hinzufügen
+                                                    </label>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Standort Widget - Inline */}
+                                    <div className="border border-slate-200 rounded-xl overflow-hidden">
+                                        <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <MaterialIcon name="map" size={18} className="text-slate-500" />
+                                                <span className="font-medium text-slate-900 text-sm">Standort</span>
+                                            </div>
+                                            <Button variant="ghost" size="sm" icon="edit">Bearbeiten</Button>
+                                        </div>
+                                        <div className="p-4 h-48">
+                                            <div className="text-xs text-slate-500 mb-2 flex items-center gap-1">
+                                                <MaterialIcon name="location_on" size={14} className="text-slate-400" />
+                                                {mapAddress}
+                                            </div>
+                                            <InlineMapWidget coordinates={mapCoordinates} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Evaluation Progress Section */}
@@ -2007,36 +2167,6 @@
                                 })}
                             </div>
                         </div>
-
-                        {/* Quick Actions - Position 3 */}
-                        <div className="bg-white rounded-xl border border-slate-200 p-5">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
-                                        <MaterialIcon name="bolt" size={18} className="text-slate-600" />
-                                    </div>
-                                    <span className="font-semibold text-slate-900">Schnellaktionen</span>
-                                </div>
-                                <div className="flex flex-wrap gap-2">
-                                    <Button variant="secondary" size="sm" icon="download">Bericht exportieren</Button>
-                                    <Button variant="secondary" size="sm" icon="share">Projekt teilen</Button>
-                                    <Button variant="secondary" size="sm" icon="archive">Archivieren</Button>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Map Section */}
-                        <MapSection
-                            address={mapAddress}
-                            coordinates={mapCoordinates}
-                            onAddressChange={handleMapAddressChange}
-                        />
-
-                        {/* Image Gallery Section */}
-                        <ImageGallerySection
-                            images={projectImages}
-                            onImagesChange={setProjectImages}
-                        />
 
                         {/* Team Section - Collapsible */}
                         <CollapsibleSection
