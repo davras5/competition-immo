@@ -2389,18 +2389,18 @@
                     }, {});
 
                     return (
-                        <div className={`bg-white rounded-xl border overflow-hidden transition-all ${isExpanded ? colors.border : 'border-slate-200'}`}>
+                        <div className={`bg-white rounded-xl border overflow-hidden transition-all ${isExpanded ? 'border-slate-300' : 'border-slate-200'}`}>
                             {/* Theme Header - Always visible */}
                             <button
                                 onClick={() => toggleTheme(theme.id)}
-                                className={`w-full px-5 py-4 flex items-center gap-4 hover:bg-slate-50 transition-colors ${isExpanded ? colors.bgLight : ''}`}
+                                className={`w-full px-5 py-4 flex items-center gap-4 hover:bg-slate-50 transition-colors ${isExpanded ? 'bg-slate-50' : ''}`}
                             >
-                                {/* Color indicator */}
-                                <div className={`w-1 h-12 rounded-full ${colors.bg}`}></div>
+                                {/* Subtle color indicator - reduced opacity */}
+                                <div className={`w-1 h-12 rounded-full ${colors.bg} opacity-40`}></div>
 
-                                {/* Icon */}
-                                <div className={`w-10 h-10 rounded-lg ${colors.bgLight} flex items-center justify-center`}>
-                                    <MaterialIcon name={config.icon} size={22} className={colors.text} />
+                                {/* Icon - neutral background */}
+                                <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
+                                    <MaterialIcon name={config.icon} size={22} className="text-slate-500" />
                                 </div>
 
                                 {/* Title & Progress */}
@@ -2411,33 +2411,33 @@
                                     </div>
                                 </div>
 
-                                {/* Rating Summary Badges */}
-                                <div className="flex items-center gap-2 mr-4">
+                                {/* Rating Summary Badges - Neutral backgrounds with colored symbols */}
+                                <div className="flex items-center gap-1.5 mr-4">
                                     {ratingCounts.positive > 0 && (
-                                        <span className="flex items-center gap-1 px-2 py-1 bg-emerald-100 text-emerald-700 rounded text-xs font-medium">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                        <span className="flex items-center gap-1 px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-medium">
+                                            <span className="text-emerald-500 font-bold">+</span>
                                             {ratingCounts.positive}
                                         </span>
                                     )}
                                     {ratingCounts.neutral > 0 && (
-                                        <span className="flex items-center gap-1 px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs font-medium">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                        <span className="flex items-center gap-1 px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-medium">
+                                            <span className="text-slate-400 font-bold">○</span>
                                             {ratingCounts.neutral}
                                         </span>
                                     )}
                                     {ratingCounts.negative > 0 && (
-                                        <span className="flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-medium">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                        <span className="flex items-center gap-1 px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-medium">
+                                            <span className="text-red-500 font-bold">−</span>
                                             {ratingCounts.negative}
                                         </span>
                                     )}
                                 </div>
 
-                                {/* Progress indicator */}
+                                {/* Progress indicator - Unified color scheme */}
                                 <div className="flex items-center gap-3 w-32">
-                                    <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                    <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
                                         <div
-                                            className={`h-full rounded-full ${config.progress === 100 ? 'bg-emerald-500' : colors.bg}`}
+                                            className={`h-full rounded-full ${config.progress === 100 ? 'bg-emerald-500' : 'bg-slate-400'}`}
                                             style={{ width: `${config.progress}%` }}
                                         ></div>
                                     </div>
@@ -2470,14 +2470,16 @@
                                                     <div className="w-16 text-sm font-medium text-slate-900">
                                                         {k.value}{k.unit === '%' ? '%' : ''}
                                                     </div>
+                                                    {/* Neutral bar with colored delta text */}
                                                     <div className="flex-1 h-5 bg-slate-100 rounded relative">
                                                         <div
-                                                            className={`absolute top-0 left-0 h-full rounded ${k.delta >= 0 ? 'bg-emerald-400' : 'bg-red-400'}`}
+                                                            className="absolute top-0 left-0 h-full rounded bg-slate-300"
                                                             style={{ width: `${Math.min(k.value, 100)}%` }}
                                                         />
                                                         <div
-                                                            className="absolute top-0 h-full w-0.5 bg-slate-600"
+                                                            className="absolute top-0 h-full w-0.5 bg-slate-500"
                                                             style={{ left: `${k.avg}%` }}
+                                                            title="Durchschnitt"
                                                         />
                                                     </div>
                                                     <div className={`w-14 text-right text-sm font-medium ${k.delta >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
@@ -2524,13 +2526,13 @@
                                                             >
                                                                 <span className="text-sm font-bold">−</span>
                                                             </button>
-                                                            {/* Neutral button */}
+                                                            {/* Neutral button - gray instead of amber */}
                                                             <button
                                                                 onClick={() => updateCriterionRating(selectedVariant, k.id, 'neutral')}
                                                                 className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
                                                                     k.rating === 'neutral'
-                                                                        ? 'bg-amber-500 text-white ring-2 ring-amber-300 ring-offset-1'
-                                                                        : 'bg-amber-100 text-amber-400 hover:bg-amber-200 hover:text-amber-500'
+                                                                        ? 'bg-slate-500 text-white ring-2 ring-slate-300 ring-offset-1'
+                                                                        : 'bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-500'
                                                                 }`}
                                                                 title="Neutral (○)"
                                                             >
@@ -2550,14 +2552,14 @@
                                                             </button>
                                                         </div>
                                                     ) : (
-                                                        /* Read-only rating indicator */
+                                                        /* Read-only rating indicator - neutral uses gray */
                                                         <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
                                                             k.rating === 'positive' ? 'bg-emerald-100' :
-                                                            k.rating === 'neutral' ? 'bg-amber-100' : 'bg-red-100'
+                                                            k.rating === 'neutral' ? 'bg-slate-100' : 'bg-red-100'
                                                         }`}>
                                                             <span className={`text-sm font-bold ${
                                                                 k.rating === 'positive' ? 'text-emerald-600' :
-                                                                k.rating === 'neutral' ? 'text-amber-600' : 'text-red-600'
+                                                                k.rating === 'neutral' ? 'text-slate-500' : 'text-red-600'
                                                             }`}>
                                                                 {k.rating === 'positive' ? '+' : k.rating === 'neutral' ? '○' : '−'}
                                                             </span>
@@ -2830,7 +2832,7 @@
                                             <div
                                             className={`w-5 h-5 rounded-full flex items-center justify-center text-white text-xs font-bold ${
                                                 rating === 'positive' ? 'bg-emerald-500' :
-                                                rating === 'neutral' ? 'bg-amber-400' :
+                                                rating === 'neutral' ? 'bg-slate-400' :
                                                 'bg-red-500'
                                             }`}
                                             title={ratingLabel}
@@ -2903,7 +2905,7 @@
                             <span>Gut</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center text-white text-xs font-bold">○</div>
+                            <div className="w-5 h-5 rounded-full bg-slate-400 flex items-center justify-center text-white text-xs font-bold">○</div>
                             <span>Mittel</span>
                         </div>
                         <div className="flex items-center gap-2">
