@@ -14,10 +14,6 @@
     
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- Mapbox GL JS -->
-    <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
-    <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet" />
-
     <style>
         /* Custom scrollbar for better aesthetics */
         ::-webkit-scrollbar {
@@ -656,18 +652,18 @@
                 ];
 
                 return kriterien.map((k, i) => {
-                    // Check if we have stored data for this criterion
-                    const storedData = criteriaData[variantIndex]?.[k.id];
-                    const defaultRating = defaultRatings[(variantIndex + i) % 3];
-                    const defaultComment = defaultComments[(variantIndex + i) % defaultComments.length];
+                // Check if we have stored data for this criterion
+                const storedData = criteriaData[variantIndex]?.[k.id];
+                const defaultRating = defaultRatings[(variantIndex + i) % 3];
+                const defaultComment = defaultComments[(variantIndex + i) % defaultComments.length];
 
-                    return {
-                        ...k,
-                        rating: storedData?.rating || defaultRating,
-                        score: [33, 66][(variantIndex + i) % 2],
-                        comment: storedData?.comment !== undefined ? storedData.comment : defaultComment
-                    };
-                });
+                return {
+                    ...k,
+                    rating: storedData?.rating || defaultRating,
+                    score: [33, 66][(variantIndex + i) % 2],
+                    comment: storedData?.comment !== undefined ? storedData.comment : defaultComment
+                };
+                }));
             };
 
             const currentVariant = variants[selectedVariant];
@@ -1438,14 +1434,6 @@
 
             // ============ PROJECT OVERVIEW VIEW ============
             const ProjectOverviewView = () => {
-                const mapContainerRef = React.useRef(null);
-                const mapRef = React.useRef(null);
-                const [projectImages, setProjectImages] = useState([
-                    { id: 1, url: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400&h=300&fit=crop', isCover: true },
-                    { id: 2, url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop', isCover: false },
-                    { id: 3, url: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop', isCover: false },
-                ]);
-
                 const teamMembers = [
                     { name: 'David Rasner', email: 'david.rasner@example.ch', role: 'Projektleiter' },
                     { name: 'Matthias Spiss', email: 'matthias.spiss@allreal.ch', role: 'Admin' },
@@ -1469,45 +1457,6 @@
 
                 const pendingMilestones = milestones.filter(m => !m.done).length;
 
-                // Project coordinates (Zurich area)
-                const projectCoords = currentProject?.coordinates || { lat: 47.3769, lng: 8.5017 };
-
-                // Initialize Mapbox map
-                React.useEffect(() => {
-                    if (!mapContainerRef.current || mapRef.current) return;
-
-                    mapboxgl.accessToken = 'pk.eyJ1IjoiZGF2aWRyYXNuZXI1IiwiYSI6ImNtMm5yamVkdjA5MDcycXMyZ2I2MHRhamgifQ.m651j7WIX7MyxNh8KIQ1Gg';
-
-                    const map = new mapboxgl.Map({
-                        container: mapContainerRef.current,
-                        style: 'mapbox://styles/mapbox/light-v11',
-                        center: [projectCoords.lng, projectCoords.lat],
-                        zoom: 14,
-                        attributionControl: false
-                    });
-
-                    // Add marker
-                    const markerEl = document.createElement('div');
-                    markerEl.innerHTML = `<div style="width: 24px; height: 24px; background: #10b981; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"></div>`;
-
-                    new mapboxgl.Marker(markerEl)
-                        .setLngLat([projectCoords.lng, projectCoords.lat])
-                        .addTo(map);
-
-                    // Add navigation controls
-                    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
-
-                    mapRef.current = map;
-
-                    return () => {
-                        map.remove();
-                        mapRef.current = null;
-                    };
-                }, []);
-
-                // Google Maps link
-                const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${projectCoords.lat},${projectCoords.lng}`;
-
                 // Team member row component
                 const TeamMemberRow = ({ member, isExpert = false }) => (
                     <div className="py-3 flex items-center justify-between">
@@ -1529,14 +1478,6 @@
                         </span>
                     </div>
                 );
-
-                // Set image as cover
-                const setCoverImage = (imageId) => {
-                    setProjectImages(prev => prev.map(img => ({
-                        ...img,
-                        isCover: img.id === imageId
-                    })));
-                };
 
                 return (
                     <div className="flex-1 space-y-4">
@@ -1661,157 +1602,64 @@
                             </div>
                         </div>
 
-                        {/* Map & Images Row */}
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                            {/* Map Widget */}
-                            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-                                <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
-                                            <MaterialIcon name="location_on" size={18} className="text-slate-600" />
-                                        </div>
-                                        <span className="font-semibold text-slate-900">Standort</span>
-                                    </div>
-                                    <a
-                                        href={googleMapsUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex items-center gap-1.5 text-sm text-emerald-600 hover:text-emerald-700"
-                                    >
-                                        <MaterialIcon name="open_in_new" size={16} />
-                                        Google Maps
-                                    </a>
-                                </div>
-                                <div ref={mapContainerRef} className="h-52 w-full"></div>
-                                <div className="px-5 py-3 bg-slate-50 text-sm text-slate-600 flex items-center gap-2">
-                                    <MaterialIcon name="place" size={16} className="text-slate-400" />
-                                    {currentProject?.address || 'Badenerstrasse 501, 8048 Zürich'}
-                                </div>
-                            </div>
-
-                            {/* Project Images Widget */}
-                            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-                                <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
-                                            <MaterialIcon name="photo_library" size={18} className="text-slate-600" />
-                                        </div>
-                                        <span className="font-semibold text-slate-900">Projektbilder</span>
-                                        <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
-                                            {projectImages.length}
-                                        </span>
-                                    </div>
-                                    <button className="flex items-center gap-1.5 text-sm text-emerald-600 hover:text-emerald-700">
-                                        <MaterialIcon name="upload" size={16} />
-                                        Hochladen
-                                    </button>
-                                </div>
-                                <div className="p-4">
-                                    <div className="grid grid-cols-3 gap-3">
-                                        {projectImages.map((img) => (
-                                            <div key={img.id} className="relative group">
-                                                <div className="aspect-video rounded-lg bg-slate-200 overflow-hidden">
-                                                    <img
-                                                        src={img.url}
-                                                        alt="Projektbild"
-                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                                                    />
-                                                </div>
-                                                {img.isCover && (
-                                                    <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-emerald-500 text-white text-xs rounded font-medium">
-                                                        Titelbild
-                                                    </div>
-                                                )}
-                                                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
-                                                    <button className="p-1.5 bg-white rounded-lg hover:bg-slate-100" title="Vergrössern">
-                                                        <MaterialIcon name="fullscreen" size={16} className="text-slate-700" />
-                                                    </button>
-                                                    {!img.isCover && (
-                                                        <button
-                                                            onClick={() => setCoverImage(img.id)}
-                                                            className="p-1.5 bg-white rounded-lg hover:bg-slate-100"
-                                                            title="Als Titelbild setzen"
-                                                        >
-                                                            <MaterialIcon name="star" size={16} className="text-slate-700" />
-                                                        </button>
-                                                    )}
-                                                    <button className="p-1.5 bg-white rounded-lg hover:bg-red-50" title="Löschen">
-                                                        <MaterialIcon name="delete" size={16} className="text-red-500" />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ))}
-                                        {/* Upload placeholder */}
-                                        <div className="aspect-video rounded-lg border-2 border-dashed border-slate-200 flex flex-col items-center justify-center cursor-pointer hover:border-emerald-300 hover:bg-emerald-50/50 transition-colors">
-                                            <MaterialIcon name="add_photo_alternate" size={24} className="text-slate-300" />
-                                            <span className="text-xs text-slate-400 mt-1">Hinzufügen</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Team & Timeline Row - Side by side on larger screens */}
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                            {/* Team Section - Collapsible */}
-                            <CollapsibleSection
-                                title="Team"
-                                icon="groups"
-                                badge={teamMembers.length + experts.length}
-                                actions={<Button variant="ghost" size="sm" icon="person_add">Einladen</Button>}
-                            >
-                                <div className="pt-4 max-h-72 overflow-y-auto">
-                                    <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Projektteam</div>
-                                    <div className="divide-y divide-slate-100">
-                                        {teamMembers.map((m, i) => (
-                                            <TeamMemberRow key={i} member={m} />
-                                        ))}
-                                    </div>
-
-                                    <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3 mt-6">Experten</div>
-                                    <div className="divide-y divide-slate-100">
-                                        {experts.map((m, i) => (
-                                            <TeamMemberRow key={i} member={m} isExpert />
-                                        ))}
-                                    </div>
-                                </div>
-                            </CollapsibleSection>
-
-                            {/* Timeline Section - Collapsible */}
-                            <CollapsibleSection
-                                title="Zeitplan"
-                                icon="schedule"
-                                badge={pendingMilestones > 0 ? `${pendingMilestones} offen` : undefined}
-                                actions={<Button variant="ghost" size="sm" icon="add">Hinzufügen</Button>}
-                            >
-                                <div className="pt-4 space-y-3 max-h-72 overflow-y-auto">
-                                    {milestones.map((m, i) => (
-                                        <div key={i} className={`flex items-center gap-4 p-3 rounded-lg transition-colors ${m.done ? 'bg-slate-50' : 'bg-amber-50 border border-amber-100'}`}>
-                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                                                m.done ? 'bg-emerald-100' : 'bg-amber-100'
-                                            }`}>
-                                                <MaterialIcon
-                                                    name={m.done ? 'check' : 'schedule'}
-                                                    size={16}
-                                                    className={m.done ? 'text-emerald-600' : 'text-amber-600'}
-                                                />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <div className={`text-sm font-medium ${m.done ? 'text-slate-500 line-through' : 'text-slate-900'}`}>
-                                                    {m.label}
-                                                </div>
-                                                <div className="text-xs text-slate-500">{m.date}</div>
-                                            </div>
-                                            {!m.done && (
-                                                <button className="text-xs text-emerald-600 hover:text-emerald-700 font-medium whitespace-nowrap">
-                                                    Erledigt
-                                                </button>
-                                            )}
-                                        </div>
+                        {/* Team Section - Collapsible */}
+                        <CollapsibleSection
+                            title="Team"
+                            icon="groups"
+                            badge={teamMembers.length + experts.length}
+                            actions={<Button variant="ghost" size="sm" icon="person_add">Einladen</Button>}
+                        >
+                            <div className="pt-4">
+                                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Projektteam</div>
+                                <div className="divide-y divide-slate-100">
+                                    {teamMembers.map((m, i) => (
+                                        <TeamMemberRow key={i} member={m} />
                                     ))}
                                 </div>
-                            </CollapsibleSection>
-                        </div>
+
+                                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3 mt-6">Experten</div>
+                                <div className="divide-y divide-slate-100">
+                                    {experts.map((m, i) => (
+                                        <TeamMemberRow key={i} member={m} isExpert />
+                                    ))}
+                                </div>
+                            </div>
+                        </CollapsibleSection>
+
+                        {/* Timeline Section - Collapsible */}
+                        <CollapsibleSection
+                            title="Zeitplan"
+                            icon="schedule"
+                            badge={pendingMilestones > 0 ? `${pendingMilestones} offen` : undefined}
+                            actions={<Button variant="ghost" size="sm" icon="add">Hinzufügen</Button>}
+                        >
+                            <div className="pt-4 space-y-3">
+                                {milestones.map((m, i) => (
+                                    <div key={i} className={`flex items-center gap-4 p-3 rounded-lg transition-colors ${m.done ? 'bg-slate-50' : 'bg-amber-50 border border-amber-100'}`}>
+                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                            m.done ? 'bg-emerald-100' : 'bg-amber-100'
+                                        }`}>
+                                            <MaterialIcon
+                                                name={m.done ? 'check' : 'schedule'}
+                                                size={16}
+                                                className={m.done ? 'text-emerald-600' : 'text-amber-600'}
+                                            />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className={`text-sm font-medium ${m.done ? 'text-slate-500 line-through' : 'text-slate-900'}`}>
+                                                {m.label}
+                                            </div>
+                                            <div className="text-xs text-slate-500">{m.date}</div>
+                                        </div>
+                                        {!m.done && (
+                                            <button className="text-xs text-emerald-600 hover:text-emerald-700 font-medium whitespace-nowrap">
+                                                Erledigt
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </CollapsibleSection>
 
                         {/* Quick Actions */}
                         <div className="bg-white rounded-xl border border-slate-200 p-5">
