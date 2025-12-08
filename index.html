@@ -1400,20 +1400,21 @@
                                     </SectionCard>
 
                                     {/* Quick actions */}
-                                    <div className="bg-white rounded-xl border border-slate-200 p-4">
-                                        <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-3">
-                                            Aktionen
-                                        </div>
-                                        <div className="space-y-1">
-                                            <Button variant="ghost" icon="download" className="w-full justify-start">
+                                    <div className="bg-white rounded-xl border p-4">
+                                        <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-3">Aktionen</div>
+                                        <div className="space-y-2">
+                                            <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
+                                                <Icon name="download" size={18} className="text-slate-400" />
                                                 Bericht exportieren
-                                            </Button>
-                                            <Button variant="ghost" icon="share" className="w-full justify-start">
+                                            </button>
+                                            <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
+                                                <Icon name="share" size={18} className="text-slate-400" />
                                                 Projekt teilen
-                                            </Button>
-                                            <Button variant="ghost" icon="archive" className="w-full justify-start">
+                                            </button>
+                                            <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
+                                                <Icon name="archive" size={18} className="text-slate-400" />
                                                 Archivieren
-                                            </Button>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -1804,6 +1805,10 @@
                         <div className="bg-white rounded-xl border p-4">
                         <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-3">Aktionen</div>
                         <div className="space-y-2">
+                            <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg">
+                            <Icon name="add" size={18} className="text-blue-400" />
+                            Neue Variante
+                            </button>
                             <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
                             <Icon name="download" size={18} className="text-slate-400" />
                             Daten exportieren
