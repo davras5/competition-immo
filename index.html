@@ -1067,16 +1067,16 @@
                 };
 
                 return (
-                <div className="w-52 bg-white rounded-xl border border-slate-200 flex flex-col overflow-hidden">
-                    <div className="px-4 py-3 border-b bg-slate-50">
-                    <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">Varianten</div>
-                    {isDashboard && (
-                        <div className="text-xs text-slate-400 mt-1">
-                        {selectedVariantsForCompare.length} ausgewählt
-                        </div>
-                    )}
+                <div className="w-52 bg-white rounded-xl border border-slate-200 flex-shrink-0">
+                    <div className="px-4 py-3 border-b">
+                        <div className="text-sm font-semibold text-slate-900">Varianten</div>
+                        {isDashboard && (
+                            <div className="text-xs text-slate-400 mt-1">
+                                {selectedVariantsForCompare.length} ausgewählt
+                            </div>
+                        )}
                     </div>
-                    <div className="flex-1 overflow-y-auto">
+                    <div>
                     {variants.map((v, i) => {
                         const isSelected = isDashboard 
                         ? selectedVariantsForCompare.includes(i)
@@ -1172,9 +1172,9 @@
                 );
 
                 return (
-                    <div className="flex-1 overflow-auto">
+                    <div className="flex-1">
                         {/* Stats row using StatCard */}
-                            <div className="grid grid-cols-4 gap-4 mb-6">
+                        <div className="grid grid-cols-4 gap-4 mb-6">
                                 <StatCard
                                     icon="apartment"
                                     iconBg="bg-blue-100"
@@ -1628,8 +1628,7 @@
                 );
 
                 return (
-                <div className="flex-1 overflow-y-auto p-6 bg-slate-100 rounded-b-xl border border-slate-200 border-t-0">
-                    <div className="grid grid-cols-3 gap-6">
+                <div className="grid grid-cols-3 gap-6">
                     {/* Left column - Main content */}
                     <div className="col-span-2 space-y-6">
                         {/* Variant header card */}
@@ -1809,14 +1808,13 @@
                         </div>
                         </div>
                     </div>
-                    </div>
                 </div>
                 );
             };
 
             // ============ KENNWERTE SECTION ============
             const KennwerteSection = () => (
-                <div className="bg-white border-b">
+                <div className="border rounded-lg overflow-hidden">
                 <div className="px-4 py-3 flex items-center justify-between border-b bg-slate-50">
                     <div>
                     <span className="text-sm font-semibold text-slate-700">ENERGIE- UND NACHHALTIGKEITSKENNWERTE</span>
@@ -1878,7 +1876,7 @@
 
             // ============ KRITERIEN SECTION ============
             const KriterienSection = () => (
-                <div className="bg-white flex-1 overflow-y-auto">
+                <div className="border rounded-lg overflow-hidden">
                 <div className="px-4 py-3 flex items-center justify-between border-b bg-slate-50">
                     <span className="text-sm font-semibold text-slate-700">ENERGIE- UND NACHHALTIGKEITSKRITERIEN</span>
                     <button
@@ -1964,7 +1962,7 @@
 
             // ============ 3D VIEWER ============
             const Viewer3D = () => (
-                <div className="flex-1 flex flex-col overflow-hidden bg-white rounded-xl border border-slate-200">
+                <div className="flex-1 bg-white rounded-xl border border-slate-200 flex flex-col min-h-[600px]">
                     {/* Toolbar */}
                     <div className="bg-slate-50 border-b px-4 py-2 flex items-center justify-between">
                         <div className="flex items-center gap-1">
@@ -2081,9 +2079,9 @@
                 const filteredVariants = variants.filter((_, i) => selectedVariantsForCompare.includes(i));
 
                 return (
-                <div className="flex-1 flex flex-col overflow-hidden bg-white rounded-xl border border-slate-200">
+                <div className="flex-1 bg-white rounded-xl border border-slate-200">
                     {/* Matrix */}
-                    <div className="flex-1 overflow-auto">
+                    <div className="overflow-x-auto">
                         <table className="w-full border-collapse">
                         {/* Header row with variant names */}
                         <thead>
@@ -2260,20 +2258,22 @@
 
             // ============ MAIN CONTENT AREA ============
             const MainContent = () => (
-                <div className="flex-1 flex flex-col overflow-hidden">
-                    {/* Tabs bar - white background */}
-                    <div className="bg-white rounded-t-xl border border-slate-200 border-b-0">
+                <div className="flex-1 bg-white rounded-xl border border-slate-200">
+                    {/* Tabs header */}
+                    <div className="border-b">
                         <ThemeTabs />
                     </div>
-                    {/* Content - gray background with white widget cards */}
-                    {activeTheme === 'allgemein' ? (
-                        <AllgemeinTab />
-                    ) : (
-                        <div className="flex-1 overflow-y-auto bg-slate-100 rounded-b-xl border border-slate-200 border-t-0">
-                            <KennwerteSection />
-                            <KriterienSection />
-                        </div>
-                    )}
+                    {/* Content with consistent padding */}
+                    <div className="p-6">
+                        {activeTheme === 'allgemein' ? (
+                            <AllgemeinTab />
+                        ) : (
+                            <div className="space-y-6">
+                                <KennwerteSection />
+                                <KriterienSection />
+                            </div>
+                        )}
+                    </div>
                 </div>
             );
 
@@ -2319,19 +2319,22 @@
 
             // Project view (project selected)
             return (
-                <div className="h-screen flex flex-col bg-slate-50">
+                <div className="h-screen flex flex-col bg-slate-100">
                 <Header />
                 <div className="flex-1 flex overflow-hidden">
                     <Sidebar />
                     <div className="flex-1 flex flex-col overflow-hidden">
                         <Breadcrumb />
                         <ViewHeader />
-                        <div className="flex-1 flex overflow-hidden p-6 gap-6 bg-slate-50">
-                            {showVariantList && <VariantList />}
-                            {sidebarView === 'uebersicht' ? <Uebersicht /> :
-                            sidebarView === 'dashboard' ? <Dashboard /> :
-                            sidebarView === 'viewer' ? <Viewer3D /> :
-                            <MainContent />}
+                        {/* Main content area - unified scroll */}
+                        <div className="flex-1 overflow-auto p-6 bg-slate-100">
+                            <div className="flex gap-6 items-start">
+                                {showVariantList && <VariantList />}
+                                {sidebarView === 'uebersicht' ? <Uebersicht /> :
+                                sidebarView === 'dashboard' ? <Dashboard /> :
+                                sidebarView === 'viewer' ? <Viewer3D /> :
+                                <MainContent />}
+                            </div>
                         </div>
                     </div>
                 </div>
