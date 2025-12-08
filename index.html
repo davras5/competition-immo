@@ -2351,19 +2351,16 @@
                     );
                 };
 
-                // Theme styling configuration
+                // Theme styling configuration - neutral slate colors for consistency
                 const themeConfig = {
-                    functionality: { icon: 'settings_accessibility', color: 'blue', progress: 100 },
-                    comfort: { icon: 'spa', color: 'emerald', progress: 75 },
-                    economics: { icon: 'payments', color: 'amber', progress: 40 },
-                    resources: { icon: 'bolt', color: 'violet', progress: 20 }
+                    functionality: { icon: 'settings_accessibility', color: 'slate', progress: 100 },
+                    comfort: { icon: 'spa', color: 'slate', progress: 75 },
+                    economics: { icon: 'payments', color: 'slate', progress: 40 },
+                    resources: { icon: 'bolt', color: 'slate', progress: 20 }
                 };
 
                 const colorClasses = {
-                    blue: { bg: 'bg-blue-500', bgLight: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-200' },
-                    emerald: { bg: 'bg-emerald-500', bgLight: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-200' },
-                    amber: { bg: 'bg-amber-500', bgLight: 'bg-amber-50', text: 'text-amber-600', border: 'border-amber-200' },
-                    violet: { bg: 'bg-violet-500', bgLight: 'bg-violet-50', text: 'text-violet-600', border: 'border-violet-200' }
+                    slate: { bg: 'bg-slate-400', bgLight: 'bg-slate-50', text: 'text-slate-500', border: 'border-slate-200' }
                 };
 
                 // Theme Card Component
@@ -2387,12 +2384,12 @@
                                 onClick={() => toggleTheme(theme.id)}
                                 className={`w-full px-5 py-4 flex items-center gap-4 hover:bg-slate-50 transition-colors ${isExpanded ? 'bg-slate-50' : ''}`}
                             >
-                                {/* Subtle color indicator - reduced opacity */}
-                                <div className={`w-1 h-12 rounded-full ${colors.bg} opacity-40`}></div>
+                                {/* Subtle color indicator */}
+                                <div className={`w-1 h-12 rounded-full ${colors.bg}`}></div>
 
-                                {/* Icon - neutral background */}
+                                {/* Icon - matching line color */}
                                 <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
-                                    <MaterialIcon name={config.icon} size={22} className="text-slate-500" />
+                                    <MaterialIcon name={config.icon} size={22} className={colors.text} />
                                 </div>
 
                                 {/* Title & Progress */}
