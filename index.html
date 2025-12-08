@@ -1444,10 +1444,11 @@
 
                 return (
                     <nav
-                        className="h-11 bg-white border-b border-slate-200 px-4 flex items-center text-sm"
+                        className="h-11 bg-white border-b border-slate-200"
                         aria-label="Breadcrumb"
                     >
-                        <ol className="flex items-center gap-1">
+                        <div className="max-w-6xl mx-auto h-full px-4 flex items-center">
+                        <ol className="flex items-center gap-1 text-sm">
                             {items.map((item, index) => (
                                 <li key={index} className="flex items-center">
                                     {index > 0 && (
@@ -1482,6 +1483,7 @@
                                 </li>
                             ))}
                         </ol>
+                        </div>
                     </nav>
                 );
             };
@@ -2297,9 +2299,11 @@
                 const { title, subtitle } = getViewInfo();
 
                 return (
-                    <div className="bg-white border-b px-4 py-2">
-                        <span className="text-sm text-slate-600">{title}</span>
-                        {subtitle && <span className="text-sm text-slate-400 ml-1">{subtitle}</span>}
+                    <div className="bg-white border-b">
+                        <div className="max-w-6xl mx-auto px-4 py-2">
+                            <span className="text-sm text-slate-600">{title}</span>
+                            {subtitle && <span className="text-sm text-slate-400 ml-1">{subtitle}</span>}
+                        </div>
                     </div>
                 );
             };
@@ -2317,16 +2321,18 @@
 
             // Project view (project selected)
             return (
-                <div className="h-screen flex flex-col bg-slate-100">
+                <div className="h-screen flex flex-col">
                 <Header />
-                <div className="flex-1 flex overflow-hidden">
-                    <Sidebar />
-                    <div className="flex-1 flex flex-col overflow-hidden">
-                        <Breadcrumb />
-                        <ViewHeader />
-                        {/* Main content area - unified scroll */}
-                        <div className="flex-1 overflow-auto p-6 bg-slate-100">
-                            <div className="max-w-screen-xl mx-auto">
+                {/* Full-width headers with max-width text content */}
+                <div className="flex-1 flex flex-col overflow-hidden">
+                    <Breadcrumb />
+                    <ViewHeader />
+                    {/* Full-width background, max-width content container */}
+                    <div className="flex-1 overflow-hidden bg-slate-100">
+                        <div className="max-w-6xl mx-auto h-full flex">
+                            <Sidebar />
+                            {/* Main content area - unified scroll */}
+                            <div className="flex-1 overflow-auto p-6">
                                 <div className="flex gap-6 items-start">
                                     {showVariantList && <VariantList />}
                                     {sidebarView === 'uebersicht' ? <Uebersicht /> :
