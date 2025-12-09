@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "version": "2.0.0",
+    "version": "3.0.0",
     "lastUpdated": "2025-12-09",
     "description": "Framework catalog for sustainability standards and use cases in architectural competitions"
   },
@@ -13,11 +13,8 @@
       "description": "Der Schweizer Standard für nachhaltiges Bauen. Deckt Gesellschaft, Wirtschaft und Umwelt ab.",
       "link": "https://www.snbs.ch",
       "country": "CH",
-      "languages": ["de", "fr", "it"],
-      "scope": "national",
-      "status": "active",
+      "complexity": "intermediate",
       "certification": true,
-      "focus": ["environment", "social", "economic"],
       "criteria": [
         {
           "theme": "Gesellschaft",
@@ -58,11 +55,8 @@
       "description": "Internationales Zertifizierungssystem mit ganzheitlichem Ansatz für Gebäudebewertung.",
       "link": "https://www.dgnb.de",
       "country": "DE",
-      "languages": ["de", "en"],
-      "scope": "international",
-      "status": "active",
+      "complexity": "advanced",
       "certification": true,
-      "focus": ["environment", "social", "economic", "technical", "process"],
       "criteria": [
         {
           "theme": "Ökologische Qualität",
@@ -101,11 +95,8 @@
       "description": "Deutsche Methodik zur Integration von Nachhaltigkeitsanforderungen in Planungswettbewerbe. Basiert auf dem BNB-System mit 15 vorentwurfsrelevanten Kriterien.",
       "link": "https://www.bbsr.bund.de/BBSR/DE/veroeffentlichungen/zukunft-bauen-fp/2021/band-28.html",
       "country": "DE",
-      "languages": ["de"],
-      "scope": "national",
-      "status": "active",
+      "complexity": "intermediate",
       "certification": false,
-      "focus": ["environment", "social", "economic", "technical"],
       "criteria": [
         {
           "theme": "Ökologische Qualität",
@@ -155,11 +146,8 @@
       "description": "US-amerikanisches Bewertungssystem mit weltweiter Verbreitung. Fokus auf Energie und Ressourcen.",
       "link": "https://www.usgbc.org/leed",
       "country": "US",
-      "languages": ["en"],
-      "scope": "international",
-      "status": "active",
+      "complexity": "advanced",
       "certification": true,
-      "focus": ["environment", "energy", "health"],
       "criteria": [
         {
           "theme": "Energy & Atmosphere",
@@ -197,11 +185,8 @@
       "description": "Fokussiert auf Gesundheit und Wohlbefinden der Gebäudenutzer.",
       "link": "https://www.wellcertified.com",
       "country": "US",
-      "languages": ["en"],
-      "scope": "international",
-      "status": "active",
+      "complexity": "advanced",
       "certification": true,
-      "focus": ["health", "comfort"],
       "criteria": [
         {
           "theme": "Air",
@@ -237,11 +222,8 @@
       "description": "EU-weites Rahmenwerk zur Bewertung der Umweltleistung von Gebäuden.",
       "link": "https://environment.ec.europa.eu/topics/circular-economy/levels_en",
       "country": "EU",
-      "languages": ["en", "de", "fr", "es", "it"],
-      "scope": "regional",
-      "status": "active",
+      "complexity": "intermediate",
       "certification": false,
-      "focus": ["environment", "circular-economy"],
       "criteria": [
         {
           "theme": "Greenhouse Gas Emissions",
@@ -275,9 +257,9 @@
       "logo": "Basis",
       "name": "Minimum Information",
       "description": "Grundlegende Projektdaten, die für jeden Wettbewerb erfasst werden sollten.",
+      "country": null,
       "complexity": "basic",
-      "phase": "early-planning",
-      "focus": ["data-collection"],
+      "certification": false,
       "criteria": [
         {
           "theme": "Flächen",
@@ -313,9 +295,9 @@
       "logo": "Kosten",
       "name": "Kostenschätzung",
       "description": "Strukturierte Erfassung von Baukosten nach BKP für den Variantenvergleich.",
+      "country": "CH",
       "complexity": "intermediate",
-      "phase": "early-planning",
-      "focus": ["economic"],
+      "certification": false,
       "criteria": [
         {
           "theme": "BKP Hauptgruppen",
@@ -344,9 +326,9 @@
       "logo": "Energie",
       "name": "Energieanalyse",
       "description": "Energetische Kennwerte für den Vergleich der Gebäudeperformance.",
+      "country": null,
       "complexity": "intermediate",
-      "phase": "detailed-design",
-      "focus": ["energy", "environment"],
+      "certification": false,
       "criteria": [
         {
           "theme": "Energiebedarf",
@@ -384,9 +366,9 @@
       "logo": "Qualität",
       "name": "Architektonische Qualität",
       "description": "Qualitative Bewertung gestalterischer und funktionaler Aspekte.",
+      "country": null,
       "complexity": "advanced",
-      "phase": "early-planning",
-      "focus": ["design", "social"],
+      "certification": false,
       "criteria": [
         {
           "theme": "Gestaltung",
@@ -423,9 +405,9 @@
       "logo": "LZK",
       "name": "Lebenszykluskosten",
       "description": "Wirtschaftlichkeitsbetrachtung über den gesamten Lebenszyklus.",
+      "country": null,
       "complexity": "advanced",
-      "phase": "detailed-design",
-      "focus": ["economic"],
+      "certification": false,
       "criteria": [
         {
           "theme": "Investition",
@@ -460,9 +442,9 @@
       "logo": "LCA",
       "name": "Ökobilanz",
       "description": "Lebenszyklusanalyse zur Bewertung der Umweltauswirkungen über alle Phasen – von der Herstellung bis zum Rückbau.",
+      "country": null,
       "complexity": "advanced",
-      "phase": "detailed-design",
-      "focus": ["environment", "circular-economy"],
+      "certification": false,
       "criteria": [
         {
           "theme": "Treibhausgas-Emissionen",
@@ -500,9 +482,9 @@
       "logo": "pFM",
       "name": "Planungsbegleitendes Facility Management",
       "description": "Frühzeitige Berücksichtigung von Betriebs- und Unterhaltsaspekten für eine optimierte Gebäudebewirtschaftung.",
+      "country": null,
       "complexity": "advanced",
-      "phase": "detailed-design",
-      "focus": ["operations", "economic"],
+      "certification": false,
       "criteria": [
         {
           "theme": "Betriebskonzept",
@@ -547,46 +529,10 @@
       "US": "USA",
       "EU": "Europäische Union"
     },
-    "languages": {
-      "de": "Deutsch",
-      "en": "English",
-      "fr": "Français",
-      "it": "Italiano",
-      "es": "Español"
-    },
-    "scope": {
-      "national": "National",
-      "international": "International",
-      "regional": "Regional"
-    },
-    "status": {
-      "active": "Aktiv",
-      "draft": "Entwurf",
-      "deprecated": "Veraltet"
-    },
     "complexity": {
       "basic": "Basis",
       "intermediate": "Fortgeschritten",
       "advanced": "Expertenwissen"
-    },
-    "phase": {
-      "early-planning": "Frühe Planung",
-      "detailed-design": "Detailplanung",
-      "construction": "Ausführung"
-    },
-    "focus": {
-      "environment": "Umwelt",
-      "social": "Gesellschaft",
-      "economic": "Wirtschaft",
-      "technical": "Technik",
-      "process": "Prozess",
-      "health": "Gesundheit",
-      "comfort": "Komfort",
-      "energy": "Energie",
-      "circular-economy": "Kreislaufwirtschaft",
-      "design": "Gestaltung",
-      "operations": "Betrieb",
-      "data-collection": "Datenerfassung"
     }
   }
 }

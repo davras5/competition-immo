@@ -416,8 +416,8 @@
                     <span class="filter-panel__clear" id="clear-filters">Alle zurücksetzen</span>
                 </div>
 
-                <!-- Standards Filters -->
-                <div class="filter-groups" id="standards-filters">
+                <!-- Unified Filters -->
+                <div class="filter-groups" id="unified-filters">
                     <div class="filter-group">
                         <div class="filter-group__label">Land</div>
                         <div class="filter-group__options">
@@ -440,45 +440,6 @@
                         </div>
                     </div>
                     <div class="filter-group">
-                        <div class="filter-group__label">Geltungsbereich</div>
-                        <div class="filter-group__options">
-                            <label class="filter-option">
-                                <input type="checkbox" name="scope" value="national">
-                                National
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="scope" value="international">
-                                International
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="scope" value="regional">
-                                Regional
-                            </label>
-                        </div>
-                    </div>
-                    <div class="filter-group">
-                        <div class="filter-group__label">Zertifizierung</div>
-                        <div class="filter-group__options">
-                            <label class="filter-option">
-                                <input type="checkbox" name="certification" value="true">
-                                Mit Zertifizierung
-                            </label>
-                        </div>
-                    </div>
-                    <div class="filter-group">
-                        <div class="filter-group__label">BIM</div>
-                        <div class="filter-group__options">
-                            <label class="filter-option">
-                                <input type="checkbox" name="bim" value="true">
-                                Mit BIM-Kriterien
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Use Cases Filters -->
-                <div class="filter-groups" id="usecases-filters" style="display: none;">
-                    <div class="filter-group">
                         <div class="filter-group__label">Komplexität</div>
                         <div class="filter-group__options">
                             <label class="filter-option">
@@ -496,15 +457,11 @@
                         </div>
                     </div>
                     <div class="filter-group">
-                        <div class="filter-group__label">Projektphase</div>
+                        <div class="filter-group__label">Zertifizierung</div>
                         <div class="filter-group__options">
                             <label class="filter-option">
-                                <input type="checkbox" name="phase" value="early-planning">
-                                Frühe Planung
-                            </label>
-                            <label class="filter-option">
-                                <input type="checkbox" name="phase" value="detailed-design">
-                                Detailplanung
+                                <input type="checkbox" name="certification" value="true">
+                                Mit Zertifizierung
                             </label>
                         </div>
                     </div>
@@ -679,25 +636,18 @@
         // Render framework card
         function renderFrameworkCard(framework) {
             const counts = countCriteria(framework.criteria);
-            const isStandard = framework.type === 'standard';
+            // Build meta badges (unified for both types)
+            const countryLabel = framework.country ? getEnumLabel('countries', framework.country) : null;
+            const complexityLabel = framework.complexity ? getEnumLabel('complexity', framework.complexity) : null;
 
-            // Build meta badges based on type
-            let metaBadges = '';
-            if (isStandard) {
-                const countryLabel = getEnumLabel('countries', framework.country);
-                metaBadges = `
-                    ${framework.country ? `<span class="meta-badge meta-badge--country meta-badge--clickable" onclick="event.stopPropagation(); addFilter('country', '${framework.country}')" title="Filter: ${countryLabel}">${countryLabel}</span>` : ''}
-                    ${framework.certification ? `<span class="meta-badge meta-badge--certified meta-badge--clickable" onclick="event.stopPropagation(); addFilter('certification', 'true')" title="Filter: Zertifizierung"><span class="material-symbols-outlined">verified</span></span>` : ''}
-                `;
-            } else {
-                const complexityLabel = getEnumLabel('complexity', framework.complexity);
-                metaBadges = `
-                    ${framework.complexity ? `<span class="meta-badge meta-badge--complexity meta-badge--${framework.complexity} meta-badge--clickable" onclick="event.stopPropagation(); addFilter('complexity', '${framework.complexity}')" title="Filter: ${complexityLabel}">${complexityLabel}</span>` : ''}
-                `;
-            }
+            const metaBadges = `
+                ${countryLabel ? `<span class="meta-badge meta-badge--country meta-badge--clickable" onclick="event.stopPropagation(); addFilter('country', '${framework.country}')" title="Filter: ${countryLabel}">${countryLabel}</span>` : ''}
+                ${complexityLabel ? `<span class="meta-badge meta-badge--${framework.complexity} meta-badge--clickable" onclick="event.stopPropagation(); addFilter('complexity', '${framework.complexity}')" title="Filter: ${complexityLabel}">${complexityLabel}</span>` : ''}
+                ${framework.certification ? `<span class="meta-badge meta-badge--certified meta-badge--clickable" onclick="event.stopPropagation(); addFilter('certification', 'true')" title="Filter: Zertifizierung"><span class="material-symbols-outlined">verified</span></span>` : ''}
+            `;
 
             return `
-                <div class="framework-card" data-id="${framework.id}" data-type="${framework.type}" data-country="${framework.country || ''}" data-scope="${framework.scope || ''}" data-certification="${framework.certification || false}" data-complexity="${framework.complexity || ''}" data-phase="${framework.phase || ''}" data-bim="${counts.bim > 0}">
+                <div class="framework-card" data-id="${framework.id}" data-type="${framework.type}" data-country="${framework.country || ''}" data-certification="${framework.certification || false}" data-complexity="${framework.complexity || ''}" data-bim="${counts.bim > 0}">
                     <div class="framework-card__header" onclick="toggleFramework('${framework.id}')">
                         <div class="framework-card__info">
                             <div class="framework-card__logo">${framework.logo}</div>
@@ -790,10 +740,6 @@
                 });
                 document.getElementById(`tab-${tabId}`).classList.add('active');
 
-                // Switch filter panels
-                document.getElementById('standards-filters').style.display = tabId === 'standards' ? 'flex' : 'none';
-                document.getElementById('usecases-filters').style.display = tabId === 'use-cases' ? 'flex' : 'none';
-
                 // Update URL with tab
                 updateURL();
 
@@ -810,10 +756,8 @@
             return {
                 tab: params.get('tab') || 'standards',
                 country: params.getAll('country').length ? params.getAll('country') : params.get('country')?.split(',').filter(Boolean) || [],
-                scope: params.getAll('scope').length ? params.getAll('scope') : params.get('scope')?.split(',').filter(Boolean) || [],
-                certification: params.get('certification') === 'true',
                 complexity: params.getAll('complexity').length ? params.getAll('complexity') : params.get('complexity')?.split(',').filter(Boolean) || [],
-                phase: params.getAll('phase').length ? params.getAll('phase') : params.get('phase')?.split(',').filter(Boolean) || [],
+                certification: params.get('certification') === 'true',
                 bim: params.get('bim') === 'true'
             };
         }
@@ -827,19 +771,15 @@
                 params.set('tab', activeTab);
             }
 
-            // Get checked filters
-            const checkedCountries = [...document.querySelectorAll('#standards-filters input[name="country"]:checked')].map(el => el.value);
-            const checkedScopes = [...document.querySelectorAll('#standards-filters input[name="scope"]:checked')].map(el => el.value);
-            const checkedCertification = document.querySelector('#standards-filters input[name="certification"]:checked');
-            const checkedComplexities = [...document.querySelectorAll('#usecases-filters input[name="complexity"]:checked')].map(el => el.value);
-            const checkedPhases = [...document.querySelectorAll('#usecases-filters input[name="phase"]:checked')].map(el => el.value);
-            const checkedBim = document.querySelector('.filter-panel input[name="bim"]:checked');
+            // Get checked filters from unified filter panel
+            const checkedCountries = [...document.querySelectorAll('#unified-filters input[name="country"]:checked')].map(el => el.value);
+            const checkedComplexities = [...document.querySelectorAll('#unified-filters input[name="complexity"]:checked')].map(el => el.value);
+            const checkedCertification = document.querySelector('#unified-filters input[name="certification"]:checked');
+            const checkedBim = document.querySelector('#unified-filters input[name="bim"]:checked');
 
             if (checkedCountries.length) params.set('country', checkedCountries.join(','));
-            if (checkedScopes.length) params.set('scope', checkedScopes.join(','));
-            if (checkedCertification) params.set('certification', 'true');
             if (checkedComplexities.length) params.set('complexity', checkedComplexities.join(','));
-            if (checkedPhases.length) params.set('phase', checkedPhases.join(','));
+            if (checkedCertification) params.set('certification', 'true');
             if (checkedBim) params.set('bim', 'true');
 
             const newURL = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
@@ -857,38 +797,29 @@
                 document.querySelector(`.tab[data-tab="${filters.tab}"]`)?.classList.add('active');
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
                 document.getElementById(`tab-${filters.tab}`)?.classList.add('active');
-                document.getElementById('standards-filters').style.display = filters.tab === 'standards' ? 'flex' : 'none';
-                document.getElementById('usecases-filters').style.display = filters.tab === 'use-cases' ? 'flex' : 'none';
             }
 
-            // Set checkboxes
+            // Set checkboxes from unified filter panel
             filters.country.forEach(val => {
-                const checkbox = document.querySelector(`#standards-filters input[name="country"][value="${val}"]`);
+                const checkbox = document.querySelector(`#unified-filters input[name="country"][value="${val}"]`);
                 if (checkbox) checkbox.checked = true;
             });
-            filters.scope.forEach(val => {
-                const checkbox = document.querySelector(`#standards-filters input[name="scope"][value="${val}"]`);
+            filters.complexity.forEach(val => {
+                const checkbox = document.querySelector(`#unified-filters input[name="complexity"][value="${val}"]`);
                 if (checkbox) checkbox.checked = true;
             });
             if (filters.certification) {
-                const checkbox = document.querySelector('#standards-filters input[name="certification"]');
+                const checkbox = document.querySelector('#unified-filters input[name="certification"]');
                 if (checkbox) checkbox.checked = true;
             }
-            filters.complexity.forEach(val => {
-                const checkbox = document.querySelector(`#usecases-filters input[name="complexity"][value="${val}"]`);
-                if (checkbox) checkbox.checked = true;
-            });
-            filters.phase.forEach(val => {
-                const checkbox = document.querySelector(`#usecases-filters input[name="phase"][value="${val}"]`);
-                if (checkbox) checkbox.checked = true;
-            });
             if (filters.bim) {
-                document.querySelectorAll('.filter-panel input[name="bim"]').forEach(cb => cb.checked = true);
+                const checkbox = document.querySelector('#unified-filters input[name="bim"]');
+                if (checkbox) checkbox.checked = true;
             }
 
             // Open filter panel if there are active filters
-            const hasFilters = filters.country.length || filters.scope.length || filters.certification ||
-                               filters.complexity.length || filters.phase.length || filters.bim;
+            const hasFilters = filters.country.length || filters.complexity.length ||
+                               filters.certification || filters.bim;
             if (hasFilters) {
                 document.getElementById('filter-panel').classList.add('active');
             }
@@ -905,35 +836,24 @@
             cards.forEach(card => {
                 let show = true;
 
-                if (activeTab === 'standards') {
-                    // Country filter
-                    if (filters.country.length > 0) {
-                        const cardCountry = card.dataset.country;
-                        if (!filters.country.includes(cardCountry)) show = false;
-                    }
-                    // Scope filter
-                    if (show && filters.scope.length > 0) {
-                        const cardScope = card.dataset.scope;
-                        if (!filters.scope.includes(cardScope)) show = false;
-                    }
-                    // Certification filter
-                    if (show && filters.certification) {
-                        if (card.dataset.certification !== 'true') show = false;
-                    }
-                } else {
-                    // Complexity filter
-                    if (filters.complexity.length > 0) {
-                        const cardComplexity = card.dataset.complexity;
-                        if (!filters.complexity.includes(cardComplexity)) show = false;
-                    }
-                    // Phase filter
-                    if (show && filters.phase.length > 0) {
-                        const cardPhase = card.dataset.phase;
-                        if (!filters.phase.includes(cardPhase)) show = false;
-                    }
+                // Country filter (unified)
+                if (filters.country.length > 0) {
+                    const cardCountry = card.dataset.country;
+                    if (!cardCountry || !filters.country.includes(cardCountry)) show = false;
                 }
 
-                // BIM filter (common)
+                // Complexity filter (unified)
+                if (show && filters.complexity.length > 0) {
+                    const cardComplexity = card.dataset.complexity;
+                    if (!cardComplexity || !filters.complexity.includes(cardComplexity)) show = false;
+                }
+
+                // Certification filter (unified)
+                if (show && filters.certification) {
+                    if (card.dataset.certification !== 'true') show = false;
+                }
+
+                // BIM filter (unified)
                 if (show && filters.bim) {
                     if (card.dataset.bim !== 'true') show = false;
                 }
