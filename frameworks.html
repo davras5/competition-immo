@@ -1424,6 +1424,117 @@
                         ]
                     }
                 ]
+            },
+            {
+                id: 'lca',
+                logo: 'LCA',
+                name: 'Ökobilanz',
+                description: 'Lebenszyklusanalyse zur Bewertung der Umweltauswirkungen über alle Phasen – von der Herstellung bis zum Rückbau.',
+                criteria: [
+                    {
+                        theme: 'Treibhausgas-Emissionen',
+                        icon: 'cloud',
+                        items: [
+                            { name: 'GWP Erstellung', type: 'quantitative', unit: 'kg CO₂-eq/m²' },
+                            { name: 'GWP Betrieb (p.a.)', type: 'quantitative', unit: 'kg CO₂-eq/m²a' },
+                            { name: 'GWP Rückbau', type: 'quantitative', unit: 'kg CO₂-eq/m²' },
+                            { name: 'GWP Total (50a)', type: 'quantitative', unit: 'kg CO₂-eq/m²' }
+                        ]
+                    },
+                    {
+                        theme: 'Primärenergie',
+                        icon: 'bolt',
+                        items: [
+                            { name: 'PENRT (nicht erneuerbar)', type: 'quantitative', unit: 'MJ/m²' },
+                            { name: 'PERT (erneuerbar)', type: 'quantitative', unit: 'MJ/m²' },
+                            { name: 'Anteil erneuerbare Energie', type: 'quantitative', unit: '%' }
+                        ]
+                    },
+                    {
+                        theme: 'Weitere Umweltindikatoren',
+                        icon: 'eco',
+                        items: [
+                            { name: 'Versauerungspotenzial (AP)', type: 'quantitative', unit: 'kg SO₂-eq/m²' },
+                            { name: 'Eutrophierungspotenzial (EP)', type: 'quantitative', unit: 'kg PO₄-eq/m²' },
+                            { name: 'Ozonabbaupotenzial (ODP)', type: 'quantitative', unit: 'kg R11-eq/m²' }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'fm',
+                logo: 'pFM',
+                name: 'Planungsbegleitendes Facility Management',
+                description: 'Frühzeitige Berücksichtigung von Betriebs- und Unterhaltsaspekten für eine optimierte Gebäudebewirtschaftung.',
+                criteria: [
+                    {
+                        theme: 'Betriebskonzept',
+                        icon: 'settings',
+                        items: [
+                            { name: 'Zonenkonzept Reinigung', type: 'qualitative', unit: 'Bewertung' },
+                            { name: 'Schliesssystem / Zutrittskontrolle', type: 'qualitative', unit: 'Bewertung' },
+                            { name: 'Abfallkonzept', type: 'qualitative', unit: 'Bewertung' }
+                        ]
+                    },
+                    {
+                        theme: 'Wartung & Instandhaltung',
+                        icon: 'build',
+                        items: [
+                            { name: 'Zugänglichkeit Technikräume', type: 'qualitative', unit: 'Bewertung' },
+                            { name: 'Wartungsfreundlichkeit Fassade', type: 'qualitative', unit: 'Bewertung' },
+                            { name: 'Revisionierbarkeit Installationen', type: 'qualitative', unit: 'Bewertung' },
+                            { name: 'Ersatzteilbeschaffung', type: 'qualitative', unit: 'Bewertung' }
+                        ]
+                    },
+                    {
+                        theme: 'Flächenkennwerte FM',
+                        icon: 'square_foot',
+                        items: [
+                            { name: 'Reinigungsfläche', type: 'quantitative', unit: 'm²' },
+                            { name: 'Glasfläche (Reinigung)', type: 'quantitative', unit: 'm²' },
+                            { name: 'Grünfläche (Pflege)', type: 'quantitative', unit: 'm²' },
+                            { name: 'Technikfläche', type: 'quantitative', unit: 'm²' }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'location',
+                logo: 'Standort',
+                name: 'Standortanalyse & Risiken',
+                description: 'Systematische Bewertung von Standortfaktoren und potenziellen Risiken für fundierte Investitionsentscheide.',
+                criteria: [
+                    {
+                        theme: 'Naturgefahren',
+                        icon: 'warning',
+                        items: [
+                            { name: 'Hochwassergefährdung', type: 'qualitative', unit: 'Gefahrenstufe' },
+                            { name: 'Erdbebenzone', type: 'quantitative', unit: 'Zone (Z1-Z4)' },
+                            { name: 'Rutschungsgefahr', type: 'qualitative', unit: 'Gefahrenstufe' },
+                            { name: 'Sturmexposition', type: 'qualitative', unit: 'Bewertung' }
+                        ]
+                    },
+                    {
+                        theme: 'Umweltfaktoren',
+                        icon: 'landscape',
+                        items: [
+                            { name: 'Altlastenverdacht', type: 'qualitative', unit: 'Bewertung' },
+                            { name: 'Lärmbelastung Tag', type: 'quantitative', unit: 'dB(A)' },
+                            { name: 'Lärmbelastung Nacht', type: 'quantitative', unit: 'dB(A)' },
+                            { name: 'Luftqualität (NO₂)', type: 'quantitative', unit: 'µg/m³' }
+                        ]
+                    },
+                    {
+                        theme: 'Erschliessung & Lage',
+                        icon: 'location_on',
+                        items: [
+                            { name: 'ÖV-Güteklasse', type: 'quantitative', unit: 'Klasse (A-D)' },
+                            { name: 'Distanz Autobahnanschluss', type: 'quantitative', unit: 'km' },
+                            { name: 'Distanz Bahnhof', type: 'quantitative', unit: 'm' },
+                            { name: 'Mikrolage-Rating', type: 'qualitative', unit: 'Bewertung' }
+                        ]
+                    }
+                ]
             }
         ];
         
