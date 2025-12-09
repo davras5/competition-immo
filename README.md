@@ -4,6 +4,15 @@ A professional dashboard application for managing and evaluating architecture co
 
 **Live Demo**: https://davras5.github.io/competition-immo/
 
+<p align="center">
+  <img src="assets/images/Preview1.jpg" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="assets/images/Preview2.jpg" width="45%" style="vertical-align: top;"/>
+  <img src="assets/images/Preview3.jpg" width="45%" style="vertical-align: top;"/>
+</p>
+
 ## Features
 
 ### Project Management
