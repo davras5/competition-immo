@@ -484,7 +484,74 @@
             font-size: var(--font-size-sm);
             color: var(--color-text-muted);
         }
-        
+
+        /* ========================================
+           CONCEPT CARDS (Quantitative/Qualitative)
+           ======================================== */
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-8);
+            margin-bottom: var(--space-12);
+        }
+
+        .concept-card {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+        }
+
+        .concept-card__icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-4);
+        }
+
+        .concept-card__icon--quantitative {
+            background: var(--color-emerald-100);
+            color: var(--color-emerald-600);
+        }
+
+        .concept-card__icon--qualitative {
+            background: var(--color-blue-100);
+            color: var(--color-blue-600);
+        }
+
+        .concept-card__icon .material-symbols-outlined {
+            font-size: 24px;
+        }
+
+        .concept-card__title {
+            font-weight: 600;
+            color: var(--color-slate-800);
+            margin-bottom: var(--space-2);
+        }
+
+        .concept-card__desc {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-muted);
+            margin-bottom: var(--space-4);
+        }
+
+        .concept-card__examples {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-2);
+        }
+
+        .example-tag {
+            padding: var(--space-1) var(--space-3);
+            background: var(--color-slate-100);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-xs);
+            color: var(--color-slate-600);
+        }
+
         /* ========================================
            SHOWCASE SECTION
            ======================================== */
@@ -846,7 +913,95 @@
             background: var(--color-slate-700);
             border-color: var(--color-slate-400);
         }
-        
+
+        /* ========================================
+           PRICING SECTION
+           ======================================== */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-6);
+        }
+
+        .pricing-card {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pricing-card--featured {
+            border-color: var(--color-slate-800);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .pricing-card__badge {
+            align-self: flex-start;
+            padding: var(--space-1) var(--space-3);
+            background: var(--color-slate-800);
+            color: white;
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--space-4);
+        }
+
+        .pricing-card__name {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--color-slate-800);
+            margin-bottom: var(--space-2);
+        }
+
+        .pricing-card__desc {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-muted);
+            margin-bottom: var(--space-5);
+        }
+
+        .pricing-card__price {
+            margin-bottom: var(--space-6);
+        }
+
+        .pricing-card__amount {
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+            color: var(--color-slate-900);
+        }
+
+        .pricing-card__period {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-muted);
+        }
+
+        .pricing-card__features {
+            list-style: none;
+            margin-bottom: var(--space-6);
+            flex: 1;
+        }
+
+        .pricing-card__features li {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-2);
+            padding: var(--space-2) 0;
+            font-size: var(--font-size-sm);
+            color: var(--color-text-tertiary);
+        }
+
+        .pricing-card__features .material-symbols-outlined {
+            font-size: 18px;
+            color: var(--color-emerald-500);
+            flex-shrink: 0;
+        }
+
+        .pricing-card .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
         /* ========================================
            FOOTER
            ======================================== */
@@ -919,15 +1074,23 @@
             .features-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
+
             .steps {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
+
             .steps::before {
                 display: none;
             }
-            
+
+            .concept-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
             .footer__grid {
                 grid-template-columns: 1fr 1fr;
             }
@@ -987,9 +1150,10 @@
                 Wettbewerb Cockpit
             </a>
             <nav class="header__nav">
-                <a href="#frameworks">Frameworks</a>
                 <a href="#how-it-works">So funktioniert's</a>
+                <a href="#frameworks">Frameworks</a>
                 <a href="#showcase">Projekte</a>
+                <a href="#pricing">Preise</a>
                 <a href="app/index.html" class="btn btn--primary">Demo starten</a>
             </nav>
         </div>
@@ -1098,9 +1262,46 @@
             <div class="section-intro text-center">
                 <h2 class="heading-2">So funktioniert's</h2>
                 <p class="subheading">
-                    In vier Schritten von der Projektanlage zur fundierten Entscheidung.
+                    Strukturierte Datenerfassung mit quantitativen Messungen und qualitativen Expertenbewertungen.
                 </p>
             </div>
+
+            <!-- Quantitative vs Qualitative -->
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <div class="concept-card__icon concept-card__icon--quantitative">
+                        <span class="material-symbols-outlined">straighten</span>
+                    </div>
+                    <h3 class="concept-card__title">Quantitative KPIs</h3>
+                    <p class="concept-card__desc">
+                        Messbare Kennzahlen mit definierten Einheiten. Diese Werte können objektiv erfasst und verglichen werden.
+                    </p>
+                    <div class="concept-card__examples">
+                        <span class="example-tag">Geschossfläche (m²)</span>
+                        <span class="example-tag">Baukosten (CHF)</span>
+                        <span class="example-tag">Energiebedarf (kWh/m²)</span>
+                        <span class="example-tag">CO₂-Emissionen (kg/m²)</span>
+                    </div>
+                </div>
+                <div class="concept-card">
+                    <div class="concept-card__icon concept-card__icon--qualitative">
+                        <span class="material-symbols-outlined">psychology</span>
+                    </div>
+                    <h3 class="concept-card__title">Qualitative KPIs</h3>
+                    <p class="concept-card__desc">
+                        Experteneinschätzungen auf einer definierten Bewertungsskala. Diese erfassen Aspekte, die nicht direkt messbar sind.
+                    </p>
+                    <div class="concept-card__examples">
+                        <span class="example-tag">Architektonische Qualität</span>
+                        <span class="example-tag">Nutzungsflexibilität</span>
+                        <span class="example-tag">Städtebauliche Einbindung</span>
+                        <span class="example-tag">Aufenthaltsqualität</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Process Steps -->
+            <h3 class="heading-3 text-center" style="margin-bottom: var(--space-8);">Der Bewertungsprozess</h3>
             <div class="steps">
                 <div class="step">
                     <div class="step__number">1</div>
@@ -1110,17 +1311,17 @@
                 <div class="step">
                     <div class="step__number">2</div>
                     <h3 class="step__title">Frameworks wählen</h3>
-                    <p class="step__desc">Bewertungsstandards aus Katalog auswählen oder eigene erstellen</p>
+                    <p class="step__desc">Standards und Anwendungsfälle kombinieren</p>
                 </div>
                 <div class="step">
                     <div class="step__number">3</div>
                     <h3 class="step__title">Daten erfassen</h3>
-                    <p class="step__desc">Varianten anlegen und Experten-bewertungen einholen</p>
+                    <p class="step__desc">Varianten anlegen, Experten bewerten</p>
                 </div>
                 <div class="step">
                     <div class="step__number">4</div>
-                    <h3 class="step__title">Vergleichen & Entscheiden</h3>
-                    <p class="step__desc">Ergebnisse analysieren und dokumentiert entscheiden</p>
+                    <h3 class="step__title">Vergleichen</h3>
+                    <p class="step__desc">Ergebnisse analysieren und entscheiden</p>
                 </div>
             </div>
         </div>
@@ -1233,7 +1434,120 @@
             </div>
         </div>
     </section>
-    
+
+    <!-- Pricing -->
+    <section class="section section--alt" id="pricing">
+        <div class="container">
+            <div class="section-intro text-center">
+                <h2 class="heading-2">Preise</h2>
+                <p class="subheading">
+                    Flexible Modelle für jede Projektgrösse. Starten Sie kostenlos und skalieren Sie nach Bedarf.
+                </p>
+            </div>
+
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-card__name">Starter</div>
+                    <p class="pricing-card__desc">Für kleine Wettbewerbe und erste Erfahrungen</p>
+                    <div class="pricing-card__price">
+                        <span class="pricing-card__amount">Kostenlos</span>
+                    </div>
+                    <ul class="pricing-card__features">
+                        <li>
+                            <span class="material-symbols-outlined">check</span>
+                            1 aktives Projekt
+                        </li>
+                        <li>
+                            <span class="material-symbols-outlined">check</span>
+                            Bis zu 3 Varianten
+                        </li>
+                        <li>
+                            <span class="material-symbols-outlined">check</span>
+                            Basis-Anwendungsfälle
+                        </li>
+                        <li>
+                            <span class="material-symbols-outlined">check</span>
+                            Export als PDF
+                        </li>
+                    </ul>
+                    <button class="btn btn--secondary">Kostenlos starten</button>
+                </div>
+
+                <div class="pricing-card pricing-card--featured">
+                    <span class="pricing-card__badge">Empfohlen</span>
+                    <div class="pricing-card__name">Professional</div>
+                    <p class="pricing-card__desc">Für mittlere bis grosse Wettbewerbe</p>
+                    <div class="pricing-card__price">
+                        <span class="pricing-card__amount">CHF 490</span>
+                        <span class="pricing-card__period">/ Projekt</span>
+                    </div>
+                    <ul class="pricing-card__features">
+                        <li>
+                            <span class="material-symbols-outlined">check</span>
+                            Unbegrenzte Varianten
+                        </li>
+                        <li>
+                            <span class="material-symbols-outlined">check</span>
+                            Alle Standards (SNBS, DGNB, LEED, ...)
+                        </li>
+                        <li>
+                            <span class="material-symbols-outlined">check</span>
+                            Alle Anwendungsfälle
+                        </li>
+                        <li>
+                            <span class="material-symbols-outlined">check</span>
+                            Team-Zusammenarbeit (5 Nutzer)
+                        </li>
+                        <li>
+                            <span class="material-symbols-outlined">check</span>
+                            Export als PDF, Excel
+                        </li>
+                        <li>
+                            <span class="material-symbols-outlined">check</span>
+                            Interaktive Karten
+                        </li>
+                    </ul>
+                    <button class="btn btn--primary">Projekt starten</button>
+                </div>
+
+                <div class="pricing-card">
+                    <div class="pricing-card__name">Enterprise</div>
+                    <p class="pricing-card__desc">Für Organisationen mit mehreren Projekten</p>
+                    <div class="pricing-card__price">
+                        <span class="pricing-card__amount">Auf Anfrage</span>
+                    </div>
+                    <ul class="pricing-card__features">
+                        <li>
+                            <span class="material-symbols-outlined">check</span>
+                            Unbegrenzte Projekte
+                        </li>
+                        <li>
+                            <span class="material-symbols-outlined">check</span>
+                            Eigene Frameworks erstellen
+                        </li>
+                        <li>
+                            <span class="material-symbols-outlined">check</span>
+                            Unbegrenzte Nutzer
+                        </li>
+                        <li>
+                            <span class="material-symbols-outlined">check</span>
+                            API-Zugang
+                        </li>
+                        <li>
+                            <span class="material-symbols-outlined">check</span>
+                            Single Sign-On (SSO)
+                        </li>
+                        <li>
+                            <span class="material-symbols-outlined">check</span>
+                            Dedizierter Support
+                        </li>
+                    </ul>
+                    <button class="btn btn--secondary">Kontakt aufnehmen</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- CTA -->
     <section class="section cta">
         <div class="container text-center">
