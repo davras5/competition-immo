@@ -2134,11 +2134,11 @@ textarea.input {
    COMPONENT: Team Member Row
    ======================================== */
 .team-member-row {
-    padding: var(--space-3);
+    padding: var(--space-3) var(--space-3);
     margin: 0 calc(-1 * var(--space-3));
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: var(--space-4);
     border-radius: var(--radius-lg);
     transition: background-color var(--transition-fast);
 }
@@ -2153,11 +2153,6 @@ textarea.input {
 .team-member-details {
     display: flex;
     flex-direction: column;
-}
-.team-member-name-row {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
 }
 .team-member-name {
     font-size: var(--text-sm);
@@ -3109,13 +3104,11 @@ const TeamMemberRow = ({ name, email, role, isExpert = false }) => {
                 className: isExpert ? 'bg-emerald-100 text-emerald-700' : ''
             }),
             el('div', { className: 'team-member-details' }, [
-                el('div', { className: 'team-member-name-row' }, [
-                    el('span', { className: 'team-member-name' }, [name]),
-                    el('span', { className: `team-role-badge ${isExpert ? 'expert' : ''}` }, [role])
-                ]),
+                el('span', { className: 'team-member-name' }, [name]),
                 el('span', { className: 'team-member-email' }, [email])
             ])
-        ])
+        ]),
+        el('span', { className: `team-role-badge ${isExpert ? 'expert' : ''}` }, [role])
     ]);
 };
 
