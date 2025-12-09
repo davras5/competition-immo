@@ -16,21 +16,22 @@
     <style>
         /* ========================================
            DESIGN TOKENS
+           Aligned with Wettbewerb Cockpit color strategy
            ======================================== */
         :root {
-            /* Slate - Primary Neutral Palette */
+            /* Slate - Primary Neutral Palette (improved contrast) */
             --color-slate-50: #f8fafc;
             --color-slate-100: #f1f5f9;
-            --color-slate-200: #e2e8f0;
-            --color-slate-300: #cbd5e1;
-            --color-slate-400: #94a3b8;
-            --color-slate-500: #64748b;
+            --color-slate-200: #d1d5db;  /* Darker for visible borders */
+            --color-slate-300: #9ca3af;  /* Darker for scrollbars/dividers */
+            --color-slate-400: #6b7280;  /* AA compliant for icons */
+            --color-slate-500: #4b5563;  /* AAA compliant for muted text */
             --color-slate-600: #475569;
             --color-slate-700: #334155;
             --color-slate-800: #1e293b;
             --color-slate-900: #0f172a;
 
-            /* Emerald - Positive/Quantitative */
+            /* Emerald - Success + Primary Actions + Sustainability */
             --color-emerald-50: #ecfdf5;
             --color-emerald-100: #d1fae5;
             --color-emerald-400: #34d399;
@@ -38,13 +39,29 @@
             --color-emerald-600: #059669;
             --color-emerald-700: #047857;
 
-            /* Amber - Warning/In-Progress */
+            /* Amber - Warning + Attention Needed */
             --color-amber-50: #fffbeb;
             --color-amber-100: #fef3c7;
             --color-amber-400: #fbbf24;
             --color-amber-500: #f59e0b;
             --color-amber-600: #d97706;
             --color-amber-700: #b45309;
+
+            /* Red - Negative/Error */
+            --color-red-50: #fef2f2;
+            --color-red-100: #fee2e2;
+            --color-red-400: #f87171;
+            --color-red-500: #ef4444;
+            --color-red-600: #dc2626;
+            --color-red-700: #b91c1c;
+
+            /* Blue - Active/In-Progress + Institutional Trust */
+            --color-blue-50: #eff6ff;
+            --color-blue-100: #dbeafe;
+            --color-blue-400: #60a5fa;
+            --color-blue-500: #3b82f6;
+            --color-blue-600: #2563eb;
+            --color-blue-700: #1d4ed8;
 
             /* Violet - Qualitative */
             --color-violet-50: #f5f3ff;
@@ -54,27 +71,22 @@
             --color-violet-600: #7c3aed;
             --color-violet-700: #6d28d9;
 
-            /* Blue - Informational */
-            --color-blue-50: #eff6ff;
-            --color-blue-100: #dbeafe;
-            --color-blue-500: #3b82f6;
-            --color-blue-700: #1d4ed8;
-            
             /* Semantic mappings */
             --color-bg-page: var(--color-slate-50);
             --color-bg-card: #ffffff;
             --color-bg-inset: var(--color-slate-100);
-            
+            --color-bg-sidebar: var(--color-slate-800);
+
             --color-text-primary: var(--color-slate-900);
             --color-text-secondary: var(--color-slate-700);
             --color-text-tertiary: var(--color-slate-600);
             --color-text-muted: var(--color-slate-500);
             --color-text-disabled: var(--color-slate-400);
             --color-text-inverse: #ffffff;
-            
+
             --color-border: var(--color-slate-200);
             --color-border-dark: var(--color-slate-300);
-            
+
             /* Typography */
             --font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             --font-size-xs: 0.75rem;
@@ -84,7 +96,9 @@
             --font-size-xl: 1.25rem;
             --font-size-2xl: 1.5rem;
             --font-size-3xl: 1.875rem;
-            
+            --font-size-4xl: 2.25rem;
+            --font-size-5xl: 3rem;
+
             /* Spacing */
             --space-1: 0.25rem;
             --space-2: 0.5rem;
@@ -97,20 +111,21 @@
             --space-12: 3rem;
             --space-16: 4rem;
             --space-20: 5rem;
-            
+            --space-24: 6rem;
+
             /* Layout */
             --max-width: 1200px;
             --header-height: 64px;
-            
-            /* Effects */
+
+            /* Effects - subtle shadows */
             --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-            
+
             --radius-sm: 4px;
             --radius-md: 6px;
             --radius-lg: 8px;
-            
+
             --transition-fast: 150ms ease;
             --transition-base: 200ms ease;
         }
@@ -196,7 +211,7 @@
         
         .subheading {
             font-size: var(--font-size-lg);
-            color: var(--color-text-muted);
+            color: var(--color-text-secondary);
             line-height: 1.5;
         }
         
@@ -255,7 +270,15 @@
         .header__nav a.active {
             color: var(--color-slate-800);
         }
-        
+
+        .header__nav .btn--primary {
+            color: var(--color-text-inverse);
+        }
+
+        .header__nav .btn--primary:hover {
+            color: var(--color-text-inverse);
+        }
+
         .btn {
             display: inline-flex;
             align-items: center;
@@ -950,8 +973,6 @@
             <nav class="header__nav">
                 <a href="index.html">Startseite</a>
                 <a href="#" class="active">Bewertungsrahmen</a>
-                <a href="#how-it-works">So funktioniert's</a>
-                <a href="#pricing">Preise</a>
                 <a href="app/index.html" class="btn btn--primary">Demo starten</a>
             </nav>
         </div>
@@ -1004,190 +1025,6 @@
                     <div class="frameworks-grid" id="usecases-grid">
                         <!-- Generated by JS -->
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- How It Works -->
-    <section class="section section--alt" id="how-it-works">
-        <div class="container">
-            <div class="section-intro text-center">
-                <h2 class="heading-2">So funktioniert's</h2>
-                <p class="subheading">
-                    Strukturierte Datenerfassung mit quantitativen Messungen und qualitativen Expertenbewertungen.
-                </p>
-            </div>
-            
-            <!-- Quantitative vs Qualitative -->
-            <div class="concept-grid">
-                <div class="concept-card">
-                    <div class="concept-card__icon concept-card__icon--quantitative">
-                        <span class="material-symbols-outlined">straighten</span>
-                    </div>
-                    <h3 class="concept-card__title">Quantitative KPIs</h3>
-                    <p class="concept-card__desc">
-                        Messbare Kennzahlen mit definierten Einheiten. Diese Werte können objektiv erfasst und verglichen werden.
-                    </p>
-                    <div class="concept-card__examples">
-                        <span class="example-tag">Geschossfläche (m²)</span>
-                        <span class="example-tag">Baukosten (CHF)</span>
-                        <span class="example-tag">Energiebedarf (kWh/m²)</span>
-                        <span class="example-tag">CO₂-Emissionen (kg/m²)</span>
-                    </div>
-                </div>
-                <div class="concept-card">
-                    <div class="concept-card__icon concept-card__icon--qualitative">
-                        <span class="material-symbols-outlined">psychology</span>
-                    </div>
-                    <h3 class="concept-card__title">Qualitative KPIs</h3>
-                    <p class="concept-card__desc">
-                        Experteneinschätzungen auf einer definierten Bewertungsskala. Diese erfassen Aspekte, die nicht direkt messbar sind.
-                    </p>
-                    <div class="concept-card__examples">
-                        <span class="example-tag">Architektonische Qualität</span>
-                        <span class="example-tag">Nutzungsflexibilität</span>
-                        <span class="example-tag">Städtebauliche Einbindung</span>
-                        <span class="example-tag">Aufenthaltsqualität</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Process -->
-            <h3 class="heading-3 text-center" style="margin-bottom: var(--space-8);">Der Bewertungsprozess</h3>
-            <div class="process">
-                <div class="process-step">
-                    <div class="process-step__number">1</div>
-                    <h4 class="process-step__title">Projekt anlegen</h4>
-                    <p class="process-step__desc">Wettbewerb erstellen und Grunddaten erfassen</p>
-                </div>
-                <div class="process-step">
-                    <div class="process-step__number">2</div>
-                    <h4 class="process-step__title">Frameworks wählen</h4>
-                    <p class="process-step__desc">Standards und Anwendungsfälle kombinieren</p>
-                </div>
-                <div class="process-step">
-                    <div class="process-step__number">3</div>
-                    <h4 class="process-step__title">Daten erfassen</h4>
-                    <p class="process-step__desc">Varianten anlegen, Experten bewerten</p>
-                </div>
-                <div class="process-step">
-                    <div class="process-step__number">4</div>
-                    <h4 class="process-step__title">Vergleichen</h4>
-                    <p class="process-step__desc">Ergebnisse analysieren und entscheiden</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Pricing -->
-    <section class="section" id="pricing">
-        <div class="container">
-            <div class="section-intro text-center">
-                <h2 class="heading-2">Preise</h2>
-                <p class="subheading">
-                    Flexible Modelle für jede Projektgrösse. Starten Sie kostenlos und skalieren Sie nach Bedarf.
-                </p>
-            </div>
-            
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <div class="pricing-card__name">Starter</div>
-                    <p class="pricing-card__desc">Für kleine Wettbewerbe und erste Erfahrungen</p>
-                    <div class="pricing-card__price">
-                        <span class="pricing-card__amount">Kostenlos</span>
-                    </div>
-                    <ul class="pricing-card__features">
-                        <li>
-                            <span class="material-symbols-outlined">check</span>
-                            1 aktives Projekt
-                        </li>
-                        <li>
-                            <span class="material-symbols-outlined">check</span>
-                            Bis zu 3 Varianten
-                        </li>
-                        <li>
-                            <span class="material-symbols-outlined">check</span>
-                            Basis-Anwendungsfälle
-                        </li>
-                        <li>
-                            <span class="material-symbols-outlined">check</span>
-                            Export als PDF
-                        </li>
-                    </ul>
-                    <button class="btn btn--secondary">Kostenlos starten</button>
-                </div>
-                
-                <div class="pricing-card pricing-card--featured">
-                    <span class="pricing-card__badge">Empfohlen</span>
-                    <div class="pricing-card__name">Professional</div>
-                    <p class="pricing-card__desc">Für mittlere bis grosse Wettbewerbe</p>
-                    <div class="pricing-card__price">
-                        <span class="pricing-card__amount">CHF 490</span>
-                        <span class="pricing-card__period">/ Projekt</span>
-                    </div>
-                    <ul class="pricing-card__features">
-                        <li>
-                            <span class="material-symbols-outlined">check</span>
-                            Unbegrenzte Varianten
-                        </li>
-                        <li>
-                            <span class="material-symbols-outlined">check</span>
-                            Alle Standards (SNBS, DGNB, LEED, ...)
-                        </li>
-                        <li>
-                            <span class="material-symbols-outlined">check</span>
-                            Alle Anwendungsfälle
-                        </li>
-                        <li>
-                            <span class="material-symbols-outlined">check</span>
-                            Team-Zusammenarbeit (5 Nutzer)
-                        </li>
-                        <li>
-                            <span class="material-symbols-outlined">check</span>
-                            Export als PDF, Excel
-                        </li>
-                        <li>
-                            <span class="material-symbols-outlined">check</span>
-                            Interaktive Karten
-                        </li>
-                    </ul>
-                    <button class="btn btn--primary">Projekt starten</button>
-                </div>
-                
-                <div class="pricing-card">
-                    <div class="pricing-card__name">Enterprise</div>
-                    <p class="pricing-card__desc">Für Organisationen mit mehreren Projekten</p>
-                    <div class="pricing-card__price">
-                        <span class="pricing-card__amount">Auf Anfrage</span>
-                    </div>
-                    <ul class="pricing-card__features">
-                        <li>
-                            <span class="material-symbols-outlined">check</span>
-                            Unbegrenzte Projekte
-                        </li>
-                        <li>
-                            <span class="material-symbols-outlined">check</span>
-                            Eigene Frameworks erstellen
-                        </li>
-                        <li>
-                            <span class="material-symbols-outlined">check</span>
-                            Unbegrenzte Nutzer
-                        </li>
-                        <li>
-                            <span class="material-symbols-outlined">check</span>
-                            API-Zugang
-                        </li>
-                        <li>
-                            <span class="material-symbols-outlined">check</span>
-                            Single Sign-On (SSO)
-                        </li>
-                        <li>
-                            <span class="material-symbols-outlined">check</span>
-                            Dedizierter Support
-                        </li>
-                    </ul>
-                    <button class="btn btn--secondary">Kontakt aufnehmen</button>
                 </div>
             </div>
         </div>
