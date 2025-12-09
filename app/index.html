@@ -2320,10 +2320,10 @@ const loadAppData = async () => {
         console.error('Error loading app data:', error);
         // Show error to user
         document.getElementById('root').innerHTML = `
-            <div style="padding: 2rem; text-align: center; color: #dc2626;">
+            <div style="padding: 2rem; text-align: center; color: var(--color-red-600);">
                 <h2>Error Loading Data</h2>
                 <p>Could not load application data. Please check that data.json exists.</p>
-                <pre style="text-align: left; background: #f1f5f9; padding: 1rem; border-radius: 0.5rem;">${error.message}</pre>
+                <pre style="text-align: left; background: var(--color-slate-100); padding: 1rem; border-radius: 0.5rem;">${error.message}</pre>
             </div>
         `;
         throw error;
