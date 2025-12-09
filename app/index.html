@@ -3445,11 +3445,11 @@ const EvaluationView = () => {
             el('h2', { className: 'text-lg font-semibold text-slate-900' }, ['SNAP Bewertung']),
             el('div', { className: 'flex items-center gap-2' }, [
                 el('button', {
-                    className: 'text-xs text-slate-500 hover\\:text-slate-700 px-2 py-1 hover\\:bg-slate-100 rounded-lg transition-colors',
+                    className: 'text-xs text-slate-500 hover\\:text-slate-700 px-2 py-1 hover\\:bg-slate-100 rounded-lg transition-colors border-0',
                     onclick: () => { store.set('expandedThemes', Object.keys(THEMES)); renderApp(); }
                 }, ['Alle öffnen']),
                 el('button', {
-                    className: 'text-xs text-slate-500 hover\\:text-slate-700 px-2 py-1 hover\\:bg-slate-100 rounded-lg transition-colors',
+                    className: 'text-xs text-slate-500 hover\\:text-slate-700 px-2 py-1 hover\\:bg-slate-100 rounded-lg transition-colors border-0',
                     onclick: () => { store.set('expandedThemes', []); renderApp(); }
                 }, ['Alle schließen'])
             ])
