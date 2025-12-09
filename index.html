@@ -3366,6 +3366,22 @@ const ProjectOverviewView = () => {
     ];
 
     return el('div', { className: 'flex-1 space-y-4' }, [
+        // Quick Actions
+        el('div', { className: 'card' }, [
+            el('div', { className: 'card-body' }, [
+                el('div', { className: 'flex items-center justify-between' }, [
+                    el('div', { className: 'flex items-center gap-3' }, [
+                        el('div', { className: 'collapsible-icon-wrapper' }, [Icon('bolt', { size: 18, className: 'text-slate-600' })]),
+                        el('span', { className: 'font-semibold text-slate-900' }, ['Schnellaktionen'])
+                    ]),
+                    el('div', { className: 'flex flex-wrap gap-2' }, [
+                        Button({ children: 'Bericht exportieren', variant: 'secondary', size: 'sm', icon: 'download' }),
+                        Button({ children: 'Projekt teilen', variant: 'secondary', size: 'sm', icon: 'share' }),
+                        Button({ children: 'Archivieren', variant: 'secondary', size: 'sm', icon: 'archive' })
+                    ])
+                ])
+            ])
+        ]),
         // Project Header Card
         el('div', { className: 'card' }, [
             el('div', { className: 'card-body' }, [
@@ -3393,22 +3409,6 @@ const ProjectOverviewView = () => {
                         LabelValue({ label: 'Nutzungstyp', value: currentProject?.usageType || 'Wohnen' }),
                         LabelValue({ label: 'Bauphase SIA 102', value: currentProject?.phase || 'Vorprojekt' }),
                         LabelValue({ label: 'Framework', value: currentProject?.framework || 'SNAP' })
-                    ])
-                ])
-            ])
-        ]),
-        // Quick Actions
-        el('div', { className: 'card' }, [
-            el('div', { className: 'card-body' }, [
-                el('div', { className: 'flex items-center justify-between' }, [
-                    el('div', { className: 'flex items-center gap-3' }, [
-                        el('div', { className: 'collapsible-icon-wrapper' }, [Icon('bolt', { size: 18, className: 'text-slate-600' })]),
-                        el('span', { className: 'font-semibold text-slate-900' }, ['Schnellaktionen'])
-                    ]),
-                    el('div', { className: 'flex flex-wrap gap-2' }, [
-                        Button({ children: 'Bericht exportieren', variant: 'secondary', size: 'sm', icon: 'download' }),
-                        Button({ children: 'Projekt teilen', variant: 'secondary', size: 'sm', icon: 'share' }),
-                        Button({ children: 'Archivieren', variant: 'secondary', size: 'sm', icon: 'archive' })
                     ])
                 ])
             ])
