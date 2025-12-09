@@ -1324,6 +1324,53 @@
                 ]
             },
             {
+                id: 'snap',
+                logo: 'SNAP',
+                name: 'Systematik für Nachhaltigkeitsanforderungen in Planungswettbewerben',
+                description: 'Deutsche Methodik zur Integration von Nachhaltigkeitsanforderungen in Planungswettbewerbe. Basiert auf dem BNB-System mit 15 vorentwurfsrelevanten Kriterien.',
+                link: 'https://www.bbsr.bund.de/BBSR/DE/veroeffentlichungen/zukunft-bauen-fp/2021/band-28.html',
+                criteria: [
+                    {
+                        theme: 'Ökologische Qualität',
+                        icon: 'eco',
+                        items: [
+                            { name: 'Treibhauspotenzial (GWP)', type: 'quantitative', unit: 'kg CO₂-eq/m²' },
+                            { name: 'Primärenergiebedarf', type: 'quantitative', unit: 'kWh/m²a' },
+                            { name: 'Flächeninanspruchnahme', type: 'quantitative', unit: 'm²' },
+                            { name: 'Biodiversität am Standort', type: 'qualitative', unit: 'Bewertung' }
+                        ]
+                    },
+                    {
+                        theme: 'Ökonomische Qualität',
+                        icon: 'payments',
+                        items: [
+                            { name: 'Lebenszykluskosten', type: 'quantitative', unit: '€/m²' },
+                            { name: 'Drittverwendungsfähigkeit', type: 'qualitative', unit: 'Bewertung' },
+                            { name: 'Flächeneffizienz', type: 'quantitative', unit: 'NUF/BGF' }
+                        ]
+                    },
+                    {
+                        theme: 'Soziokulturelle Qualität',
+                        icon: 'diversity_3',
+                        items: [
+                            { name: 'Thermischer Komfort', type: 'quantitative', unit: 'PMV' },
+                            { name: 'Tageslichtversorgung', type: 'quantitative', unit: 'Tageslichtquotient %' },
+                            { name: 'Gestalterische Qualität', type: 'qualitative', unit: 'Bewertung' },
+                            { name: 'Barrierefreiheit', type: 'qualitative', unit: 'Bewertung' }
+                        ]
+                    },
+                    {
+                        theme: 'Technische Qualität',
+                        icon: 'engineering',
+                        items: [
+                            { name: 'Schallschutz', type: 'quantitative', unit: 'dB' },
+                            { name: 'Rückbaubarkeit', type: 'qualitative', unit: 'Bewertung' },
+                            { name: 'Reinigungsfreundlichkeit', type: 'qualitative', unit: 'Bewertung' }
+                        ]
+                    }
+                ]
+            },
+            {
                 id: 'leed',
                 logo: 'LEED',
                 name: 'Leadership in Energy and Environmental Design',
@@ -1420,53 +1467,6 @@
                         items: [
                             { name: 'Indoor Air Quality', type: 'quantitative', unit: 'µg/m³ TVOC' },
                             { name: 'Thermal Comfort', type: 'quantitative', unit: 'Hours >26°C' }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'snap',
-                logo: 'SNAP',
-                name: 'Systematik für Nachhaltigkeitsanforderungen in Planungswettbewerben',
-                description: 'Deutsche Methodik zur Integration von Nachhaltigkeitsanforderungen in Planungswettbewerbe. Basiert auf dem BNB-System mit 15 vorentwurfsrelevanten Kriterien.',
-                link: 'https://www.bbsr.bund.de/BBSR/DE/veroeffentlichungen/zukunft-bauen-fp/2021/band-28.html',
-                criteria: [
-                    {
-                        theme: 'Ökologische Qualität',
-                        icon: 'eco',
-                        items: [
-                            { name: 'Treibhauspotenzial (GWP)', type: 'quantitative', unit: 'kg CO₂-eq/m²' },
-                            { name: 'Primärenergiebedarf', type: 'quantitative', unit: 'kWh/m²a' },
-                            { name: 'Flächeninanspruchnahme', type: 'quantitative', unit: 'm²' },
-                            { name: 'Biodiversität am Standort', type: 'qualitative', unit: 'Bewertung' }
-                        ]
-                    },
-                    {
-                        theme: 'Ökonomische Qualität',
-                        icon: 'payments',
-                        items: [
-                            { name: 'Lebenszykluskosten', type: 'quantitative', unit: '€/m²' },
-                            { name: 'Drittverwendungsfähigkeit', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Flächeneffizienz', type: 'quantitative', unit: 'NUF/BGF' }
-                        ]
-                    },
-                    {
-                        theme: 'Soziokulturelle Qualität',
-                        icon: 'diversity_3',
-                        items: [
-                            { name: 'Thermischer Komfort', type: 'quantitative', unit: 'PMV' },
-                            { name: 'Tageslichtversorgung', type: 'quantitative', unit: 'Tageslichtquotient %' },
-                            { name: 'Gestalterische Qualität', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Barrierefreiheit', type: 'qualitative', unit: 'Bewertung' }
-                        ]
-                    },
-                    {
-                        theme: 'Technische Qualität',
-                        icon: 'engineering',
-                        items: [
-                            { name: 'Schallschutz', type: 'quantitative', unit: 'dB' },
-                            { name: 'Rückbaubarkeit', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Reinigungsfreundlichkeit', type: 'qualitative', unit: 'Bewertung' }
                         ]
                     }
                 ]
