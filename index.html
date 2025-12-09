@@ -42,6 +42,14 @@
             background: var(--color-bg-page);
             padding: var(--space-6);
             text-align: center;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .framework-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .framework-card__logo {
@@ -74,8 +82,8 @@
             </a>
             <nav class="header__nav">
                 <a href="#how-it-works">So funktioniert's</a>
-                <a href="#frameworks">Frameworks</a>
-                <a href="#showcase">Projekte</a>
+                <a href="#frameworks">Standards</a>
+                <a href="#showcase">Referenzen</a>
                 <a href="#pricing">Preise</a>
                 <a href="app/index.html" class="btn btn--primary btn--sm">Demo starten</a>
             </nav>
@@ -89,8 +97,8 @@
     <nav class="mobile-nav" id="mobile-nav" aria-hidden="true">
         <div class="mobile-nav__links">
             <a href="#how-it-works">So funktioniert's</a>
-            <a href="#frameworks">Frameworks</a>
-            <a href="#showcase">Projekte</a>
+            <a href="#frameworks">Standards</a>
+            <a href="#showcase">Referenzen</a>
             <a href="#pricing">Preise</a>
         </div>
         <div class="mobile-nav__cta">
@@ -236,32 +244,32 @@
                 </p>
             </div>
             <div class="frameworks-grid">
-                <div class="framework-card">
+                <a href="frameworks.html" class="framework-card">
                     <div class="framework-card__logo">SNBS</div>
                     <div class="framework-card__name">Standard Nachhaltiges Bauen Schweiz</div>
-                </div>
-                <div class="framework-card">
+                </a>
+                <a href="frameworks.html" class="framework-card">
                     <div class="framework-card__logo">DGNB</div>
                     <div class="framework-card__name">Deutsche Gesellschaft für Nachhaltiges Bauen</div>
-                </div>
-                <div class="framework-card">
+                </a>
+                <a href="frameworks.html" class="framework-card">
                     <div class="framework-card__logo">LEED</div>
                     <div class="framework-card__name">Leadership in Energy and Environmental Design</div>
-                </div>
-                <div class="framework-card">
+                </a>
+                <a href="frameworks.html" class="framework-card">
                     <div class="framework-card__logo">WELL</div>
                     <div class="framework-card__name">WELL Building Standard</div>
-                </div>
-                <div class="framework-card">
+                </a>
+                <a href="frameworks.html" class="framework-card">
                     <div class="framework-card__logo">Level(s)</div>
                     <div class="framework-card__name">EU Framework for Sustainable Buildings</div>
-                </div>
-                <div class="framework-card framework-card--custom">
+                </a>
+                <a href="frameworks.html" class="framework-card framework-card--custom">
                     <div class="framework-card__logo">
                         <span class="material-symbols-outlined">add_circle</span>
                     </div>
                     <div class="framework-card__name">Eigenes Framework erstellen</div>
-                </div>
+                </a>
             </div>
             <div class="text-center frameworks-section__link">
                 <a href="frameworks.html" class="btn btn--secondary">
@@ -529,7 +537,7 @@
                     <h4 class="footer__title">Produkt</h4>
                     <ul class="footer__links">
                         <li><a href="#">Funktionen</a></li>
-                        <li><a href="#">Frameworks</a></li>
+                        <li><a href="frameworks.html">Standards</a></li>
                         <li><a href="#">Preise</a></li>
                         <li><a href="#">Demo</a></li>
                     </ul>
