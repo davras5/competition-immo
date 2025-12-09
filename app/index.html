@@ -1096,6 +1096,7 @@ textarea.input {
     transition: background-color var(--transition-fast);
 }
 .collapsible-header:hover { background-color: var(--color-slate-50); }
+.collapsible.expanded .collapsible-header { background-color: var(--color-slate-50); }
 .collapsible-icon-wrapper {
     width: 32px;
     height: 32px;
@@ -1902,10 +1903,12 @@ textarea.input {
     transition: background-color var(--transition-fast);
 }
 .timeline-item-done { background-color: var(--color-slate-50); }
+.timeline-item-done:hover { background-color: var(--color-slate-100); }
 .timeline-item-pending {
     background-color: var(--color-amber-50);
     border: 1px solid var(--color-amber-100);
 }
+.timeline-item-pending:hover { background-color: var(--color-amber-100); }
 .timeline-icon {
     width: 32px;
     height: 32px;
@@ -2131,10 +2134,16 @@ textarea.input {
    COMPONENT: Team Member Row
    ======================================== */
 .team-member-row {
-    padding: var(--space-3) 0;
+    padding: var(--space-3);
+    margin: 0 calc(-1 * var(--space-3));
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border-radius: var(--radius-lg);
+    transition: background-color var(--transition-fast);
+}
+.team-member-row:hover {
+    background-color: var(--color-slate-50);
 }
 .team-member-info {
     display: flex;
@@ -2144,6 +2153,11 @@ textarea.input {
 .team-member-details {
     display: flex;
     flex-direction: column;
+}
+.team-member-name-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
 }
 .team-member-name {
     font-size: var(--text-sm);
@@ -3071,7 +3085,7 @@ const CollapsibleSection = ({ id, icon, title, badge, actions, children, default
         renderApp();
     };
 
-    return el('div', { className: 'collapsible' }, [
+    return el('div', { className: `collapsible ${!isCollapsed ? 'expanded' : ''}` }, [
         el('button', { className: 'collapsible-header flex items-center gap-3 w-full', onclick: toggle }, [
             el('div', { className: 'collapsible-icon-wrapper' }, [Icon(icon, { size: 18, className: 'text-slate-600' })]),
             el('span', { className: 'collapsible-title flex-1 text-left' }, [title]),
@@ -3095,11 +3109,13 @@ const TeamMemberRow = ({ name, email, role, isExpert = false }) => {
                 className: isExpert ? 'bg-emerald-100 text-emerald-700' : ''
             }),
             el('div', { className: 'team-member-details' }, [
-                el('span', { className: 'team-member-name' }, [name]),
+                el('div', { className: 'team-member-name-row' }, [
+                    el('span', { className: 'team-member-name' }, [name]),
+                    el('span', { className: `team-role-badge ${isExpert ? 'expert' : ''}` }, [role])
+                ]),
                 el('span', { className: 'team-member-email' }, [email])
             ])
-        ]),
-        el('span', { className: `team-role-badge ${isExpert ? 'expert' : ''}` }, [role])
+        ])
     ]);
 };
 
@@ -3352,6 +3368,9 @@ const ProjectOverviewView = () => {
             icon: 'schedule',
             title: 'Zeitplan',
             badge: `${milestones.filter(m => !m.done).length} offen`,
+            actions: [
+                Button({ children: '', variant: 'ghost', size: 'sm', icon: 'add', title: 'Meilenstein hinzufügen' })
+            ],
             children: [
                 el('div', { className: 'space-y-3' }, milestones.map(m =>
                     el('div', { className: `timeline-item ${m.done ? 'timeline-item-done' : 'timeline-item-pending'}` }, [
