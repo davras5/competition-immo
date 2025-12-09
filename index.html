@@ -15,19 +15,19 @@
    CSS CUSTOM PROPERTIES (Design Tokens)
    ======================================== */
 :root {
-    /* Colors - Slate Primary Palette */
+    /* Colors - Slate Primary Palette (improved contrast) */
     --color-slate-50: #f8fafc;
     --color-slate-100: #f1f5f9;
-    --color-slate-200: #e2e8f0;
-    --color-slate-300: #cbd5e1;
-    --color-slate-400: #94a3b8;
-    --color-slate-500: #64748b;
+    --color-slate-200: #d1d5db;  /* Darker for visible borders */
+    --color-slate-300: #9ca3af;  /* Darker for scrollbars/dividers */
+    --color-slate-400: #6b7280;  /* AA compliant for icons */
+    --color-slate-500: #4b5563;  /* AAA compliant for muted text */
     --color-slate-600: #475569;
     --color-slate-700: #334155;
     --color-slate-800: #1e293b;
     --color-slate-900: #0f172a;
 
-    /* Status Colors */
+    /* Emerald - Success + Primary Actions + Sustainability */
     --color-emerald-50: #ecfdf5;
     --color-emerald-100: #d1fae5;
     --color-emerald-400: #34d399;
@@ -35,6 +35,7 @@
     --color-emerald-600: #059669;
     --color-emerald-700: #047857;
 
+    /* Amber - Warning + Attention Needed */
     --color-amber-50: #fffbeb;
     --color-amber-100: #fef3c7;
     --color-amber-400: #fbbf24;
@@ -42,6 +43,7 @@
     --color-amber-600: #d97706;
     --color-amber-700: #b45309;
 
+    /* Red - Negative/Error */
     --color-red-50: #fef2f2;
     --color-red-100: #fee2e2;
     --color-red-400: #f87171;
@@ -49,11 +51,13 @@
     --color-red-600: #dc2626;
     --color-red-700: #b91c1c;
 
+    /* Blue - Active/In-Progress + Institutional Trust */
+    --color-blue-50: #eff6ff;
     --color-blue-100: #dbeafe;
+    --color-blue-400: #60a5fa;
     --color-blue-500: #3b82f6;
+    --color-blue-600: #2563eb;
     --color-blue-700: #1d4ed8;
-
-    --color-violet-500: #8b5cf6;
 
     /* Spacing (4px grid) */
     --space-0: 0;
@@ -441,7 +445,7 @@ body {
 }
 .btn:focus {
     outline: none;
-    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--color-slate-400);
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--color-slate-500);
 }
 .btn:disabled {
     opacity: 0.5;
@@ -455,10 +459,10 @@ body {
 
 /* Button Variants */
 .btn-primary {
-    background-color: var(--color-slate-600);
+    background-color: var(--color-emerald-600);
     color: white;
 }
-.btn-primary:hover:not(:disabled) { background-color: var(--color-slate-700); }
+.btn-primary:hover:not(:disabled) { background-color: var(--color-emerald-700); }
 
 .btn-secondary {
     background-color: var(--color-slate-100);
@@ -505,8 +509,8 @@ body {
 }
 
 /* Badge Status Colors */
-.badge-active { background-color: var(--color-amber-100); color: var(--color-amber-700); }
-.badge-active .badge-dot { background-color: var(--color-amber-400); }
+.badge-active { background-color: var(--color-blue-100); color: var(--color-blue-700); }
+.badge-active .badge-dot { background-color: var(--color-blue-400); }
 
 .badge-completed { background-color: var(--color-emerald-100); color: var(--color-emerald-700); }
 .badge-completed .badge-dot { background-color: var(--color-emerald-400); }
@@ -521,6 +525,9 @@ body {
 .badge-success .badge-dot { background-color: var(--color-emerald-400); }
 
 .badge-info { background-color: var(--color-blue-100); color: var(--color-blue-700); }
+
+.badge-warning { background-color: var(--color-amber-100); color: var(--color-amber-700); }
+.badge-warning .badge-dot { background-color: var(--color-amber-400); }
 
 /* ========================================
    COMPONENT: Avatar
@@ -588,8 +595,8 @@ body {
 }
 .input:focus {
     outline: none;
-    border-color: var(--color-slate-400);
-    box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.3);
+    border-color: var(--color-slate-500);
+    box-shadow: 0 0 0 2px rgba(75, 85, 99, 0.3);
 }
 .input-error {
     border-color: var(--color-red-300);
@@ -611,7 +618,7 @@ body {
 
 .select {
     appearance: none;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
     background-position: right 0.5rem center;
     background-repeat: no-repeat;
     background-size: 1.5em 1.5em;
@@ -2839,7 +2846,7 @@ const initProjectsMap = (projects) => {
         markerEl.className = 'project-marker';
         markerEl.style.cssText = `
             width: 32px; height: 32px;
-            background: ${project.status === 'completed' ? '#10b981' : project.status === 'active' ? '#3b82f6' : '#94a3b8'};
+            background: ${project.status === 'completed' ? '#10b981' : project.status === 'active' ? '#3b82f6' : '#6b7280'};
             border-radius: 50%;
             border: 3px solid white;
             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
@@ -2853,13 +2860,13 @@ const initProjectsMap = (projects) => {
             .setHTML(`
                 <div style="padding: 8px; min-width: 200px;">
                     <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">${project.name}</div>
-                    <div style="font-size: 12px; color: #64748b; margin-bottom: 8px;">${project.address}</div>
+                    <div style="font-size: 12px; color: #4b5563; margin-bottom: 8px;">${project.address}</div>
                     <div style="display: flex; gap: 12px; font-size: 12px;">
                         <span>${project.variantCount} Varianten</span>
                         <span style="color: #10b981;">${project.evaluatedCount} bewertet</span>
                     </div>
-                    <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e2e8f0;">
-                        <span style="font-size: 11px; color: #94a3b8;">${project.framework} · ${project.phase}</span>
+                    <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #d1d5db;">
+                        <span style="font-size: 11px; color: #6b7280;">${project.framework} · ${project.phase}</span>
                     </div>
                 </div>
             `);
