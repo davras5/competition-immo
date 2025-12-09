@@ -1,8 +1,8 @@
-# BBL Competition Cockpit (competition-immo)
+# Competition Immo
 
-A dashboard for managing and evaluating architecture competitions for the Swiss Federal Office for Buildings and Logistics (BBL). Enables structured evaluation of building project variants across multiple sustainability criteria.
+A dashboard for managing and evaluating architecture competitions. Enables structured evaluation of building project variants across multiple sustainability criteria.
 
-- Deployed: https://davras5.github.io/competition-immo/
+- Demo: https://davras5.github.io/competition-immo/
 
 ## Features
 
@@ -59,4 +59,4 @@ Licensed under [MIT](https://opensource.org/licenses/MIT)
 
 ---
 
-*Unofficial mockup for demonstration purposes.*
+*Sample data included for demonstration purposes.*
