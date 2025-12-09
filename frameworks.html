@@ -60,8 +60,23 @@
                 <a href="#eigene-kriterien">Eigene Kriterien</a>
                 <a href="app/index.html" class="btn btn--primary btn--sm">Demo starten</a>
             </nav>
+            <button class="header__menu-toggle" aria-label="Menü öffnen" aria-expanded="false" aria-controls="mobile-nav">
+                <span class="material-symbols-outlined" id="menu-icon">menu</span>
+            </button>
         </div>
     </header>
+
+    <!-- Mobile Navigation -->
+    <nav class="mobile-nav" id="mobile-nav" aria-hidden="true">
+        <div class="mobile-nav__links">
+            <a href="index.html">Startseite</a>
+            <a href="#frameworks">Bewertungsrahmen</a>
+            <a href="#eigene-kriterien">Eigene Kriterien</a>
+        </div>
+        <div class="mobile-nav__cta">
+            <a href="app/index.html" class="btn btn--primary">Demo starten</a>
+        </div>
+    </nav>
     
     <!-- Choice Section -->
     <section class="section section--first">
@@ -217,6 +232,40 @@
     </footer>
     
     <script>
+        // Mobile Navigation Toggle
+        const menuToggle = document.querySelector('.header__menu-toggle');
+        const mobileNav = document.getElementById('mobile-nav');
+        const menuIcon = document.getElementById('menu-icon');
+
+        if (menuToggle && mobileNav) {
+            menuToggle.addEventListener('click', () => {
+                const isOpen = mobileNav.classList.contains('active');
+
+                mobileNav.classList.toggle('active');
+                document.body.classList.toggle('mobile-nav-open');
+
+                // Update ARIA attributes
+                menuToggle.setAttribute('aria-expanded', !isOpen);
+                mobileNav.setAttribute('aria-hidden', isOpen);
+                menuToggle.setAttribute('aria-label', isOpen ? 'Menü öffnen' : 'Menü schliessen');
+
+                // Toggle icon
+                menuIcon.textContent = isOpen ? 'menu' : 'close';
+            });
+
+            // Close menu when clicking a link
+            mobileNav.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileNav.classList.remove('active');
+                    document.body.classList.remove('mobile-nav-open');
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                    mobileNav.setAttribute('aria-hidden', 'true');
+                    menuToggle.setAttribute('aria-label', 'Menü öffnen');
+                    menuIcon.textContent = 'menu';
+                });
+            });
+        }
+
         // Framework data - Standards
         const standards = [
             {
