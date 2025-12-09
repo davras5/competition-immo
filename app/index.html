@@ -678,6 +678,21 @@ textarea.input {
     transition: background-color var(--transition-fast);
 }
 .header-logo:hover { background-color: var(--color-slate-500); }
+.header-home-link {
+    width: 32px;
+    height: 32px;
+    background-color: var(--color-slate-700);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-slate-300);
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+.header-home-link:hover {
+    background-color: var(--color-slate-600);
+    color: var(--color-slate-100);
+}
 .header-title {
     font-weight: var(--font-semibold);
     font-size: var(--text-lg);
@@ -2537,11 +2552,16 @@ const AppHeader = () => {
 
     return el('header', { className: 'app-header' }, [
         el('div', { className: 'flex items-center gap-3' }, [
+            el('a', {
+                href: '../index.html',
+                className: 'header-home-link',
+                title: 'Zur Landing Page'
+            }, [Icon('home', { size: 18 })]),
             el('button', {
                 className: 'header-logo',
                 onclick: () => { store.set('currentProject', null); renderApp(); },
                 title: 'Zur Projektübersicht'
-            }, [Icon('insights', { size: 18 })]),
+            }, [Icon('dashboard', { size: 18 })]),
             el('span', { className: 'header-title' }, ['Wettbewerb Cockpit']),
             currentProject ? el('span', { className: 'header-breadcrumb' }, ['/']) : null,
             currentProject ? el('span', { className: 'header-project-name' }, [currentProject.name]) : null
