@@ -119,6 +119,20 @@
             background-color: var(--color-surface-secondary);
             border-radius: var(--radius-md);
         }
+
+        /* BIM indicator styling */
+        .criterion__bim {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-primary, #2563eb);
+            margin-left: auto;
+            margin-right: var(--space-2);
+        }
+
+        .criterion__bim .material-symbols-outlined {
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -342,21 +356,22 @@
         }
 
         // Framework data - loaded from JSON
-        let standards = [];
-        let useCases = [];
+        let frameworks = [];
         let frameworkEnums = {};
 
-        // Count criteria by type
-        function countByType(criteria) {
+        // Count criteria by type and BIM capability
+        function countCriteria(criteria) {
             let quantitative = 0;
             let qualitative = 0;
+            let bim = 0;
             criteria.forEach(group => {
                 group.items.forEach(item => {
                     if (item.type === 'quantitative') quantitative++;
                     else qualitative++;
+                    if (item.bim) bim++;
                 });
             });
-            return { quantitative, qualitative, total: quantitative + qualitative };
+            return { quantitative, qualitative, bim, total: quantitative + qualitative };
         }
         
         // Helper to get translated enum value
@@ -368,10 +383,11 @@
         }
 
         // Render framework card
-        function renderFrameworkCard(framework, isStandard = true) {
-            const counts = countByType(framework.criteria);
+        function renderFrameworkCard(framework) {
+            const counts = countCriteria(framework.criteria);
+            const isStandard = framework.type === 'standard';
 
-            // Build metadata badges for standards
+            // Build metadata badges based on type
             let metadataBadges = '';
             if (isStandard) {
                 const countryLabel = getEnumLabel('countries', framework.country);
@@ -441,6 +457,7 @@
                                                 </span>
                                             </div>
                                             <span class="criterion__name">${item.name}</span>
+                                            ${item.bim ? '<span class="criterion__bim" title="BIM-fähig"><span class="material-symbols-outlined">view_in_ar</span></span>' : ''}
                                             <span class="criterion__unit">${item.unit}</span>
                                         </div>
                                     `).join('')}
@@ -458,22 +475,25 @@
             card.classList.toggle('expanded');
         }
         
-        // Render all frameworks
+        // Render all frameworks filtered by type
         function renderFrameworks() {
-            document.getElementById('standards-grid').innerHTML = 
-                standards.map(f => renderFrameworkCard(f, true)).join('');
-            
-            document.getElementById('usecases-grid').innerHTML = 
-                useCases.map(f => renderFrameworkCard(f, false)).join('');
+            const standards = frameworks.filter(f => f.type === 'standard');
+            const useCases = frameworks.filter(f => f.type === 'useCase');
+
+            document.getElementById('standards-grid').innerHTML =
+                standards.map(f => renderFrameworkCard(f)).join('');
+
+            document.getElementById('usecases-grid').innerHTML =
+                useCases.map(f => renderFrameworkCard(f)).join('');
         }
-        
+
         // Tab switching
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 // Update active tab
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
-                
+
                 // Show correct content
                 const tabId = tab.dataset.tab;
                 document.querySelectorAll('.tab-content').forEach(content => {
@@ -482,7 +502,7 @@
                 document.getElementById(`tab-${tabId}`).classList.add('active');
             });
         });
-        
+
         // Load frameworks data from JSON and initialize
         async function loadFrameworks() {
             try {
@@ -492,8 +512,7 @@
                 }
                 const data = await response.json();
 
-                standards = data.standards || [];
-                useCases = data.useCases || [];
+                frameworks = data.frameworks || [];
                 frameworkEnums = data.enums || {};
 
                 renderFrameworks();
