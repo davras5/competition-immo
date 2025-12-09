@@ -2014,6 +2014,249 @@ textarea.input {
     transition: background-color var(--transition-fast);
 }
 .variant-asset-btn:hover { background-color: var(--color-slate-100); }
+
+/* ========================================
+   COMPONENT: Map Section
+   ======================================== */
+.map-section {
+    background-color: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-slate-200);
+    overflow: hidden;
+}
+.map-container {
+    width: 100%;
+    height: 256px;
+    border-radius: var(--radius-lg);
+}
+.map-address {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-slate-600);
+    margin-bottom: var(--space-4);
+}
+.map-edit-form {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+.map-edit-form .input {
+    flex: 1;
+}
+
+/* ========================================
+   COMPONENT: Image Gallery
+   ======================================== */
+.image-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+.image-gallery-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+.image-gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.image-gallery-item .delete-btn {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    width: 24px;
+    height: 24px;
+    background-color: var(--color-red-500);
+    color: white;
+    border: none;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+.image-gallery-item:hover .delete-btn {
+    opacity: 1;
+}
+.image-gallery-item .delete-btn:hover {
+    background-color: var(--color-red-600);
+}
+.image-gallery-item .overlay {
+    position: absolute;
+    inset: 0;
+    background-color: transparent;
+    transition: background-color var(--transition-fast);
+}
+.image-gallery-item:hover .overlay {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+.image-upload-zone {
+    border: 2px dashed var(--color-slate-200);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+.image-upload-zone:hover {
+    border-color: var(--color-slate-400);
+    background-color: var(--color-slate-50);
+}
+
+/* ========================================
+   COMPONENT: Team Member Row
+   ======================================== */
+.team-member-row {
+    padding: var(--space-3) 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.team-member-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+.team-member-details {
+    display: flex;
+    flex-direction: column;
+}
+.team-member-name {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--color-slate-900);
+}
+.team-member-email {
+    font-size: var(--text-xs);
+    color: var(--color-slate-500);
+}
+.team-role-badge {
+    font-size: var(--text-xs);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-slate-100);
+    color: var(--color-slate-600);
+}
+.team-role-badge.expert {
+    background-color: var(--color-emerald-100);
+    color: var(--color-emerald-700);
+}
+
+/* ========================================
+   COMPONENT: Collapsible Section Enhanced
+   ======================================== */
+.collapsible-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+.section-subtitle {
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    color: var(--color-slate-500);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    margin-bottom: var(--space-3);
+}
+
+/* ========================================
+   COMPONENT: Variant Dropdown (Breadcrumb)
+   ======================================== */
+.variant-dropdown {
+    position: relative;
+}
+.variant-dropdown-trigger {
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-slate-100);
+    color: var(--color-slate-900);
+    font-weight: var(--font-medium);
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    border: none;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+.variant-dropdown-trigger:hover {
+    background-color: var(--color-slate-200);
+}
+.variant-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: var(--space-1);
+    width: 224px;
+    background-color: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--color-slate-200);
+    padding: var(--space-1) 0;
+    z-index: var(--z-dropdown);
+}
+.variant-dropdown-item {
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    text-align: left;
+    font-size: var(--text-sm);
+    color: var(--color-slate-700);
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    transition: background-color var(--transition-fast);
+}
+.variant-dropdown-item:hover {
+    background-color: var(--color-slate-50);
+}
+.variant-dropdown-item.active {
+    background-color: var(--color-slate-100);
+    color: var(--color-slate-900);
+}
+.variant-dropdown-thumb {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-slate-200);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.variant-dropdown-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ========================================
+   COMPONENT: Filter Reset Button
+   ======================================== */
+.filter-reset-btn {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--color-slate-600);
+    background: none;
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    transition: all var(--transition-fast);
+}
+.filter-reset-btn:hover {
+    color: var(--color-slate-900);
+    background-color: var(--color-slate-100);
+}
     </style>
 </head>
 <body>
@@ -2066,7 +2309,20 @@ const store = createStore({
     criteriaData: {},
     searchQuery: '',
     statusFilter: 'all',
-    usageFilter: 'all'
+    usageFilter: 'all',
+    // New state for enhanced features
+    collapsedSections: {},
+    isVariantDropdownOpen: false,
+    isEditingAddress: false,
+    editingAddress: '',
+    projectImages: [
+        'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400&h=400&fit=crop',
+        'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=400&fit=crop',
+        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=400&fit=crop',
+        'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=400&h=400&fit=crop'
+    ],
+    formErrors: {},
+    isSubmitting: false
 });
 
 // ============================================
@@ -2135,24 +2391,32 @@ const VARIANTS = [
       images: [
         'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop',
         'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&h=600&fit=crop',
+        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop',
+        'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=800&h=600&fit=crop',
       ]
     },
     { id: 3, name: 'Meier_Hug', firm: 'Meier und Hug', code: '1003',
       thumbnail: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop',
       images: [
         'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop',
+        'https://images.unsplash.com/photo-1448630360428-65456885c650?w=800&h=600&fit=crop',
       ]
     },
     { id: 4, name: 'Spillmann_Echsle', firm: 'Spillmann Echsle', code: '1004',
       thumbnail: 'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=400&h=300&fit=crop',
       images: [
         'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=800&h=600&fit=crop',
+        'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&h=600&fit=crop',
+        'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop',
+        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop',
+        'https://images.unsplash.com/photo-1494526585095-c41746248156?w=800&h=600&fit=crop',
       ]
     },
     { id: 5, name: 'Z2G', firm: 'Planer', code: '1005',
       thumbnail: 'https://images.unsplash.com/photo-1494526585095-c41746248156?w=400&h=300&fit=crop',
       images: [
         'https://images.unsplash.com/photo-1494526585095-c41746248156?w=800&h=600&fit=crop',
+        'https://images.unsplash.com/photo-1448630360428-65456885c650?w=800&h=600&fit=crop',
       ]
     },
 ];
@@ -2431,6 +2695,63 @@ const MainSidebar = () => {
 // ============================================
 // BREADCRUMB COMPONENT
 // ============================================
+const VariantDropdownSelector = () => {
+    const selectedVariant = store.get('selectedVariant');
+    const isOpen = store.get('isVariantDropdownOpen');
+    const variant = VARIANTS[selectedVariant];
+
+    const toggleDropdown = (e) => {
+        e.stopPropagation();
+        store.set('isVariantDropdownOpen', !isOpen);
+        renderApp();
+    };
+
+    const selectVariant = (index) => {
+        store.update({ selectedVariant: index, isVariantDropdownOpen: false });
+        renderApp();
+    };
+
+    // Close dropdown when clicking outside
+    if (isOpen) {
+        setTimeout(() => {
+            const closeDropdown = (e) => {
+                if (!e.target.closest('.variant-dropdown')) {
+                    store.set('isVariantDropdownOpen', false);
+                    renderApp();
+                    document.removeEventListener('click', closeDropdown);
+                }
+            };
+            document.addEventListener('click', closeDropdown);
+        }, 0);
+    }
+
+    return el('div', { className: 'variant-dropdown' }, [
+        el('button', {
+            className: 'variant-dropdown-trigger',
+            onclick: toggleDropdown
+        }, [
+            variant.name,
+            Icon('expand_more', { size: 16 })
+        ]),
+        isOpen ? el('div', { className: 'variant-dropdown-menu' },
+            VARIANTS.map((v, i) =>
+                el('button', {
+                    className: `variant-dropdown-item ${i === selectedVariant ? 'active' : ''}`,
+                    onclick: () => selectVariant(i)
+                }, [
+                    el('div', { className: 'variant-dropdown-thumb' }, [
+                        el('img', { src: v.thumbnail, alt: v.name })
+                    ]),
+                    el('div', {}, [
+                        el('div', { className: 'text-sm font-medium' }, [v.name]),
+                        el('div', { className: 'text-xs text-slate-500' }, [v.code])
+                    ])
+                ])
+            )
+        ) : null
+    ]);
+};
+
 const Breadcrumb = () => {
     const currentProject = store.get('currentProject');
     const sidebarView = store.get('sidebarView');
@@ -2463,10 +2784,7 @@ const Breadcrumb = () => {
                 el('li', { className: 'breadcrumb-item' }, [
                     i > 0 ? el('span', { className: 'breadcrumb-separator' }, [Icon('chevron_right', { size: 16 })]) : null,
                     item.isDropdown ?
-                        el('button', { className: 'breadcrumb-dropdown' }, [
-                            item.label,
-                            Icon('expand_more', { size: 16, className: 'text-slate-500' })
-                        ]) :
+                        VariantDropdownSelector() :
                     item.onClick ?
                         el('button', {
                             className: `breadcrumb-link ${item.active ? 'active' : ''}`,
@@ -2600,6 +2918,90 @@ const ProjectListRow = (project) => {
 };
 
 // ============================================
+// PROJECTS MAP INITIALIZATION
+// ============================================
+let projectsMapInstance = null;
+
+const initProjectsMap = (projects) => {
+    const mapContainer = document.getElementById('projects-map');
+    if (!mapContainer || !window.mapboxgl) return;
+
+    // Prevent re-initialization
+    if (mapContainer.dataset.initialized === 'true') return;
+    mapContainer.dataset.initialized = 'true';
+
+    // Create map
+    const map = new mapboxgl.Map({
+        container: 'projects-map',
+        style: 'mapbox://styles/mapbox/light-v11',
+        center: [8.54, 47.38], // Zürich center
+        zoom: 11,
+        accessToken: MAPBOX_TOKEN
+    });
+
+    projectsMapInstance = map;
+
+    // Add markers for each project
+    projects.forEach(project => {
+        if (!project.coordinates) return;
+
+        // Create custom marker element
+        const markerEl = document.createElement('div');
+        markerEl.className = 'project-marker';
+        markerEl.style.cssText = `
+            width: 32px; height: 32px;
+            background: ${project.status === 'completed' ? '#10b981' : project.status === 'active' ? '#3b82f6' : '#94a3b8'};
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        `;
+        markerEl.innerHTML = `<span style="color:white;font-size:12px;font-weight:bold;">${project.variantCount}</span>`;
+
+        // Create popup
+        const popup = new mapboxgl.Popup({ offset: 25, closeButton: false })
+            .setHTML(`
+                <div style="padding: 8px; min-width: 200px;">
+                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">${project.name}</div>
+                    <div style="font-size: 12px; color: #64748b; margin-bottom: 8px;">${project.address}</div>
+                    <div style="display: flex; gap: 12px; font-size: 12px;">
+                        <span>${project.variantCount} Varianten</span>
+                        <span style="color: #10b981;">${project.evaluatedCount} bewertet</span>
+                    </div>
+                    <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e2e8f0;">
+                        <span style="font-size: 11px; color: #94a3b8;">${project.framework} · ${project.phase}</span>
+                    </div>
+                </div>
+            `);
+
+        // Add marker to map
+        const marker = new mapboxgl.Marker(markerEl)
+            .setLngLat([project.coordinates.lng, project.coordinates.lat])
+            .setPopup(popup)
+            .addTo(map);
+
+        // Click to open project
+        markerEl.addEventListener('click', () => {
+            store.set('currentProject', project);
+            store.set('sidebarView', 'overview');
+            renderApp();
+        });
+    });
+
+    // Fit bounds to show all markers
+    if (projects.length > 0) {
+        const bounds = new mapboxgl.LngLatBounds();
+        projects.forEach(p => {
+            if (p.coordinates) {
+                bounds.extend([p.coordinates.lng, p.coordinates.lat]);
+            }
+        });
+        map.fitBounds(bounds, { padding: 50 });
+    }
+};
+
+// ============================================
 // GALLERY VIEW COMPONENT
 // ============================================
 const GalleryView = () => {
@@ -2689,7 +3091,19 @@ const GalleryView = () => {
                     }, [
                         el('option', { value: 'all' }, ['Alle Nutzungen']),
                         ...usageTypes.map(type => el('option', { value: type }, [type]))
-                    ])
+                    ]),
+                    // Clear Filters Button (shows when any filter is active)
+                    (searchQuery || statusFilter !== 'all' || usageFilter !== 'all') ?
+                        el('button', {
+                            className: 'filter-reset-btn',
+                            onclick: () => {
+                                store.update({ searchQuery: '', statusFilter: 'all', usageFilter: 'all' });
+                                renderApp();
+                            }
+                        }, [
+                            Icon('filter_alt_off', { size: 16 }),
+                            'Filter zurücksetzen'
+                        ]) : null
                 ])
             ])
         ]),
@@ -2729,11 +3143,197 @@ const GalleryView = () => {
                         el('tbody', {}, filteredProjects.map(p => ProjectListRow(p)))
                     ])
                 ]) :
-                el('div', { className: 'card', style: { height: '600px' } }, [
-                    el('div', { id: 'projects-map', className: 'h-full w-full' })
-                ])
+                (() => {
+                    // Initialize map after render
+                    setTimeout(() => initProjectsMap(filteredProjects), 100);
+                    return el('div', { className: 'card', style: { height: '600px' } }, [
+                        el('div', { id: 'projects-map', className: 'h-full w-full rounded-lg' })
+                    ]);
+                })()
         ])
     ]);
+};
+
+// ============================================
+// COLLAPSIBLE SECTION COMPONENT
+// ============================================
+const CollapsibleSection = ({ id, icon, title, badge, actions, children, defaultOpen = true }) => {
+    const collapsedSections = store.get('collapsedSections');
+    const isCollapsed = collapsedSections[id] ?? !defaultOpen;
+
+    const toggle = () => {
+        const updated = { ...collapsedSections, [id]: !isCollapsed };
+        store.set('collapsedSections', updated);
+        renderApp();
+    };
+
+    return el('div', { className: 'collapsible' }, [
+        el('button', { className: 'collapsible-header flex items-center gap-3 w-full', onclick: toggle }, [
+            el('div', { className: 'collapsible-icon-wrapper' }, [Icon(icon, { size: 18, className: 'text-slate-600' })]),
+            el('span', { className: 'collapsible-title flex-1 text-left' }, [title]),
+            badge ? el('span', { className: 'collapsible-badge' }, [badge]) : null,
+            actions ? el('div', { className: 'collapsible-actions', onclick: e => e.stopPropagation() }, actions) : null,
+            Icon(isCollapsed ? 'expand_more' : 'expand_less', { size: 20, className: 'text-slate-400' })
+        ]),
+        !isCollapsed ? el('div', { className: 'collapsible-content pt-4' }, children) : null
+    ]);
+};
+
+// ============================================
+// TEAM MEMBER ROW COMPONENT
+// ============================================
+const TeamMemberRow = ({ name, email, role, isExpert = false }) => {
+    return el('div', { className: 'team-member-row' }, [
+        el('div', { className: 'team-member-info' }, [
+            Avatar({
+                name,
+                size: 'md',
+                className: isExpert ? 'bg-emerald-100 text-emerald-700' : ''
+            }),
+            el('div', { className: 'team-member-details' }, [
+                el('span', { className: 'team-member-name' }, [name]),
+                el('span', { className: 'team-member-email' }, [email])
+            ])
+        ]),
+        el('span', { className: `team-role-badge ${isExpert ? 'expert' : ''}` }, [role])
+    ]);
+};
+
+// ============================================
+// MAP SECTION COMPONENT
+// ============================================
+const MapSection = () => {
+    const currentProject = store.get('currentProject');
+    const isEditingAddress = store.get('isEditingAddress');
+    const editingAddress = store.get('editingAddress');
+
+    const startEditing = () => {
+        store.update({ isEditingAddress: true, editingAddress: currentProject?.address || '' });
+        renderApp();
+    };
+
+    const cancelEditing = () => {
+        store.update({ isEditingAddress: false, editingAddress: '' });
+        renderApp();
+    };
+
+    const saveAddress = () => {
+        // In real app would geocode and update coordinates
+        store.update({ isEditingAddress: false, editingAddress: '' });
+        renderApp();
+    };
+
+    // Initialize map after render
+    setTimeout(() => {
+        const mapContainer = document.getElementById('project-map');
+        if (mapContainer && !mapContainer.dataset.initialized && window.mapboxgl) {
+            mapContainer.dataset.initialized = 'true';
+            const coords = currentProject?.coordinates || { lat: 47.3769, lng: 8.5017 };
+            const map = new mapboxgl.Map({
+                container: 'project-map',
+                style: 'mapbox://styles/mapbox/light-v11',
+                center: [coords.lng, coords.lat],
+                zoom: 15,
+                accessToken: MAPBOX_TOKEN
+            });
+            new mapboxgl.Marker({ color: '#475569' })
+                .setLngLat([coords.lng, coords.lat])
+                .addTo(map);
+        }
+    }, 100);
+
+    return CollapsibleSection({
+        id: 'map',
+        icon: 'location_on',
+        title: 'Standort',
+        actions: [
+            !isEditingAddress ? Button({
+                children: 'Bearbeiten',
+                variant: 'ghost',
+                size: 'sm',
+                icon: 'edit',
+                onClick: startEditing
+            }) : null
+        ],
+        children: [
+            isEditingAddress ?
+                el('div', { className: 'map-edit-form' }, [
+                    el('input', {
+                        type: 'text',
+                        className: 'input',
+                        value: editingAddress,
+                        placeholder: 'Adresse eingeben...',
+                        oninput: (e) => store.set('editingAddress', e.target.value)
+                    }),
+                    Button({ children: 'Speichern', size: 'sm', onClick: saveAddress }),
+                    Button({ children: 'Abbrechen', variant: 'ghost', size: 'sm', onClick: cancelEditing })
+                ]) :
+                el('div', { className: 'map-address' }, [
+                    Icon('place', { size: 16, className: 'text-slate-400' }),
+                    currentProject?.address || 'Badenerstrasse 501, 8048 Zürich'
+                ]),
+            el('div', { id: 'project-map', className: 'map-container bg-slate-200' })
+        ]
+    });
+};
+
+// ============================================
+// IMAGE GALLERY SECTION COMPONENT
+// ============================================
+const ImageGallerySection = () => {
+    const projectImages = store.get('projectImages');
+    const isEditMode = store.get('isEditMode');
+
+    const deleteImage = (index) => {
+        const images = [...projectImages];
+        images.splice(index, 1);
+        store.set('projectImages', images);
+        renderApp();
+    };
+
+    const handleUpload = () => {
+        // Simulate adding a new image
+        const newImages = [...projectImages, 'https://images.unsplash.com/photo-1448630360428-65456885c650?w=400&h=400&fit=crop'];
+        store.set('projectImages', newImages);
+        renderApp();
+    };
+
+    return CollapsibleSection({
+        id: 'gallery',
+        icon: 'photo_library',
+        title: 'Bilder',
+        badge: `${projectImages.length} Bilder`,
+        actions: [
+            Button({
+                children: isEditMode ? 'Fertig' : 'Bearbeiten',
+                variant: 'ghost',
+                size: 'sm',
+                icon: isEditMode ? 'check' : 'edit',
+                onClick: () => { store.set('isEditMode', !isEditMode); renderApp(); }
+            })
+        ],
+        children: [
+            el('div', { className: 'image-gallery-grid' },
+                projectImages.map((img, i) =>
+                    el('div', { className: 'image-gallery-item' }, [
+                        el('img', { src: img, alt: `Bild ${i + 1}` }),
+                        el('div', { className: 'overlay' }),
+                        isEditMode ? el('button', {
+                            className: 'delete-btn',
+                            onclick: () => deleteImage(i)
+                        }, [Icon('close', { size: 14 })]) : null
+                    ])
+                )
+            ),
+            el('div', { className: 'image-upload-zone', onclick: handleUpload }, [
+                el('div', { className: 'flex flex-col items-center gap-2' }, [
+                    Icon('cloud_upload', { size: 32, className: 'text-slate-400' }),
+                    el('span', { className: 'text-sm text-slate-600' }, ['Weitere Bilder hinzufügen']),
+                    el('span', { className: 'text-xs text-slate-400' }, ['oder Dateien hierher ziehen'])
+                ])
+            ])
+        ]
+    });
 };
 
 // ============================================
@@ -2745,6 +3345,13 @@ const ProjectOverviewView = () => {
     const teamMembers = [
         { name: 'David Rasner', email: 'david.rasner@example.ch', role: 'Projektleiter' },
         { name: 'Matthias Spiss', email: 'matthias.spiss@allreal.ch', role: 'Admin' },
+        { name: 'Sarah Weber', email: 'sarah.weber@example.ch', role: 'Mitglied' },
+    ];
+
+    const experts = [
+        { name: 'Dr. Michael Braun', email: 'michael.braun@expert.ch', role: 'Tageslicht/Raumklima' },
+        { name: 'Prof. Anna Schmidt', email: 'anna.schmidt@eth.ch', role: 'Lebenszykluskosten' },
+        { name: 'Thomas Keller', email: 'thomas.keller@energie.ch', role: 'Energie' },
     ];
 
     const milestones = [
@@ -2752,6 +3359,7 @@ const ProjectOverviewView = () => {
         { date: '21.07.2024', label: 'Abgabe definitive BIM Modelle', done: true },
         { date: '15.08.2024', label: 'Bewertung Funktionalität', done: true },
         { date: '30.08.2024', label: 'Bewertung Komfort & Wirtschaftlichkeit', done: false },
+        { date: '15.09.2024', label: 'Abgabe Kosten Kalkulation', done: false },
         { date: '30.09.2024', label: 'Jurysitzung', done: false },
     ];
 
@@ -2764,14 +3372,14 @@ const ProjectOverviewView = () => {
                         el('h2', { className: 'text-xl font-semibold text-slate-900' }, [currentProject?.name || 'Badenerstrasse 501']),
                         el('p', { className: 'text-sm text-slate-500 mt-1' }, [currentProject?.address || 'Badenerstrasse 501, 8048 Zürich'])
                     ]),
-                    Badge({ status: 'active', label: 'Bewertung läuft' })
+                    Badge({ status: currentProject?.status || 'active', label: currentProject?.statusLabel || 'Bewertung läuft' })
                 ]),
                 // Stats Grid
                 el('div', { className: 'grid grid-cols-4 gap-4 mb-6' }, [
-                    StatCard({ icon: 'apartment', value: '5', label: 'Varianten' }),
-                    StatCard({ icon: 'check_circle', value: '2', label: 'Bewertet' }),
-                    StatCard({ icon: 'pending', value: '3', label: 'In Arbeit' }),
-                    StatCard({ icon: 'groups', value: '6', label: 'Teammitglieder' })
+                    StatCard({ icon: 'apartment', value: String(currentProject?.variantCount || 5), label: 'Varianten' }),
+                    StatCard({ icon: 'check_circle', value: String(currentProject?.evaluatedCount || 2), label: 'Bewertet' }),
+                    StatCard({ icon: 'pending', value: String((currentProject?.variantCount || 5) - (currentProject?.evaluatedCount || 2)), label: 'In Arbeit' }),
+                    StatCard({ icon: 'groups', value: String(teamMembers.length + experts.length), label: 'Teammitglieder' })
                 ]),
                 // Project Details
                 el('div', { className: 'border-t border-slate-100 pt-5' }, [
@@ -2780,9 +3388,9 @@ const ProjectOverviewView = () => {
                         Button({ children: 'Bearbeiten', variant: 'ghost', size: 'sm', icon: 'edit' })
                     ]),
                     el('div', { className: 'grid grid-cols-3 gap-6' }, [
-                        LabelValue({ label: 'Nutzungstyp', value: 'Wohnen' }),
-                        LabelValue({ label: 'Bauphase SIA 102', value: 'Vorprojekt' }),
-                        LabelValue({ label: 'Framework', value: 'SNAP' })
+                        LabelValue({ label: 'Nutzungstyp', value: currentProject?.usageType || 'Wohnen' }),
+                        LabelValue({ label: 'Bauphase SIA 102', value: currentProject?.phase || 'Vorprojekt' }),
+                        LabelValue({ label: 'Framework', value: currentProject?.framework || 'SNAP' })
                     ])
                 ])
             ])
@@ -2821,26 +3429,52 @@ const ProjectOverviewView = () => {
                 ))
             ])
         ]),
-        // Timeline
-        el('div', { className: 'collapsible' }, [
-            el('div', { className: 'collapsible-header flex items-center gap-3' }, [
-                el('div', { className: 'collapsible-icon-wrapper' }, [Icon('schedule', { size: 18, className: 'text-slate-600' })]),
-                el('span', { className: 'collapsible-title' }, ['Zeitplan']),
-                el('span', { className: 'collapsible-badge' }, [`${milestones.filter(m => !m.done).length} offen`])
-            ]),
-            el('div', { className: 'collapsible-content pt-4 space-y-3' }, milestones.map(m =>
-                el('div', { className: `timeline-item ${m.done ? 'timeline-item-done' : 'timeline-item-pending'}` }, [
-                    el('div', { className: `timeline-icon ${m.done ? 'timeline-icon-done' : 'timeline-icon-pending'}` }, [
-                        Icon(m.done ? 'check' : 'schedule', { size: 16 })
-                    ]),
-                    el('div', { className: 'timeline-content' }, [
-                        el('div', { className: `timeline-label ${m.done ? 'timeline-label-done' : ''}` }, [m.label]),
-                        el('div', { className: 'timeline-date' }, [m.date])
-                    ]),
-                    !m.done ? Button({ children: 'Erledigt', variant: 'ghost', size: 'sm', icon: 'check' }) : null
-                ])
-            ))
-        ])
+        // Map Section
+        MapSection(),
+        // Image Gallery Section
+        ImageGallerySection(),
+        // Team Section
+        CollapsibleSection({
+            id: 'team',
+            icon: 'groups',
+            title: 'Team',
+            badge: `${teamMembers.length + experts.length} Mitglieder`,
+            actions: [
+                Button({ children: 'Einladen', variant: 'ghost', size: 'sm', icon: 'person_add' }),
+                Button({ children: 'Bearbeiten', variant: 'ghost', size: 'sm', icon: 'edit' })
+            ],
+            children: [
+                el('div', { className: 'section-subtitle' }, ['Projektteam']),
+                el('div', { className: 'divide-y divide-slate-100' },
+                    teamMembers.map(m => TeamMemberRow(m))
+                ),
+                el('div', { className: 'section-subtitle mt-6' }, ['Experten']),
+                el('div', { className: 'divide-y divide-slate-100' },
+                    experts.map(e => TeamMemberRow({ ...e, isExpert: true }))
+                )
+            ]
+        }),
+        // Timeline Section (Collapsible)
+        CollapsibleSection({
+            id: 'timeline',
+            icon: 'schedule',
+            title: 'Zeitplan',
+            badge: `${milestones.filter(m => !m.done).length} offen`,
+            children: [
+                el('div', { className: 'space-y-3' }, milestones.map(m =>
+                    el('div', { className: `timeline-item ${m.done ? 'timeline-item-done' : 'timeline-item-pending'}` }, [
+                        el('div', { className: `timeline-icon ${m.done ? 'timeline-icon-done' : 'timeline-icon-pending'}` }, [
+                            Icon(m.done ? 'check' : 'schedule', { size: 16 })
+                        ]),
+                        el('div', { className: 'timeline-content' }, [
+                            el('div', { className: `timeline-label ${m.done ? 'timeline-label-done' : ''}` }, [m.label]),
+                            el('div', { className: 'timeline-date' }, [m.date])
+                        ]),
+                        !m.done ? Button({ children: 'Erledigt', variant: 'ghost', size: 'sm', icon: 'check' }) : null
+                    ])
+                ))
+            ]
+        })
     ]);
 };
 
@@ -3055,6 +3689,8 @@ const ComparisonView = () => {
         { id: 2, name: 'Gebäudevolumen GV', unit: 'm³', values: [23332, 23210, 22202, 24644, 23920] },
         { id: 3, name: 'Flächeneffizienz NF/BGF', unit: '', values: [0.64, 0.66, 0.61, 0.61, 0.63] },
         { id: 4, name: 'A/V-Verhältnis', unit: '', values: [0.29, 0.31, 0.28, 0.32, 0.30] },
+        { id: 5, name: 'Fensterflächenanteil', unit: '%', values: [47, 52, 44, 49, 51] },
+        { id: 6, name: 'Primärenergiebedarf', unit: '%', values: [107, 95, 112, 98, 103], lowerIsBetter: true },
     ];
 
     return el('div', { className: 'comparison-wrapper overflow-x-auto' }, [
@@ -3121,7 +3757,7 @@ const ComparisonView = () => {
                 ]),
                 ...quantData.map(kw => {
                     const selectedValues = selectedVariantsForCompare.map(i => kw.values[i]);
-                    const best = kw.id === 6 ? Math.min(...selectedValues) : Math.max(...selectedValues);
+                    const best = kw.lowerIsBetter ? Math.min(...selectedValues) : Math.max(...selectedValues);
                     return el('tr', { className: 'hover\\:bg-slate-50' }, [
                         el('td', { className: 'comparison-sticky text-sm text-slate-700' }, [
                             kw.name, kw.unit ? el('span', { className: 'text-slate-400' }, [` (${kw.unit})`]) : null
@@ -3225,9 +3861,54 @@ const Model3DView = () => {
 // ============================================
 const CreateProjectModal = () => {
     const isOpen = store.get('isCreateModalOpen');
+    const formErrors = store.get('formErrors');
+    const isSubmitting = store.get('isSubmitting');
+
     if (!isOpen) return null;
 
-    const close = () => { store.set('isCreateModalOpen', false); renderApp(); };
+    const close = () => {
+        store.update({ isCreateModalOpen: false, formErrors: {}, isSubmitting: false });
+        renderApp();
+    };
+
+    const validate = () => {
+        const errors = {};
+        const nameInput = document.getElementById('project-name');
+        const usageSelect = document.getElementById('project-usage');
+        const frameworkSelect = document.getElementById('project-framework');
+
+        if (!nameInput?.value?.trim()) {
+            errors.name = 'Projektname ist erforderlich';
+        }
+        if (!usageSelect?.value) {
+            errors.usage = 'Bitte Nutzungstyp wählen';
+        }
+        if (!frameworkSelect?.value) {
+            errors.framework = 'Bitte Framework wählen';
+        }
+
+        return errors;
+    };
+
+    const handleSubmit = () => {
+        const errors = validate();
+        if (Object.keys(errors).length > 0) {
+            store.set('formErrors', errors);
+            renderApp();
+            return;
+        }
+
+        store.set('isSubmitting', true);
+        renderApp();
+
+        // Simulate API call
+        setTimeout(() => {
+            close();
+        }, 1000);
+    };
+
+    const InputError = (message) => message ?
+        el('p', { className: 'text-xs text-red-500 mt-1' }, [message]) : null;
 
     return el('div', { className: 'modal-backdrop', onclick: (e) => { if (e.target === e.currentTarget) close(); } }, [
         el('div', { className: 'modal' }, [
@@ -3241,34 +3922,76 @@ const CreateProjectModal = () => {
             el('div', { className: 'modal-body space-y-4' }, [
                 el('div', { className: 'input-wrapper' }, [
                     el('label', { className: 'input-label' }, ['Projektname ', el('span', { className: 'input-required' }, ['*'])]),
-                    el('input', { type: 'text', className: 'input', placeholder: 'z.B. Musterstrasse 123' })
+                    el('input', {
+                        type: 'text',
+                        id: 'project-name',
+                        className: `input ${formErrors.name ? 'border-red-500' : ''}`,
+                        placeholder: 'z.B. Musterstrasse 123'
+                    }),
+                    InputError(formErrors.name)
                 ]),
                 el('div', { className: 'input-wrapper' }, [
                     el('label', { className: 'input-label' }, ['Adresse']),
-                    el('input', { type: 'text', className: 'input', placeholder: 'Strasse, PLZ Ort' })
+                    el('input', { type: 'text', id: 'project-address', className: 'input', placeholder: 'Strasse, PLZ Ort' })
                 ]),
                 el('div', { className: 'grid grid-cols-2 gap-4' }, [
                     el('div', { className: 'input-wrapper' }, [
                         el('label', { className: 'input-label' }, ['Nutzungstyp ', el('span', { className: 'input-required' }, ['*'])]),
-                        el('select', { className: 'input select' }, [
+                        el('select', {
+                            id: 'project-usage',
+                            className: `input select ${formErrors.usage ? 'border-red-500' : ''}`
+                        }, [
                             el('option', { value: '' }, ['Bitte wählen...']),
                             el('option', { value: 'Wohnen' }, ['Wohnen']),
-                            el('option', { value: 'Büro' }, ['Büro / Gewerbe'])
-                        ])
+                            el('option', { value: 'Büro / Gewerbe' }, ['Büro / Gewerbe']),
+                            el('option', { value: 'Wohnen / Gewerbe' }, ['Wohnen / Gewerbe']),
+                            el('option', { value: 'Stadion / Wohnen' }, ['Stadion / Wohnen']),
+                            el('option', { value: 'Bildung' }, ['Bildung'])
+                        ]),
+                        InputError(formErrors.usage)
                     ]),
                     el('div', { className: 'input-wrapper' }, [
                         el('label', { className: 'input-label' }, ['Framework ', el('span', { className: 'input-required' }, ['*'])]),
-                        el('select', { className: 'input select' }, [
+                        el('select', {
+                            id: 'project-framework',
+                            className: `input select ${formErrors.framework ? 'border-red-500' : ''}`
+                        }, [
                             el('option', { value: '' }, ['Bitte wählen...']),
                             el('option', { value: 'SNAP' }, ['SNAP']),
-                            el('option', { value: 'SNBS' }, ['SNBS'])
+                            el('option', { value: 'SNBS' }, ['SNBS']),
+                            el('option', { value: 'Minergie' }, ['Minergie']),
+                            el('option', { value: 'Minergie-ECO' }, ['Minergie-ECO'])
+                        ]),
+                        InputError(formErrors.framework)
+                    ])
+                ]),
+                el('div', { className: 'grid grid-cols-2 gap-4' }, [
+                    el('div', { className: 'input-wrapper' }, [
+                        el('label', { className: 'input-label' }, ['Bauphase SIA 102']),
+                        el('select', { id: 'project-phase', className: 'input select' }, [
+                            el('option', { value: '' }, ['Bitte wählen...']),
+                            el('option', { value: 'Machbarkeit' }, ['Machbarkeit']),
+                            el('option', { value: 'Vorprojekt' }, ['Vorprojekt']),
+                            el('option', { value: 'Bauprojekt' }, ['Bauprojekt']),
+                            el('option', { value: 'Realisierung' }, ['Realisierung'])
                         ])
+                    ]),
+                    el('div', { className: 'input-wrapper' }, [
+                        el('label', { className: 'input-label' }, ['Geplante Varianten']),
+                        el('input', { type: 'number', id: 'project-variants', className: 'input', placeholder: '5', min: '1', max: '20' })
                     ])
                 ])
             ]),
             el('div', { className: 'modal-footer' }, [
-                Button({ children: 'Abbrechen', variant: 'ghost', onClick: close }),
-                Button({ children: 'Projekt erstellen', onClick: close })
+                Button({ children: 'Abbrechen', variant: 'ghost', onClick: close, disabled: isSubmitting }),
+                Button({
+                    children: isSubmitting ? el('span', { className: 'flex items-center gap-2' }, [
+                        el('span', { className: 'animate-spin', style: { display: 'inline-block' } }, ['⟳']),
+                        'Erstellen...'
+                    ]) : 'Projekt erstellen',
+                    onClick: handleSubmit,
+                    disabled: isSubmitting
+                })
             ])
         ])
     ]);
