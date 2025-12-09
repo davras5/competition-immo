@@ -2312,12 +2312,7 @@ const store = createStore({
     isVariantDropdownOpen: false,
     isEditingAddress: false,
     editingAddress: '',
-    projectImages: [
-        'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400&h=400&fit=crop',
-        'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=400&fit=crop',
-        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=400&fit=crop',
-        'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=400&h=400&fit=crop'
-    ],
+    projectImages: [], // Will be populated from data.json or current project
     formErrors: {},
     isSubmitting: false
 });
@@ -2370,154 +2365,51 @@ const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => document.querySelectorAll(selector);
 
 // ============================================
-// DATA
+// DATA (loaded from data.json)
 // ============================================
-const MAPBOX_TOKEN = 'pk.eyJ1IjoiZGF2aWRyYXNuZXI1IiwiYSI6ImNtMm5yamVkdjA5MDcycXMyZ2I2MHRhamgifQ.m651j7WIX7MyxNh8KIQ1Gg';
+let APP_DATA = null;
+let MAPBOX_TOKEN = '';
+let VARIANTS = [];
+let PROJECTS = [];
+let THEMES = {};
 
-const VARIANTS = [
-    { id: 1, name: 'Baukontor', firm: 'Baukontor AG', code: '1001',
-      thumbnail: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400&h=300&fit=crop',
-      images: [
-        'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop',
-      ]
-    },
-    { id: 2, name: 'Berrel_Kräutler', firm: 'Berrel Kräutler', code: '1002',
-      thumbnail: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop',
-      images: [
-        'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=800&h=600&fit=crop',
-      ]
-    },
-    { id: 3, name: 'Meier_Hug', firm: 'Meier und Hug', code: '1003',
-      thumbnail: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop',
-      images: [
-        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1448630360428-65456885c650?w=800&h=600&fit=crop',
-      ]
-    },
-    { id: 4, name: 'Spillmann_Echsle', firm: 'Spillmann Echsle', code: '1004',
-      thumbnail: 'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=400&h=300&fit=crop',
-      images: [
-        'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1494526585095-c41746248156?w=800&h=600&fit=crop',
-      ]
-    },
-    { id: 5, name: 'Z2G', firm: 'Planer', code: '1005',
-      thumbnail: 'https://images.unsplash.com/photo-1494526585095-c41746248156?w=400&h=300&fit=crop',
-      images: [
-        'https://images.unsplash.com/photo-1494526585095-c41746248156?w=800&h=600&fit=crop',
-        'https://images.unsplash.com/photo-1448630360428-65456885c650?w=800&h=600&fit=crop',
-      ]
-    },
-];
+const loadAppData = async () => {
+    try {
+        const response = await fetch('data.json');
+        if (!response.ok) throw new Error('Failed to load data.json');
+        APP_DATA = await response.json();
 
-const PROJECTS = [
-    { id: 1, name: 'Badenerstrasse 501', address: 'Badenerstrasse 501, 8048 Zürich',
-      usageType: 'Wohnen', status: 'active', statusLabel: 'Bewertung läuft',
-      variantCount: 5, evaluatedCount: 2,
-      thumbnail: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400&h=300&fit=crop',
-      framework: 'SNAP', phase: 'Vorprojekt',
-      coordinates: { lat: 47.3769, lng: 8.5017 }, lastUpdated: '18.11.2024' },
-    { id: 2, name: 'Europaallee Baufeld G', address: 'Europaallee 21, 8004 Zürich',
-      usageType: 'Büro / Gewerbe', status: 'completed', statusLabel: 'Abgeschlossen',
-      variantCount: 3, evaluatedCount: 3,
-      thumbnail: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop',
-      framework: 'SNAP', phase: 'Bauprojekt',
-      coordinates: { lat: 47.3782, lng: 8.5314 }, lastUpdated: '02.10.2024' },
-    { id: 3, name: 'Glattpark Mitte', address: 'Lindberghplatz 1, 8152 Opfikon',
-      usageType: 'Wohnen / Gewerbe', status: 'active', statusLabel: 'In Bearbeitung',
-      variantCount: 4, evaluatedCount: 1,
-      thumbnail: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop',
-      framework: 'SNBS', phase: 'Vorprojekt',
-      coordinates: { lat: 47.4234, lng: 8.5687 }, lastUpdated: '25.11.2024' },
-    { id: 4, name: 'Hardturm Areal', address: 'Pfingstweidstrasse 100, 8005 Zürich',
-      usageType: 'Stadion / Wohnen', status: 'draft', statusLabel: 'Entwurf',
-      variantCount: 6, evaluatedCount: 0,
-      thumbnail: 'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=400&h=300&fit=crop',
-      framework: 'SNAP', phase: 'Machbarkeit',
-      coordinates: { lat: 47.3912, lng: 8.5043 }, lastUpdated: '10.11.2024' },
-    { id: 5, name: 'Greencity Süd', address: 'Maneggstrasse 50, 8041 Zürich',
-      usageType: 'Wohnen', status: 'completed', statusLabel: 'Abgeschlossen',
-      variantCount: 2, evaluatedCount: 2,
-      thumbnail: 'https://images.unsplash.com/photo-1494526585095-c41746248156?w=400&h=300&fit=crop',
-      framework: 'Minergie-ECO', phase: 'Realisierung',
-      coordinates: { lat: 47.3456, lng: 8.5234 }, lastUpdated: '15.09.2024' },
-    { id: 6, name: 'Seefeld Quartier', address: 'Seefeldstrasse 123, 8008 Zürich',
-      usageType: 'Wohnen', status: 'active', statusLabel: 'Bewertung läuft',
-      variantCount: 3, evaluatedCount: 2,
-      thumbnail: 'https://images.unsplash.com/photo-1448630360428-65456885c650?w=400&h=300&fit=crop',
-      framework: 'SNAP', phase: 'Vorprojekt',
-      coordinates: { lat: 47.3543, lng: 8.5567 }, lastUpdated: '20.11.2024' }
-];
+        // Populate global data references
+        MAPBOX_TOKEN = APP_DATA.config.mapbox.token;
+        VARIANTS = APP_DATA.variants;
+        PROJECTS = APP_DATA.projects;
+        THEMES = APP_DATA.themes;
 
-const THEMES = {
-    functionality: {
-        id: 'functionality', name: 'Funktionalität', icon: 'settings_accessibility',
-        kennwerte: [
-            { id: 'fk-01', label: 'Fahrradstellplätze (Anzahl)', unit: 'St.' },
-            { id: 'fk-02', label: 'Entfernung Fahrrad → Eingang', unit: 'm' },
-            { id: 'fk-03', label: 'Anteil barrierefreie Wohnungen', unit: '%' },
-        ],
-        kriterien: [
-            { id: '01', name: 'Erschliessung', desc: 'Vorfahrt, Ver-/Entsorgung, TG-Erschliessung, Fahrradstellplätze, Haupteingang, interne Wege' },
-            { id: '02', name: 'Öffentliche Zugänglichkeit', desc: 'Öffentliche Zugänglichkeit Gebäude + Grundstück, bauliche Voraussetzungen' },
-            { id: '03', name: 'Barrierefreiheit', desc: 'Barrierefreiheit Gebäude und Aussenanlagen' },
-            { id: '04', name: 'Kommunikationsfördernde Flächen', desc: 'Angebot im Gebäude und im Aussenraum' },
-        ],
-        progress: 100
-    },
-    comfort: {
-        id: 'comfort', name: 'Komfort & Gesundheit', icon: 'spa',
-        kennwerte: [
-            { id: 'ko-01', label: 'Gesamtfensterflächenanteil', unit: '%' },
-            { id: 'ko-02', label: 'Fensterflächenanteil Ost/West', unit: '%' },
-            { id: 'ko-03', label: 'Mittlere Raumtiefe Hauptnutzung', unit: 'm' },
-        ],
-        kriterien: [
-            { id: '05', name: 'Sicherheit', desc: 'Brandschutz, projektspezifische Sicherheit, Übersichtlichkeit und Orientierung' },
-            { id: '06', name: 'Schallschutz', desc: 'Orientierung schutzbedürftiger Räume, bauliche Massnahmen, Nutzungskonflikte' },
-            { id: '07', name: 'Tageslicht', desc: 'Tageslichtversorgung Hauptnutzungen, Raumtiefe, Sturzausbildung, Sichtbeziehungen' },
-            { id: '08', name: 'Raumklima', desc: 'Orientierung, Sonnenschutzkonzept, Brüstungsbereich, bauliche Massnahmen' },
-        ],
-        progress: 75
-    },
-    economics: {
-        id: 'economics', name: 'Wirtschaftlichkeit', icon: 'payments',
-        kennwerte: [
-            { id: 'wi-01', label: 'NF/BGF (Flächeneffizienz)', unit: '' },
-            { id: 'wi-02', label: 'BRI/BGF (Volumeneffizienz)', unit: '' },
-            { id: 'wi-03', label: 'A/V-Verhältnis', unit: '' },
-            { id: 'wi-04', label: 'Hüllflächenanteil', unit: '%' },
-        ],
-        kriterien: [
-            { id: '09', name: 'Flächeneffizienz', desc: 'NF/BGF, BRI/BGF Verhältnisse' },
-            { id: '10', name: 'Nutzungsflexibilität', desc: 'Lichte Raumhöhe, Umnutzungsfähigkeit, Teilbarkeit, Nutzung durch Dritte' },
-            { id: '11', name: 'Lebenszykluskosten', desc: 'Kubatur, Fassade, Energiebedarf, Energiekosten, Dauerhaftigkeit' },
-        ],
-        progress: 40
-    },
-    resources: {
-        id: 'resources', name: 'Ressourcen & Energie', icon: 'bolt',
-        kennwerte: [
-            { id: 're-01', label: 'Versiegelungsgrad Grundstück', unit: '%' },
-            { id: 're-02', label: 'Primärenergiebedarf', unit: '%' },
-            { id: 're-03', label: 'Endenergiebedarf', unit: 'kWh/m²a' },
-        ],
-        kriterien: [
-            { id: '12', name: 'Flächenversiegelung', desc: 'Versiegelungsgrad, Gründach, unterbaute Fläche, Ausgleichsmassnahmen' },
-            { id: '13', name: 'Baustoffe', desc: 'BRI, Hüllflächenanteil, Baumasse unter Gelände, nachwachsende Rohstoffe' },
-            { id: '14', name: 'Endenergiebedarf', desc: 'Heizwärmebedarf, A/V, solare Gewinne, Kunstlichtbedarf' },
-            { id: '15', name: 'Energiebedarfsdeckung', desc: 'Solartechnik Strom/Wärme, Gebäudeintegration, lokale Energiepotenziale' },
-        ],
-        progress: 20
+        // Set default images in store
+        store.set('projectImages', APP_DATA.config.defaultImages || []);
+
+        return APP_DATA;
+    } catch (error) {
+        console.error('Error loading app data:', error);
+        // Show error to user
+        document.getElementById('root').innerHTML = `
+            <div style="padding: 2rem; text-align: center; color: #dc2626;">
+                <h2>Error Loading Data</h2>
+                <p>Could not load application data. Please check that data.json exists.</p>
+                <pre style="text-align: left; background: #f1f5f9; padding: 1rem; border-radius: 0.5rem;">${error.message}</pre>
+            </div>
+        `;
+        throw error;
     }
+};
+
+// Helper to get project images (from current project or defaults)
+const getProjectImages = () => {
+    const currentProject = store.get('currentProject');
+    if (currentProject?.images?.length > 0) {
+        return currentProject.images;
+    }
+    return APP_DATA?.config?.defaultImages || store.get('projectImages');
 };
 
 // Mock data generators
@@ -3278,7 +3170,11 @@ const MapSection = () => {
 // IMAGE GALLERY SECTION COMPONENT
 // ============================================
 const ImageGallerySection = () => {
-    const projectImages = store.get('projectImages');
+    const currentProject = store.get('currentProject');
+    // Use project-specific images, falling back to store images (for new/default projects)
+    const projectImages = currentProject?.images?.length > 0
+        ? currentProject.images
+        : store.get('projectImages');
     const isEditMode = store.get('isEditMode');
 
     const deleteImage = (index) => {
@@ -3339,26 +3235,10 @@ const ImageGallerySection = () => {
 const ProjectOverviewView = () => {
     const currentProject = store.get('currentProject');
 
-    const teamMembers = [
-        { name: 'David Rasner', email: 'david.rasner@example.ch', role: 'Projektleiter' },
-        { name: 'Matthias Spiss', email: 'matthias.spiss@allreal.ch', role: 'Admin' },
-        { name: 'Sarah Weber', email: 'sarah.weber@example.ch', role: 'Mitglied' },
-    ];
-
-    const experts = [
-        { name: 'Dr. Michael Braun', email: 'michael.braun@expert.ch', role: 'Tageslicht/Raumklima' },
-        { name: 'Prof. Anna Schmidt', email: 'anna.schmidt@eth.ch', role: 'Lebenszykluskosten' },
-        { name: 'Thomas Keller', email: 'thomas.keller@energie.ch', role: 'Energie' },
-    ];
-
-    const milestones = [
-        { date: '15.07.2024', label: 'Abgabe BIM Modelle (90%)', done: true },
-        { date: '21.07.2024', label: 'Abgabe definitive BIM Modelle', done: true },
-        { date: '15.08.2024', label: 'Bewertung Funktionalität', done: true },
-        { date: '30.08.2024', label: 'Bewertung Komfort & Wirtschaftlichkeit', done: false },
-        { date: '15.09.2024', label: 'Abgabe Kosten Kalkulation', done: false },
-        { date: '30.09.2024', label: 'Jurysitzung', done: false },
-    ];
+    // Get project-specific data from JSON, with fallbacks
+    const teamMembers = currentProject?.team || [];
+    const experts = currentProject?.experts || [];
+    const milestones = currentProject?.milestones || [];
 
     return el('div', { className: 'flex-1 space-y-4' }, [
         // Quick Actions
@@ -4043,8 +3923,11 @@ const App = () => {
 // ============================================
 const renderApp = () => render(App, $('#root'));
 
-// Initial render
-document.addEventListener('DOMContentLoaded', renderApp);
+// Initial render - load data first, then render
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadAppData();
+    renderApp();
+});
     </script>
 </body>
 </html>
