@@ -1,0 +1,577 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "2025-12-09",
+    "description": "Framework catalog for sustainability standards and use cases in architectural competitions"
+  },
+  "standards": [
+    {
+      "id": "snbs",
+      "logo": "SNBS",
+      "name": "Standard Nachhaltiges Bauen Schweiz",
+      "description": "Der Schweizer Standard für nachhaltiges Bauen. Deckt Gesellschaft, Wirtschaft und Umwelt ab.",
+      "link": "https://www.snbs.ch",
+      "country": "CH",
+      "languages": ["de", "fr", "it"],
+      "scope": "national",
+      "status": "active",
+      "certification": true,
+      "focus": ["environment", "social", "economic"],
+      "criteria": [
+        {
+          "theme": "Gesellschaft",
+          "icon": "groups",
+          "items": [
+            { "name": "Regionale Wertschöpfung", "type": "qualitative", "unit": "Bewertung" },
+            { "name": "Öffentliche Räume", "type": "qualitative", "unit": "Bewertung" },
+            { "name": "Mobilität", "type": "quantitative", "unit": "Stellplätze" },
+            { "name": "Barrierefreiheit", "type": "qualitative", "unit": "Bewertung" }
+          ]
+        },
+        {
+          "theme": "Wirtschaft",
+          "icon": "payments",
+          "items": [
+            { "name": "Lebenszykluskosten", "type": "quantitative", "unit": "CHF/m²" },
+            { "name": "Flexibilität", "type": "qualitative", "unit": "Bewertung" },
+            { "name": "Betriebskosten", "type": "quantitative", "unit": "CHF/m²/a" }
+          ]
+        },
+        {
+          "theme": "Umwelt",
+          "icon": "eco",
+          "items": [
+            { "name": "Primärenergie", "type": "quantitative", "unit": "kWh/m²" },
+            { "name": "Treibhausgasemissionen", "type": "quantitative", "unit": "kg CO₂/m²" },
+            { "name": "Biodiversität", "type": "qualitative", "unit": "Bewertung" },
+            { "name": "Wasserverbrauch", "type": "quantitative", "unit": "l/Person" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dgnb",
+      "logo": "DGNB",
+      "name": "Deutsche Gesellschaft für Nachhaltiges Bauen",
+      "description": "Internationales Zertifizierungssystem mit ganzheitlichem Ansatz für Gebäudebewertung.",
+      "link": "https://www.dgnb.de",
+      "country": "DE",
+      "languages": ["de", "en"],
+      "scope": "international",
+      "status": "active",
+      "certification": true,
+      "focus": ["environment", "social", "economic", "technical", "process"],
+      "criteria": [
+        {
+          "theme": "Ökologische Qualität",
+          "icon": "eco",
+          "items": [
+            { "name": "Ökobilanz", "type": "quantitative", "unit": "kg CO₂-eq" },
+            { "name": "Trinkwasserbedarf", "type": "quantitative", "unit": "m³/a" },
+            { "name": "Flächeninanspruchnahme", "type": "quantitative", "unit": "m²" }
+          ]
+        },
+        {
+          "theme": "Ökonomische Qualität",
+          "icon": "payments",
+          "items": [
+            { "name": "Lebenszykluskosten", "type": "quantitative", "unit": "€/m²" },
+            { "name": "Wertstabilität", "type": "qualitative", "unit": "Bewertung" }
+          ]
+        },
+        {
+          "theme": "Soziokulturelle Qualität",
+          "icon": "diversity_3",
+          "items": [
+            { "name": "Thermischer Komfort", "type": "quantitative", "unit": "PMV" },
+            { "name": "Innenraumluftqualität", "type": "quantitative", "unit": "ppm CO₂" },
+            { "name": "Visueller Komfort", "type": "qualitative", "unit": "Bewertung" },
+            { "name": "Gestaltungsqualität", "type": "qualitative", "unit": "Bewertung" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "snap",
+      "logo": "SNAP",
+      "name": "Systematik für Nachhaltigkeitsanforderungen in Planungswettbewerben",
+      "description": "Deutsche Methodik zur Integration von Nachhaltigkeitsanforderungen in Planungswettbewerbe. Basiert auf dem BNB-System mit 15 vorentwurfsrelevanten Kriterien.",
+      "link": "https://www.bbsr.bund.de/BBSR/DE/veroeffentlichungen/zukunft-bauen-fp/2021/band-28.html",
+      "country": "DE",
+      "languages": ["de"],
+      "scope": "national",
+      "status": "active",
+      "certification": false,
+      "focus": ["environment", "social", "economic", "technical"],
+      "criteria": [
+        {
+          "theme": "Ökologische Qualität",
+          "icon": "eco",
+          "items": [
+            { "name": "Treibhauspotenzial (GWP)", "type": "quantitative", "unit": "kg CO₂-eq/m²" },
+            { "name": "Primärenergiebedarf", "type": "quantitative", "unit": "kWh/m²a" },
+            { "name": "Flächeninanspruchnahme", "type": "quantitative", "unit": "m²" },
+            { "name": "Biodiversität am Standort", "type": "qualitative", "unit": "Bewertung" }
+          ]
+        },
+        {
+          "theme": "Ökonomische Qualität",
+          "icon": "payments",
+          "items": [
+            { "name": "Lebenszykluskosten", "type": "quantitative", "unit": "€/m²" },
+            { "name": "Drittverwendungsfähigkeit", "type": "qualitative", "unit": "Bewertung" },
+            { "name": "Flächeneffizienz", "type": "quantitative", "unit": "NUF/BGF" }
+          ]
+        },
+        {
+          "theme": "Soziokulturelle Qualität",
+          "icon": "diversity_3",
+          "items": [
+            { "name": "Thermischer Komfort", "type": "quantitative", "unit": "PMV" },
+            { "name": "Tageslichtversorgung", "type": "quantitative", "unit": "Tageslichtquotient %" },
+            { "name": "Gestalterische Qualität", "type": "qualitative", "unit": "Bewertung" },
+            { "name": "Barrierefreiheit", "type": "qualitative", "unit": "Bewertung" }
+          ]
+        },
+        {
+          "theme": "Technische Qualität",
+          "icon": "engineering",
+          "items": [
+            { "name": "Schallschutz", "type": "quantitative", "unit": "dB" },
+            { "name": "Rückbaubarkeit", "type": "qualitative", "unit": "Bewertung" },
+            { "name": "Reinigungsfreundlichkeit", "type": "qualitative", "unit": "Bewertung" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "leed",
+      "logo": "LEED",
+      "name": "Leadership in Energy and Environmental Design",
+      "description": "US-amerikanisches Bewertungssystem mit weltweiter Verbreitung. Fokus auf Energie und Ressourcen.",
+      "link": "https://www.usgbc.org/leed",
+      "country": "US",
+      "languages": ["en"],
+      "scope": "international",
+      "status": "active",
+      "certification": true,
+      "focus": ["environment", "energy", "health"],
+      "criteria": [
+        {
+          "theme": "Energy & Atmosphere",
+          "icon": "bolt",
+          "items": [
+            { "name": "Energy Performance", "type": "quantitative", "unit": "% Reduction" },
+            { "name": "Renewable Energy", "type": "quantitative", "unit": "kWh" },
+            { "name": "Commissioning", "type": "qualitative", "unit": "Assessment" }
+          ]
+        },
+        {
+          "theme": "Water Efficiency",
+          "icon": "water_drop",
+          "items": [
+            { "name": "Indoor Water Use", "type": "quantitative", "unit": "% Reduction" },
+            { "name": "Outdoor Water Use", "type": "quantitative", "unit": "l/m²" }
+          ]
+        },
+        {
+          "theme": "Indoor Environment",
+          "icon": "air",
+          "items": [
+            { "name": "Ventilation", "type": "quantitative", "unit": "l/s/Person" },
+            { "name": "Daylighting", "type": "quantitative", "unit": "Lux" },
+            { "name": "Acoustic Performance", "type": "qualitative", "unit": "Assessment" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "well",
+      "logo": "WELL",
+      "name": "WELL Building Standard",
+      "description": "Fokussiert auf Gesundheit und Wohlbefinden der Gebäudenutzer.",
+      "link": "https://www.wellcertified.com",
+      "country": "US",
+      "languages": ["en"],
+      "scope": "international",
+      "status": "active",
+      "certification": true,
+      "focus": ["health", "comfort"],
+      "criteria": [
+        {
+          "theme": "Air",
+          "icon": "air",
+          "items": [
+            { "name": "Air Quality", "type": "quantitative", "unit": "PM2.5 µg/m³" },
+            { "name": "Ventilation Effectiveness", "type": "quantitative", "unit": "ACH" }
+          ]
+        },
+        {
+          "theme": "Light",
+          "icon": "light_mode",
+          "items": [
+            { "name": "Visual Lighting Design", "type": "quantitative", "unit": "Lux" },
+            { "name": "Circadian Lighting", "type": "qualitative", "unit": "Assessment" }
+          ]
+        },
+        {
+          "theme": "Mind",
+          "icon": "psychology",
+          "items": [
+            { "name": "Restorative Spaces", "type": "qualitative", "unit": "Assessment" },
+            { "name": "Stress Management", "type": "qualitative", "unit": "Assessment" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "levels",
+      "logo": "Level(s)",
+      "name": "EU Framework for Sustainable Buildings",
+      "description": "EU-weites Rahmenwerk zur Bewertung der Umweltleistung von Gebäuden.",
+      "link": "https://environment.ec.europa.eu/topics/circular-economy/levels_en",
+      "country": "EU",
+      "languages": ["en", "de", "fr", "es", "it"],
+      "scope": "regional",
+      "status": "active",
+      "certification": false,
+      "focus": ["environment", "circular-economy"],
+      "criteria": [
+        {
+          "theme": "Greenhouse Gas Emissions",
+          "icon": "cloud",
+          "items": [
+            { "name": "Life Cycle GWP", "type": "quantitative", "unit": "kg CO₂-eq/m²" },
+            { "name": "Operational Energy", "type": "quantitative", "unit": "kWh/m²/a" }
+          ]
+        },
+        {
+          "theme": "Resource Efficiency",
+          "icon": "recycling",
+          "items": [
+            { "name": "Bill of Materials", "type": "quantitative", "unit": "kg/m²" },
+            { "name": "Construction Waste", "type": "quantitative", "unit": "kg/m²" }
+          ]
+        },
+        {
+          "theme": "Health & Comfort",
+          "icon": "favorite",
+          "items": [
+            { "name": "Indoor Air Quality", "type": "quantitative", "unit": "µg/m³ TVOC" },
+            { "name": "Thermal Comfort", "type": "quantitative", "unit": "Hours >26°C" }
+          ]
+        }
+      ]
+    }
+  ],
+  "useCases": [
+    {
+      "id": "minimum",
+      "logo": "Basis",
+      "name": "Minimum Information",
+      "description": "Grundlegende Projektdaten, die für jeden Wettbewerb erfasst werden sollten.",
+      "complexity": "basic",
+      "phase": "early-planning",
+      "focus": ["data-collection"],
+      "criteria": [
+        {
+          "theme": "Flächen",
+          "icon": "square_foot",
+          "items": [
+            { "name": "Geschossfläche (GF)", "type": "quantitative", "unit": "m²" },
+            { "name": "Hauptnutzfläche (HNF)", "type": "quantitative", "unit": "m²" },
+            { "name": "Grundstücksfläche", "type": "quantitative", "unit": "m²" },
+            { "name": "Aussenraumfläche", "type": "quantitative", "unit": "m²" }
+          ]
+        },
+        {
+          "theme": "Volumen",
+          "icon": "view_in_ar",
+          "items": [
+            { "name": "Gebäudevolumen", "type": "quantitative", "unit": "m³" },
+            { "name": "Anzahl Geschosse", "type": "quantitative", "unit": "Anzahl" }
+          ]
+        },
+        {
+          "theme": "Kapazität",
+          "icon": "groups",
+          "items": [
+            { "name": "Arbeitsplätze", "type": "quantitative", "unit": "Anzahl" },
+            { "name": "Nutzer maximal", "type": "quantitative", "unit": "Personen" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "costs",
+      "logo": "Kosten",
+      "name": "Kostenschätzung",
+      "description": "Strukturierte Erfassung von Baukosten nach BKP für den Variantenvergleich.",
+      "complexity": "intermediate",
+      "phase": "early-planning",
+      "focus": ["economic"],
+      "criteria": [
+        {
+          "theme": "BKP Hauptgruppen",
+          "icon": "payments",
+          "items": [
+            { "name": "BKP 1 - Vorbereitungsarbeiten", "type": "quantitative", "unit": "CHF" },
+            { "name": "BKP 2 - Gebäude", "type": "quantitative", "unit": "CHF" },
+            { "name": "BKP 3 - Betriebseinrichtungen", "type": "quantitative", "unit": "CHF" },
+            { "name": "BKP 4 - Umgebung", "type": "quantitative", "unit": "CHF" },
+            { "name": "BKP 5 - Baunebenkosten", "type": "quantitative", "unit": "CHF" }
+          ]
+        },
+        {
+          "theme": "Kennwerte",
+          "icon": "analytics",
+          "items": [
+            { "name": "Kosten pro m² GF", "type": "quantitative", "unit": "CHF/m²" },
+            { "name": "Kosten pro Arbeitsplatz", "type": "quantitative", "unit": "CHF/AP" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "energy",
+      "logo": "Energie",
+      "name": "Energieanalyse",
+      "description": "Energetische Kennwerte für den Vergleich der Gebäudeperformance.",
+      "complexity": "intermediate",
+      "phase": "detailed-design",
+      "focus": ["energy", "environment"],
+      "criteria": [
+        {
+          "theme": "Energiebedarf",
+          "icon": "bolt",
+          "items": [
+            { "name": "Heizwärmebedarf", "type": "quantitative", "unit": "kWh/m²a" },
+            { "name": "Kühlbedarf", "type": "quantitative", "unit": "kWh/m²a" },
+            { "name": "Strombedarf Beleuchtung", "type": "quantitative", "unit": "kWh/m²a" },
+            { "name": "Strombedarf Geräte", "type": "quantitative", "unit": "kWh/m²a" }
+          ]
+        },
+        {
+          "theme": "Gebäudehülle",
+          "icon": "home",
+          "items": [
+            { "name": "U-Wert Aussenwand", "type": "quantitative", "unit": "W/m²K" },
+            { "name": "U-Wert Fenster", "type": "quantitative", "unit": "W/m²K" },
+            { "name": "Fensteranteil Fassade", "type": "quantitative", "unit": "%" }
+          ]
+        },
+        {
+          "theme": "Eigenproduktion",
+          "icon": "solar_power",
+          "items": [
+            { "name": "PV-Fläche", "type": "quantitative", "unit": "m²" },
+            { "name": "PV-Ertrag", "type": "quantitative", "unit": "kWh/a" },
+            { "name": "Eigendeckungsgrad", "type": "quantitative", "unit": "%" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quality",
+      "logo": "Qualität",
+      "name": "Architektonische Qualität",
+      "description": "Qualitative Bewertung gestalterischer und funktionaler Aspekte.",
+      "complexity": "advanced",
+      "phase": "early-planning",
+      "focus": ["design", "social"],
+      "criteria": [
+        {
+          "theme": "Gestaltung",
+          "icon": "palette",
+          "items": [
+            { "name": "Architektonischer Ausdruck", "type": "qualitative", "unit": "Bewertung" },
+            { "name": "Materialisierung", "type": "qualitative", "unit": "Bewertung" },
+            { "name": "Detailqualität", "type": "qualitative", "unit": "Bewertung" }
+          ]
+        },
+        {
+          "theme": "Städtebau",
+          "icon": "location_city",
+          "items": [
+            { "name": "Einbindung Kontext", "type": "qualitative", "unit": "Bewertung" },
+            { "name": "Aussenraumqualität", "type": "qualitative", "unit": "Bewertung" },
+            { "name": "Erschliessung", "type": "qualitative", "unit": "Bewertung" }
+          ]
+        },
+        {
+          "theme": "Funktion",
+          "icon": "space_dashboard",
+          "items": [
+            { "name": "Raumorganisation", "type": "qualitative", "unit": "Bewertung" },
+            { "name": "Flexibilität", "type": "qualitative", "unit": "Bewertung" },
+            { "name": "Belichtung / Belüftung", "type": "qualitative", "unit": "Bewertung" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lifecycle",
+      "logo": "LZK",
+      "name": "Lebenszykluskosten",
+      "description": "Wirtschaftlichkeitsbetrachtung über den gesamten Lebenszyklus.",
+      "complexity": "advanced",
+      "phase": "detailed-design",
+      "focus": ["economic"],
+      "criteria": [
+        {
+          "theme": "Investition",
+          "icon": "account_balance",
+          "items": [
+            { "name": "Erstellungskosten", "type": "quantitative", "unit": "CHF" },
+            { "name": "Planungskosten", "type": "quantitative", "unit": "CHF" }
+          ]
+        },
+        {
+          "theme": "Betrieb (p.a.)",
+          "icon": "settings",
+          "items": [
+            { "name": "Energiekosten", "type": "quantitative", "unit": "CHF/a" },
+            { "name": "Wartung & Instandhaltung", "type": "quantitative", "unit": "CHF/a" },
+            { "name": "Reinigung", "type": "quantitative", "unit": "CHF/a" }
+          ]
+        },
+        {
+          "theme": "Kennwerte",
+          "icon": "query_stats",
+          "items": [
+            { "name": "LZK total (30a)", "type": "quantitative", "unit": "CHF" },
+            { "name": "LZK pro m² GF", "type": "quantitative", "unit": "CHF/m²" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lca",
+      "logo": "LCA",
+      "name": "Ökobilanz",
+      "description": "Lebenszyklusanalyse zur Bewertung der Umweltauswirkungen über alle Phasen – von der Herstellung bis zum Rückbau.",
+      "complexity": "advanced",
+      "phase": "detailed-design",
+      "focus": ["environment", "circular-economy"],
+      "criteria": [
+        {
+          "theme": "Treibhausgas-Emissionen",
+          "icon": "cloud",
+          "items": [
+            { "name": "GWP Erstellung", "type": "quantitative", "unit": "kg CO₂-eq/m²" },
+            { "name": "GWP Betrieb (p.a.)", "type": "quantitative", "unit": "kg CO₂-eq/m²a" },
+            { "name": "GWP Rückbau", "type": "quantitative", "unit": "kg CO₂-eq/m²" },
+            { "name": "GWP Total (50a)", "type": "quantitative", "unit": "kg CO₂-eq/m²" }
+          ]
+        },
+        {
+          "theme": "Primärenergie",
+          "icon": "bolt",
+          "items": [
+            { "name": "PENRT (nicht erneuerbar)", "type": "quantitative", "unit": "MJ/m²" },
+            { "name": "PERT (erneuerbar)", "type": "quantitative", "unit": "MJ/m²" },
+            { "name": "Anteil erneuerbare Energie", "type": "quantitative", "unit": "%" }
+          ]
+        },
+        {
+          "theme": "Weitere Umweltindikatoren",
+          "icon": "eco",
+          "items": [
+            { "name": "Versauerungspotenzial (AP)", "type": "quantitative", "unit": "kg SO₂-eq/m²" },
+            { "name": "Eutrophierungspotenzial (EP)", "type": "quantitative", "unit": "kg PO₄-eq/m²" },
+            { "name": "Ozonabbaupotenzial (ODP)", "type": "quantitative", "unit": "kg R11-eq/m²" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fm",
+      "logo": "pFM",
+      "name": "Planungsbegleitendes Facility Management",
+      "description": "Frühzeitige Berücksichtigung von Betriebs- und Unterhaltsaspekten für eine optimierte Gebäudebewirtschaftung.",
+      "complexity": "advanced",
+      "phase": "detailed-design",
+      "focus": ["operations", "economic"],
+      "criteria": [
+        {
+          "theme": "Betriebskonzept",
+          "icon": "settings",
+          "items": [
+            { "name": "Zonenkonzept Reinigung", "type": "qualitative", "unit": "Bewertung" },
+            { "name": "Schliesssystem / Zutrittskontrolle", "type": "qualitative", "unit": "Bewertung" },
+            { "name": "Abfallkonzept", "type": "qualitative", "unit": "Bewertung" }
+          ]
+        },
+        {
+          "theme": "Wartung & Instandhaltung",
+          "icon": "build",
+          "items": [
+            { "name": "Zugänglichkeit Technikräume", "type": "qualitative", "unit": "Bewertung" },
+            { "name": "Wartungsfreundlichkeit Fassade", "type": "qualitative", "unit": "Bewertung" },
+            { "name": "Revisionierbarkeit Installationen", "type": "qualitative", "unit": "Bewertung" },
+            { "name": "Ersatzteilbeschaffung", "type": "qualitative", "unit": "Bewertung" }
+          ]
+        },
+        {
+          "theme": "Flächenkennwerte FM",
+          "icon": "square_foot",
+          "items": [
+            { "name": "Reinigungsfläche", "type": "quantitative", "unit": "m²" },
+            { "name": "Glasfläche (Reinigung)", "type": "quantitative", "unit": "m²" },
+            { "name": "Grünfläche (Pflege)", "type": "quantitative", "unit": "m²" },
+            { "name": "Technikfläche", "type": "quantitative", "unit": "m²" }
+          ]
+        }
+      ]
+    }
+  ],
+  "enums": {
+    "countries": {
+      "CH": "Schweiz",
+      "DE": "Deutschland",
+      "US": "USA",
+      "EU": "Europäische Union"
+    },
+    "languages": {
+      "de": "Deutsch",
+      "en": "English",
+      "fr": "Français",
+      "it": "Italiano",
+      "es": "Español"
+    },
+    "scope": {
+      "national": "National",
+      "international": "International",
+      "regional": "Regional"
+    },
+    "status": {
+      "active": "Aktiv",
+      "draft": "Entwurf",
+      "deprecated": "Veraltet"
+    },
+    "complexity": {
+      "basic": "Basis",
+      "intermediate": "Fortgeschritten",
+      "advanced": "Expertenwissen"
+    },
+    "phase": {
+      "early-planning": "Frühe Planung",
+      "detailed-design": "Detailplanung",
+      "construction": "Ausführung"
+    },
+    "focus": {
+      "environment": "Umwelt",
+      "social": "Gesellschaft",
+      "economic": "Wirtschaft",
+      "technical": "Technik",
+      "process": "Prozess",
+      "health": "Gesundheit",
+      "comfort": "Komfort",
+      "energy": "Energie",
+      "circular-economy": "Kreislaufwirtschaft",
+      "design": "Gestaltung",
+      "operations": "Betrieb",
+      "data-collection": "Datenerfassung"
+    }
+  }
+}
