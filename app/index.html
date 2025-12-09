@@ -1,0 +1,3940 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wettbewerb Cockpit</title>
+
+    <!-- External Dependencies (Icons & Maps only) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet" />
+
+    <style>
+/* ========================================
+   CSS CUSTOM PROPERTIES (Design Tokens)
+   ======================================== */
+:root {
+    /* Colors - Slate Primary Palette (improved contrast) */
+    --color-slate-50: #f8fafc;
+    --color-slate-100: #f1f5f9;
+    --color-slate-200: #d1d5db;  /* Darker for visible borders */
+    --color-slate-300: #9ca3af;  /* Darker for scrollbars/dividers */
+    --color-slate-400: #6b7280;  /* AA compliant for icons */
+    --color-slate-500: #4b5563;  /* AAA compliant for muted text */
+    --color-slate-600: #475569;
+    --color-slate-700: #334155;
+    --color-slate-800: #1e293b;
+    --color-slate-900: #0f172a;
+
+    /* Emerald - Success + Primary Actions + Sustainability */
+    --color-emerald-50: #ecfdf5;
+    --color-emerald-100: #d1fae5;
+    --color-emerald-400: #34d399;
+    --color-emerald-500: #10b981;
+    --color-emerald-600: #059669;
+    --color-emerald-700: #047857;
+
+    /* Amber - Warning + Attention Needed */
+    --color-amber-50: #fffbeb;
+    --color-amber-100: #fef3c7;
+    --color-amber-400: #fbbf24;
+    --color-amber-500: #f59e0b;
+    --color-amber-600: #d97706;
+    --color-amber-700: #b45309;
+
+    /* Red - Negative/Error */
+    --color-red-50: #fef2f2;
+    --color-red-100: #fee2e2;
+    --color-red-400: #f87171;
+    --color-red-500: #ef4444;
+    --color-red-600: #dc2626;
+    --color-red-700: #b91c1c;
+
+    /* Blue - Active/In-Progress + Institutional Trust */
+    --color-blue-50: #eff6ff;
+    --color-blue-100: #dbeafe;
+    --color-blue-400: #60a5fa;
+    --color-blue-500: #3b82f6;
+    --color-blue-600: #2563eb;
+    --color-blue-700: #1d4ed8;
+
+    /* Spacing (4px grid) */
+    --space-0: 0;
+    --space-0-5: 0.125rem;
+    --space-1: 0.25rem;
+    --space-1-5: 0.375rem;
+    --space-2: 0.5rem;
+    --space-2-5: 0.625rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+
+    /* Typography */
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+
+    --leading-tight: 1.25;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.625;
+
+    /* Border Radius */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.375rem;
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.75rem;
+    --radius-2xl: 1rem;
+    --radius-full: 9999px;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-normal: 200ms ease;
+    --transition-slow: 300ms ease;
+
+    /* Z-Index Scale */
+    --z-dropdown: 10;
+    --z-sticky: 20;
+    --z-modal: 50;
+    --z-tooltip: 100;
+}
+
+/* ========================================
+   BASE RESET & TYPOGRAPHY
+   ======================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+    color: var(--color-slate-900);
+    background-color: var(--color-slate-50);
+    min-height: 100vh;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: var(--color-slate-100);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--color-slate-300);
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-slate-400);
+}
+
+/* Mapbox Customization */
+.mapboxgl-map {
+    border-radius: var(--radius-lg);
+}
+.mapboxgl-ctrl-attrib {
+    font-size: 10px !important;
+}
+
+/* ========================================
+   LAYOUT UTILITIES
+   ======================================== */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-1 { flex: 1; }
+.flex-shrink-0 { flex-shrink: 0; }
+.flex-wrap { flex-wrap: wrap; }
+.items-start { align-items: flex-start; }
+.items-center { align-items: center; }
+.items-end { align-items: flex-end; }
+.justify-start { justify-content: flex-start; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-end { justify-content: flex-end; }
+
+.gap-1 { gap: var(--space-1); }
+.gap-1-5 { gap: var(--space-1-5); }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.gap-5 { gap: var(--space-5); }
+.gap-6 { gap: var(--space-6); }
+.gap-x-8 { column-gap: var(--space-8); }
+.gap-y-4 { row-gap: var(--space-4); }
+
+.grid { display: grid; }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.min-h-screen { min-height: 100vh; }
+
+.overflow-hidden { overflow: hidden; }
+.overflow-auto { overflow: auto; }
+.overflow-x-auto { overflow-x: auto; }
+
+.relative { position: relative; }
+.absolute { position: absolute; }
+.fixed { position: fixed; }
+.sticky { position: sticky; }
+.inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+
+.hidden { display: none; }
+
+/* ========================================
+   SPACING UTILITIES
+   ======================================== */
+.p-1 { padding: var(--space-1); }
+.p-2 { padding: var(--space-2); }
+.p-3 { padding: var(--space-3); }
+.p-4 { padding: var(--space-4); }
+.p-5 { padding: var(--space-5); }
+.p-6 { padding: var(--space-6); }
+
+.px-2 { padding-left: var(--space-2); padding-right: var(--space-2); }
+.px-3 { padding-left: var(--space-3); padding-right: var(--space-3); }
+.px-4 { padding-left: var(--space-4); padding-right: var(--space-4); }
+.px-5 { padding-left: var(--space-5); padding-right: var(--space-5); }
+.px-6 { padding-left: var(--space-6); padding-right: var(--space-6); }
+
+.py-1 { padding-top: var(--space-1); padding-bottom: var(--space-1); }
+.py-1-5 { padding-top: var(--space-1-5); padding-bottom: var(--space-1-5); }
+.py-2 { padding-top: var(--space-2); padding-bottom: var(--space-2); }
+.py-3 { padding-top: var(--space-3); padding-bottom: var(--space-3); }
+.py-4 { padding-top: var(--space-4); padding-bottom: var(--space-4); }
+
+.pt-3 { padding-top: var(--space-3); }
+.pt-4 { padding-top: var(--space-4); }
+.pt-5 { padding-top: var(--space-5); }
+.pb-5 { padding-bottom: var(--space-5); }
+
+.m-0 { margin: 0; }
+.mt-1 { margin-top: var(--space-1); }
+.mt-2 { margin-top: var(--space-2); }
+.mt-3 { margin-top: var(--space-3); }
+.mt-4 { margin-top: var(--space-4); }
+.mt-6 { margin-top: var(--space-6); }
+.mb-1 { margin-bottom: var(--space-1); }
+.mb-2 { margin-bottom: var(--space-2); }
+.mb-3 { margin-bottom: var(--space-3); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-6 { margin-bottom: var(--space-6); }
+.ml-1 { margin-left: var(--space-1); }
+.ml-2 { margin-left: var(--space-2); }
+.ml-4 { margin-left: var(--space-4); }
+.mr-2 { margin-right: var(--space-2); }
+.mr-4 { margin-right: var(--space-4); }
+.mx-auto { margin-left: auto; margin-right: auto; }
+
+.space-y-2 > * + * { margin-top: var(--space-2); }
+.space-y-3 > * + * { margin-top: var(--space-3); }
+.space-y-4 > * + * { margin-top: var(--space-4); }
+
+/* ========================================
+   TYPOGRAPHY UTILITIES
+   ======================================== */
+.text-xs { font-size: var(--text-xs); }
+.text-sm { font-size: var(--text-sm); }
+.text-base { font-size: var(--text-base); }
+.text-lg { font-size: var(--text-lg); }
+.text-xl { font-size: var(--text-xl); }
+.text-2xl { font-size: var(--text-2xl); }
+
+.font-normal { font-weight: var(--font-normal); }
+.font-medium { font-weight: var(--font-medium); }
+.font-semibold { font-weight: var(--font-semibold); }
+.font-bold { font-weight: var(--font-bold); }
+
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+.leading-tight { line-height: var(--leading-tight); }
+.leading-relaxed { line-height: var(--leading-relaxed); }
+
+.uppercase { text-transform: uppercase; }
+.tracking-wide { letter-spacing: 0.025em; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.line-through { text-decoration: line-through; }
+.underline { text-decoration: underline; }
+.whitespace-nowrap { white-space: nowrap; }
+.font-mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
+
+/* Text Colors */
+.text-white { color: white; }
+.text-slate-300 { color: var(--color-slate-300); }
+.text-slate-400 { color: var(--color-slate-400); }
+.text-slate-500 { color: var(--color-slate-500); }
+.text-slate-600 { color: var(--color-slate-600); }
+.text-slate-700 { color: var(--color-slate-700); }
+.text-slate-800 { color: var(--color-slate-800); }
+.text-slate-900 { color: var(--color-slate-900); }
+.text-emerald-500 { color: var(--color-emerald-500); }
+.text-emerald-600 { color: var(--color-emerald-600); }
+.text-emerald-700 { color: var(--color-emerald-700); }
+.text-amber-500 { color: var(--color-amber-500); }
+.text-amber-600 { color: var(--color-amber-600); }
+.text-amber-700 { color: var(--color-amber-700); }
+.text-red-500 { color: var(--color-red-500); }
+.text-red-600 { color: var(--color-red-600); }
+.text-red-700 { color: var(--color-red-700); }
+
+/* ========================================
+   BACKGROUND & BORDER UTILITIES
+   ======================================== */
+.bg-white { background-color: white; }
+.bg-black-50 { background-color: rgba(0, 0, 0, 0.5); }
+.bg-slate-50 { background-color: var(--color-slate-50); }
+.bg-slate-100 { background-color: var(--color-slate-100); }
+.bg-slate-200 { background-color: var(--color-slate-200); }
+.bg-slate-600 { background-color: var(--color-slate-600); }
+.bg-slate-700 { background-color: var(--color-slate-700); }
+.bg-slate-800 { background-color: var(--color-slate-800); }
+.bg-slate-900 { background-color: var(--color-slate-900); }
+.bg-emerald-50 { background-color: var(--color-emerald-50); }
+.bg-emerald-100 { background-color: var(--color-emerald-100); }
+.bg-emerald-500 { background-color: var(--color-emerald-500); }
+.bg-amber-50 { background-color: var(--color-amber-50); }
+.bg-amber-100 { background-color: var(--color-amber-100); }
+.bg-amber-500 { background-color: var(--color-amber-500); }
+.bg-red-50 { background-color: var(--color-red-50); }
+.bg-red-100 { background-color: var(--color-red-100); }
+.bg-red-500 { background-color: var(--color-red-500); }
+
+.border { border: 1px solid var(--color-slate-200); }
+.border-b { border-bottom: 1px solid var(--color-slate-200); }
+.border-t { border-top: 1px solid var(--color-slate-200); }
+.border-r { border-right: 1px solid var(--color-slate-200); }
+.border-l { border-left: 1px solid var(--color-slate-200); }
+.border-slate-100 { border-color: var(--color-slate-100); }
+.border-slate-200 { border-color: var(--color-slate-200); }
+.border-slate-300 { border-color: var(--color-slate-300); }
+.border-slate-700 { border-color: var(--color-slate-700); }
+.border-transparent { border-color: transparent; }
+
+.rounded { border-radius: var(--radius-sm); }
+.rounded-md { border-radius: var(--radius-md); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-2xl { border-radius: var(--radius-2xl); }
+.rounded-full { border-radius: var(--radius-full); }
+
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+.shadow-xl { box-shadow: var(--shadow-xl); }
+
+/* ========================================
+   INTERACTION UTILITIES
+   ======================================== */
+.cursor-pointer { cursor: pointer; }
+.select-none { user-select: none; }
+.pointer-events-none { pointer-events: none; }
+
+.transition-all { transition: all var(--transition-normal); }
+.transition-colors { transition: color var(--transition-normal), background-color var(--transition-normal), border-color var(--transition-normal); }
+.transition-transform { transition: transform var(--transition-normal); }
+
+.opacity-0 { opacity: 0; }
+.opacity-50 { opacity: 0.5; }
+.opacity-60 { opacity: 0.6; }
+.opacity-70 { opacity: 0.7; }
+.opacity-80 { opacity: 0.8; }
+
+.hover\:bg-slate-50:hover { background-color: var(--color-slate-50); }
+.hover\:bg-slate-100:hover { background-color: var(--color-slate-100); }
+.hover\:bg-slate-200:hover { background-color: var(--color-slate-200); }
+.hover\:bg-slate-700:hover { background-color: var(--color-slate-700); }
+.hover\:bg-slate-800:hover { background-color: var(--color-slate-800); }
+.hover\:text-slate-600:hover { color: var(--color-slate-600); }
+.hover\:text-slate-700:hover { color: var(--color-slate-700); }
+.hover\:text-slate-900:hover { color: var(--color-slate-900); }
+.hover\:text-white:hover { color: white; }
+.hover\:shadow-lg:hover { box-shadow: var(--shadow-lg); }
+.hover\:border-slate-400:hover { border-color: var(--color-slate-400); }
+.hover\:scale-105:hover { transform: scale(1.05); }
+
+.group:hover .group-hover\:opacity-100 { opacity: 1; }
+.group:hover .group-hover\:scale-105 { transform: scale(1.05); }
+.group:hover .group-hover\:bg-black-20 { background-color: rgba(0, 0, 0, 0.2); }
+
+.focus\:outline-none:focus { outline: none; }
+.focus\:ring-2:focus { box-shadow: 0 0 0 2px var(--color-slate-400); }
+.focus\:ring-offset-2:focus { box-shadow: 0 0 0 2px white, 0 0 0 4px var(--color-slate-400); }
+
+.disabled\:opacity-50:disabled { opacity: 0.5; }
+.disabled\:cursor-not-allowed:disabled { cursor: not-allowed; }
+
+/* ========================================
+   DIVIDE UTILITIES
+   ======================================== */
+.divide-y > * + * { border-top: 1px solid var(--color-slate-100); }
+.divide-slate-100 > * + * { border-color: var(--color-slate-100); }
+
+/* ========================================
+   COMPONENT: Material Icon
+   ======================================== */
+.material-icon {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 20px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    user-select: none;
+    -webkit-font-smoothing: antialiased;
+}
+.material-icon.size-14 { font-size: 14px; }
+.material-icon.size-16 { font-size: 16px; }
+.material-icon.size-18 { font-size: 18px; }
+.material-icon.size-20 { font-size: 20px; }
+.material-icon.size-22 { font-size: 22px; }
+.material-icon.size-32 { font-size: 32px; }
+
+/* ========================================
+   COMPONENT: Button
+   ======================================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    font-weight: var(--font-medium);
+    border-radius: var(--radius-lg);
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    white-space: nowrap;
+}
+.btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--color-slate-500);
+}
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Button Sizes */
+.btn-sm { padding: var(--space-1-5) var(--space-3); font-size: var(--text-xs); gap: var(--space-1-5); }
+.btn-md { padding: var(--space-2) var(--space-4); font-size: var(--text-sm); gap: var(--space-2); }
+.btn-lg { padding: var(--space-2-5) var(--space-5); font-size: var(--text-base); gap: var(--space-2); }
+
+/* Button Variants */
+.btn-primary {
+    background-color: var(--color-emerald-600);
+    color: white;
+}
+.btn-primary:hover:not(:disabled) { background-color: var(--color-emerald-700); }
+
+.btn-secondary {
+    background-color: var(--color-slate-100);
+    color: var(--color-slate-700);
+}
+.btn-secondary:hover:not(:disabled) { background-color: var(--color-slate-200); }
+
+.btn-ghost {
+    background-color: transparent;
+    color: var(--color-slate-600);
+}
+.btn-ghost:hover:not(:disabled) { background-color: var(--color-slate-100); }
+
+.btn-danger {
+    background-color: var(--color-red-600);
+    color: white;
+}
+.btn-danger:hover:not(:disabled) { background-color: var(--color-red-700); }
+
+.btn-danger-ghost {
+    background-color: transparent;
+    color: var(--color-red-600);
+}
+.btn-danger-ghost:hover:not(:disabled) { background-color: var(--color-red-50); }
+
+/* ========================================
+   COMPONENT: Badge / Status
+   ======================================== */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    font-weight: var(--font-medium);
+    border-radius: var(--radius-full);
+}
+.badge-sm { padding: var(--space-0-5) var(--space-2); font-size: var(--text-xs); }
+.badge-md { padding: var(--space-1) var(--space-2-5); font-size: var(--text-xs); }
+.badge-lg { padding: var(--space-1-5) var(--space-3); font-size: var(--text-sm); }
+
+.badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full);
+}
+
+/* Badge Status Colors */
+.badge-active { background-color: var(--color-blue-100); color: var(--color-blue-700); }
+.badge-active .badge-dot { background-color: var(--color-blue-400); }
+
+.badge-completed { background-color: var(--color-emerald-100); color: var(--color-emerald-700); }
+.badge-completed .badge-dot { background-color: var(--color-emerald-400); }
+
+.badge-draft { background-color: var(--color-slate-100); color: var(--color-slate-600); }
+.badge-draft .badge-dot { background-color: var(--color-slate-400); }
+
+.badge-error { background-color: var(--color-red-100); color: var(--color-red-700); }
+.badge-error .badge-dot { background-color: var(--color-red-500); }
+
+.badge-success { background-color: var(--color-emerald-100); color: var(--color-emerald-700); }
+.badge-success .badge-dot { background-color: var(--color-emerald-400); }
+
+.badge-info { background-color: var(--color-blue-100); color: var(--color-blue-700); }
+
+.badge-warning { background-color: var(--color-amber-100); color: var(--color-amber-700); }
+.badge-warning .badge-dot { background-color: var(--color-amber-400); }
+
+/* ========================================
+   COMPONENT: Avatar
+   ======================================== */
+.avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    font-weight: var(--font-medium);
+    overflow: hidden;
+}
+.avatar-sm { width: 24px; height: 24px; font-size: var(--text-xs); }
+.avatar-md { width: 32px; height: 32px; font-size: var(--text-sm); }
+.avatar-lg { width: 40px; height: 40px; font-size: var(--text-base); }
+.avatar-xl { width: 48px; height: 48px; font-size: var(--text-lg); }
+.avatar-default { background-color: var(--color-slate-200); color: var(--color-slate-600); }
+.avatar-expert { background-color: var(--color-emerald-100); color: var(--color-emerald-700); }
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ========================================
+   COMPONENT: Card
+   ======================================== */
+.card {
+    background-color: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-slate-200);
+    overflow: hidden;
+}
+.card-header {
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--color-slate-100);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.card-header-title {
+    font-weight: var(--font-semibold);
+    color: var(--color-slate-900);
+}
+.card-body { padding: var(--space-5); }
+.card-body-no-padding { padding: 0; }
+
+/* ========================================
+   COMPONENT: Input / Form
+   ======================================== */
+.input-wrapper { width: 100%; }
+.input-label {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--color-slate-700);
+    margin-bottom: var(--space-1-5);
+}
+.input-required { color: var(--color-red-500); }
+
+.input {
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-slate-200);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-sm);
+    transition: all var(--transition-normal);
+    background-color: white;
+}
+.input:focus {
+    outline: none;
+    border-color: var(--color-slate-500);
+    box-shadow: 0 0 0 2px rgba(75, 85, 99, 0.3);
+}
+.input-error {
+    border-color: var(--color-red-300);
+}
+.input-error:focus {
+    border-color: var(--color-red-500);
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
+}
+.input-help {
+    margin-top: var(--space-1);
+    font-size: var(--text-xs);
+    color: var(--color-slate-500);
+}
+.input-error-text {
+    margin-top: var(--space-1);
+    font-size: var(--text-xs);
+    color: var(--color-red-600);
+}
+
+.select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+.select-placeholder { color: var(--color-slate-400); }
+
+textarea.input {
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* ========================================
+   COMPONENT: Progress Bar
+   ======================================== */
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: var(--color-slate-100);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+.progress-bar-sm { height: 4px; }
+.progress-bar-md { height: 8px; }
+.progress-bar-lg { height: 12px; }
+.progress-bar-fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width var(--transition-slow);
+}
+.progress-bar-emerald { background-color: var(--color-emerald-500); }
+.progress-bar-amber { background-color: var(--color-amber-400); }
+.progress-bar-red { background-color: var(--color-red-500); }
+.progress-bar-slate { background-color: var(--color-slate-400); }
+
+/* ========================================
+   COMPONENT: Header
+   ======================================== */
+.app-header {
+    background-color: var(--color-slate-900);
+    color: white;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--space-4);
+}
+.header-logo {
+    width: 32px;
+    height: 32px;
+    background-color: var(--color-slate-600);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+.header-logo:hover { background-color: var(--color-slate-500); }
+.header-title {
+    font-weight: var(--font-semibold);
+    font-size: var(--text-lg);
+}
+.header-breadcrumb {
+    color: var(--color-slate-400);
+}
+.header-project-name {
+    color: var(--color-slate-200);
+    font-weight: var(--font-medium);
+}
+.header-action {
+    padding: var(--space-2);
+    color: var(--color-slate-400);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast);
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+}
+.header-action:hover {
+    color: white;
+    background-color: var(--color-slate-800);
+}
+.header-action-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-emerald-500);
+    border-radius: var(--radius-full);
+}
+.header-divider {
+    width: 1px;
+    height: 24px;
+    background-color: var(--color-slate-700);
+    margin: 0 var(--space-2);
+}
+
+/* ========================================
+   COMPONENT: Sidebar
+   ======================================== */
+.sidebar {
+    width: 80px;
+    height: fit-content;
+    background-color: white;
+    border: 1px solid var(--color-slate-200);
+    border-radius: var(--radius-2xl);
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-sm);
+}
+.sidebar-nav {
+    flex: 1;
+    padding: var(--space-4) 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+.sidebar-item {
+    margin: 0 var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1-5);
+    border-radius: var(--radius-xl);
+    transition: all var(--transition-fast);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-slate-500);
+}
+.sidebar-item:hover {
+    background-color: var(--color-slate-50);
+    color: var(--color-slate-700);
+}
+.sidebar-item.active {
+    background-color: var(--color-slate-100);
+}
+.sidebar-item-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    background-color: var(--color-slate-100);
+}
+.sidebar-item.active .sidebar-item-icon {
+    background-color: var(--color-slate-200);
+}
+.sidebar-item.active .sidebar-item-icon .material-icon {
+    color: var(--color-slate-700);
+}
+.sidebar-item-label {
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+}
+.sidebar-item.active .sidebar-item-label {
+    color: var(--color-slate-700);
+}
+
+/* ========================================
+   COMPONENT: Breadcrumb
+   ======================================== */
+.breadcrumb-bar {
+    height: 44px;
+    background-color: white;
+    border-bottom: 1px solid var(--color-slate-200);
+}
+.breadcrumb-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 100%;
+    padding: 0 var(--space-6);
+    display: flex;
+    align-items: center;
+}
+.breadcrumb-list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--text-sm);
+    list-style: none;
+}
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+}
+.breadcrumb-link {
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    color: var(--color-slate-500);
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+}
+.breadcrumb-link:hover {
+    color: var(--color-slate-700);
+    background-color: var(--color-slate-50);
+}
+.breadcrumb-link.active {
+    color: var(--color-slate-900);
+    font-weight: var(--font-medium);
+    background-color: var(--color-slate-100);
+}
+.breadcrumb-separator {
+    color: var(--color-slate-300);
+    margin: 0 var(--space-1);
+}
+.breadcrumb-dropdown {
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-slate-100);
+    color: var(--color-slate-900);
+    font-weight: var(--font-medium);
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    border: none;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+.breadcrumb-dropdown:hover { background-color: var(--color-slate-200); }
+
+/* ========================================
+   COMPONENT: Dropdown Menu
+   ======================================== */
+.dropdown { position: relative; }
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: var(--space-1);
+    min-width: 224px;
+    background-color: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--color-slate-200);
+    padding: var(--space-1) 0;
+    z-index: var(--z-dropdown);
+}
+.dropdown-item {
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    text-align: left;
+    font-size: var(--text-sm);
+    color: var(--color-slate-700);
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    transition: background-color var(--transition-fast);
+}
+.dropdown-item:hover { background-color: var(--color-slate-50); }
+.dropdown-item.active { background-color: var(--color-slate-100); color: var(--color-slate-900); }
+.dropdown-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-dropdown) - 1);
+}
+
+/* ========================================
+   COMPONENT: Variant Selector
+   ======================================== */
+.variant-list {
+    width: 240px;
+    height: fit-content;
+    background-color: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-slate-200);
+    flex-shrink: 0;
+    overflow: hidden;
+}
+.variant-list-header {
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--color-slate-200);
+    background-color: var(--color-slate-50);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.variant-list-title {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--color-slate-900);
+}
+.variant-list-count {
+    font-size: var(--text-xs);
+    color: var(--color-slate-500);
+    background-color: var(--color-slate-200);
+    padding: var(--space-0-5) var(--space-2);
+    border-radius: var(--radius-full);
+}
+.variant-list-items {
+    max-height: calc(100vh - 280px);
+    overflow-y: auto;
+}
+.variant-item {
+    width: 100%;
+    padding: var(--space-3);
+    text-align: left;
+    border: none;
+    border-bottom: 1px solid var(--color-slate-100);
+    background: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border-left: 4px solid transparent;
+}
+.variant-item:last-child { border-bottom: none; }
+.variant-item:hover { background-color: var(--color-slate-50); }
+.variant-item.selected {
+    background-color: var(--color-slate-100);
+    border-left-color: var(--color-slate-500);
+}
+.variant-thumbnail {
+    width: 100%;
+    height: 96px;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-slate-200);
+    margin-bottom: var(--space-2-5);
+    overflow: hidden;
+    position: relative;
+}
+.variant-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-normal);
+}
+.variant-item:hover .variant-thumbnail img { transform: scale(1.05); }
+.variant-item.selected .variant-thumbnail::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 2px solid var(--color-slate-500);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.3);
+}
+.variant-code {
+    position: absolute;
+    top: var(--space-2);
+    left: var(--space-2);
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: var(--text-xs);
+    padding: var(--space-0-5) var(--space-2);
+    border-radius: var(--radius-full);
+    font-family: ui-monospace, monospace;
+}
+.variant-name {
+    font-weight: var(--font-medium);
+    font-size: var(--text-sm);
+    color: var(--color-slate-900);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.variant-firm {
+    font-size: var(--text-xs);
+    color: var(--color-slate-500);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ========================================
+   COMPONENT: Modal
+   ======================================== */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--z-modal);
+}
+.modal {
+    background-color: white;
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-xl);
+    width: 100%;
+    max-width: 512px;
+    margin: var(--space-4);
+    animation: modal-enter 0.2s ease-out;
+}
+@keyframes modal-enter {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+.modal-header {
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--color-slate-100);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+.modal-title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: var(--color-slate-900);
+}
+.modal-subtitle {
+    font-size: var(--text-sm);
+    color: var(--color-slate-500);
+    margin-top: var(--space-1);
+}
+.modal-close {
+    padding: var(--space-1-5);
+    color: var(--color-slate-400);
+    border-radius: var(--radius-lg);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+.modal-close:hover {
+    color: var(--color-slate-600);
+    background-color: var(--color-slate-100);
+}
+.modal-body {
+    padding: var(--space-5);
+}
+.modal-footer {
+    padding: var(--space-4) var(--space-5);
+    border-top: 1px solid var(--color-slate-100);
+    background-color: var(--color-slate-50);
+    border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+}
+
+/* ========================================
+   COMPONENT: Collapsible Section
+   ======================================== */
+.collapsible {
+    background-color: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-slate-200);
+    overflow: hidden;
+}
+.collapsible-header {
+    width: 100%;
+    padding: var(--space-4) var(--space-5);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+.collapsible-header:hover { background-color: var(--color-slate-50); }
+.collapsible-icon-wrapper {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-slate-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.collapsible-title {
+    font-weight: var(--font-semibold);
+    color: var(--color-slate-900);
+}
+.collapsible-badge {
+    font-size: var(--text-xs);
+    padding: var(--space-0-5) var(--space-2);
+    border-radius: var(--radius-full);
+    background-color: var(--color-slate-100);
+    color: var(--color-slate-600);
+}
+.collapsible-content {
+    padding: 0 var(--space-5) var(--space-5);
+    border-top: 1px solid var(--color-slate-100);
+}
+
+/* ========================================
+   COMPONENT: Project Card (Gallery)
+   ======================================== */
+.project-card {
+    background-color: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-slate-200);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+.project-card:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-slate-400);
+}
+.project-card-thumbnail {
+    height: 160px;
+    position: relative;
+    overflow: hidden;
+}
+.project-card-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+.project-card:hover .project-card-thumbnail img { transform: scale(1.05); }
+.project-card-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.6), transparent, transparent);
+}
+.project-card-id {
+    position: absolute;
+    top: var(--space-3);
+    left: var(--space-3);
+    padding: var(--space-0-5) var(--space-2);
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    border-radius: var(--radius-full);
+    color: white;
+    font-size: var(--text-xs);
+    font-family: ui-monospace, monospace;
+}
+.project-card-status {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+}
+.project-card-info {
+    position: absolute;
+    bottom: var(--space-3);
+    left: var(--space-3);
+    right: var(--space-3);
+}
+.project-card-name {
+    color: white;
+    font-weight: var(--font-semibold);
+    font-size: var(--text-lg);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.project-card-address {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: var(--text-sm);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.project-card-body { padding: var(--space-5); }
+.project-card-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+}
+.project-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-slate-100);
+}
+.project-card-stat {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    font-size: var(--text-sm);
+    color: var(--color-slate-600);
+}
+
+/* ========================================
+   COMPONENT: Label Value Pair
+   ======================================== */
+.label-value {}
+.label-value-label {
+    font-size: var(--text-xs);
+    color: var(--color-slate-500);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    margin-bottom: var(--space-1);
+}
+.label-value-value {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--color-slate-900);
+}
+
+/* ========================================
+   COMPONENT: Stat Card
+   ======================================== */
+.stat-card {
+    background-color: var(--color-slate-50);
+    border-radius: var(--radius-xl);
+    padding: var(--space-4);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    background-color: var(--color-slate-100);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.stat-value {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: var(--color-slate-900);
+}
+.stat-label {
+    font-size: var(--text-xs);
+    color: var(--color-slate-500);
+}
+
+/* ========================================
+   COMPONENT: Table
+   ======================================== */
+.table-wrapper {
+    background-color: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-slate-200);
+    overflow: hidden;
+}
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.table th {
+    background-color: var(--color-slate-50);
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+    color: var(--color-slate-500);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    border-bottom: 1px solid var(--color-slate-200);
+}
+.table td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-slate-100);
+}
+.table tr:last-child td { border-bottom: none; }
+.table-row-clickable {
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+.table-row-clickable:hover { background-color: var(--color-slate-50); }
+
+/* ========================================
+   COMPONENT: Theme Card (SNAP)
+   ======================================== */
+.theme-card {
+    background-color: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-slate-200);
+    overflow: hidden;
+    transition: border-color var(--transition-fast);
+}
+.theme-card.expanded { border-color: var(--color-slate-300); }
+.theme-card-header {
+    width: 100%;
+    padding: var(--space-4) var(--space-5);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+.theme-card-header:hover { background-color: var(--color-slate-50); }
+.theme-card.expanded .theme-card-header { background-color: var(--color-slate-50); }
+.theme-indicator {
+    width: 4px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-slate-400);
+}
+.theme-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-slate-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.theme-info { flex: 1; text-align: left; }
+.theme-name {
+    font-weight: var(--font-semibold);
+    color: var(--color-slate-900);
+}
+.theme-meta {
+    font-size: var(--text-sm);
+    color: var(--color-slate-500);
+}
+.theme-ratings {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    margin-right: var(--space-4);
+}
+.theme-rating-badge {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    background-color: var(--color-slate-100);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+    color: var(--color-slate-600);
+}
+.theme-progress {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    width: 128px;
+}
+.theme-progress-bar {
+    flex: 1;
+    height: 8px;
+    background-color: var(--color-slate-200);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+.theme-progress-fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+}
+.theme-progress-label {
+    font-size: var(--text-sm);
+    color: var(--color-slate-500);
+    width: 40px;
+}
+.theme-card-content {
+    border-top: 1px solid var(--color-slate-100);
+}
+.theme-section {
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--color-slate-100);
+}
+.theme-section:last-child { border-bottom: none; }
+.theme-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-3);
+}
+.theme-section-title {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--color-slate-700);
+}
+
+/* ========================================
+   COMPONENT: Rating Selector
+   ======================================== */
+.rating-selector {
+    display: flex;
+    gap: var(--space-1);
+    flex-shrink: 0;
+}
+.rating-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+.rating-btn-negative {
+    background-color: var(--color-red-100);
+    color: var(--color-red-400);
+}
+.rating-btn-negative:hover {
+    background-color: var(--color-red-200);
+    color: var(--color-red-500);
+}
+.rating-btn-negative.active {
+    background-color: var(--color-red-500);
+    color: white;
+    box-shadow: 0 0 0 2px var(--color-red-300), 0 0 0 4px white;
+}
+.rating-btn-neutral {
+    background-color: var(--color-amber-100);
+    color: var(--color-amber-400);
+}
+.rating-btn-neutral:hover {
+    background-color: var(--color-amber-200);
+    color: var(--color-amber-500);
+}
+.rating-btn-neutral.active {
+    background-color: var(--color-amber-500);
+    color: white;
+    box-shadow: 0 0 0 2px var(--color-amber-300), 0 0 0 4px white;
+}
+.rating-btn-positive {
+    background-color: var(--color-emerald-100);
+    color: var(--color-emerald-400);
+}
+.rating-btn-positive:hover {
+    background-color: var(--color-emerald-200);
+    color: var(--color-emerald-500);
+}
+.rating-btn-positive.active {
+    background-color: var(--color-emerald-500);
+    color: white;
+    box-shadow: 0 0 0 2px var(--color-emerald-300), 0 0 0 4px white;
+}
+
+.rating-indicator {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.rating-indicator-positive { background-color: var(--color-emerald-100); }
+.rating-indicator-positive .material-icon { color: var(--color-emerald-600); }
+.rating-indicator-neutral { background-color: var(--color-amber-100); }
+.rating-indicator-neutral .material-icon { color: var(--color-amber-500); }
+.rating-indicator-negative { background-color: var(--color-red-100); }
+.rating-indicator-negative .material-icon { color: var(--color-red-600); }
+
+/* ========================================
+   COMPONENT: Criterion Row
+   ======================================== */
+.criterion-row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding: var(--space-3);
+    border-radius: var(--radius-lg);
+    transition: background-color var(--transition-fast);
+}
+.criterion-row:hover { background-color: var(--color-slate-50); }
+.criterion-row.editing { background-color: var(--color-slate-50); }
+.criterion-content { flex: 1; min-width: 0; }
+.criterion-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-1);
+}
+.criterion-id {
+    font-size: var(--text-xs);
+    color: var(--color-slate-400);
+    font-family: ui-monospace, monospace;
+}
+.criterion-name {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--color-slate-900);
+}
+.criterion-desc {
+    font-size: var(--text-xs);
+    color: var(--color-slate-400);
+    margin-top: var(--space-0-5);
+}
+.criterion-comment {
+    font-size: var(--text-sm);
+    color: var(--color-slate-500);
+    line-height: var(--leading-relaxed);
+}
+
+/* ========================================
+   COMPONENT: Kennwert Bar
+   ======================================== */
+.kennwert-row { margin-bottom: var(--space-4); }
+.kennwert-row:last-child { margin-bottom: 0; }
+.kennwert-label {
+    font-size: var(--text-sm);
+    color: var(--color-slate-700);
+    margin-bottom: var(--space-1-5);
+}
+.kennwert-unit {
+    color: var(--color-slate-400);
+}
+.kennwert-bar-container {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+.kennwert-bar-wrapper {
+    flex: 1;
+    position: relative;
+}
+.kennwert-avg-label {
+    position: absolute;
+    top: -16px;
+    font-size: var(--text-xs);
+    color: var(--color-slate-500);
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+.kennwert-bar {
+    height: 24px;
+    background-color: var(--color-slate-200);
+    border-radius: var(--radius-lg);
+    position: relative;
+    overflow: visible;
+}
+.kennwert-bar-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-slate-400);
+    display: flex;
+    align-items: center;
+    min-width: 40px;
+}
+.kennwert-bar-value {
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+    color: white;
+    padding-left: var(--space-2);
+    white-space: nowrap;
+}
+.kennwert-avg-marker {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background-color: var(--color-slate-600);
+}
+.kennwert-delta {
+    width: 56px;
+    text-align: right;
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+}
+.kennwert-delta-positive { color: var(--color-emerald-600); }
+.kennwert-delta-negative { color: var(--color-red-600); }
+.kennwert-rank {
+    width: 40px;
+    text-align: right;
+    font-size: var(--text-xs);
+    color: var(--color-slate-400);
+}
+
+/* ========================================
+   COMPONENT: 3D Viewer
+   ======================================== */
+.viewer-3d {
+    flex: 1;
+    background-color: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-slate-200);
+    display: flex;
+    flex-direction: column;
+    min-height: 600px;
+    overflow: hidden;
+}
+.viewer-toolbar {
+    background-color: var(--color-slate-50);
+    border-bottom: 1px solid var(--color-slate-200);
+    padding: var(--space-2) var(--space-4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.viewer-toolbar-btn {
+    padding: var(--space-1-5) var(--space-3);
+    font-size: var(--text-sm);
+    background-color: white;
+    border: 1px solid var(--color-slate-200);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    transition: background-color var(--transition-fast);
+}
+.viewer-toolbar-btn:hover { background-color: var(--color-slate-50); }
+.viewer-canvas {
+    flex: 1;
+    background-color: var(--color-slate-900);
+    position: relative;
+}
+.viewer-overlay {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-sm);
+}
+.viewer-info { bottom: var(--space-4); left: var(--space-4); }
+.viewer-controls { bottom: var(--space-4); right: var(--space-4); font-size: var(--text-xs); }
+.viewer-stats { top: var(--space-4); right: var(--space-4); padding: var(--space-3) var(--space-4); }
+
+/* ========================================
+   COMPONENT: Comparison Table
+   ======================================== */
+.comparison-wrapper {
+    flex: 1;
+    background-color: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-slate-200);
+    overflow: hidden;
+}
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.comparison-table th {
+    background-color: var(--color-slate-50);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-slate-200);
+}
+.comparison-table td {
+    padding: var(--space-2-5) var(--space-4);
+    border-bottom: 1px solid var(--color-slate-100);
+}
+.comparison-sticky {
+    position: sticky;
+    left: 0;
+    background-color: white;
+    z-index: var(--z-sticky);
+    border-right: 1px solid var(--color-slate-200);
+}
+.comparison-sticky.header { background-color: var(--color-slate-50); }
+.comparison-theme-row {
+    background-color: var(--color-slate-100);
+}
+.comparison-theme-row td {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    color: var(--color-slate-500);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+.comparison-summary-row { background-color: var(--color-emerald-50); }
+.comparison-summary-row .comparison-sticky { background-color: var(--color-emerald-50); }
+.comparison-best { color: var(--color-emerald-600); }
+.comparison-star { color: var(--color-emerald-500); margin-left: var(--space-1); }
+.comparison-legend {
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--color-slate-200);
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    font-size: var(--text-sm);
+    color: var(--color-slate-600);
+}
+.comparison-legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+}
+
+/* ========================================
+   LAYOUT: Content Wrapper
+   ======================================== */
+.content-max-width {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.gallery-header {
+    background-color: white;
+    border-bottom: 1px solid var(--color-slate-200);
+}
+.gallery-header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-6);
+}
+.gallery-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-6);
+}
+.project-content {
+    flex: 1;
+}
+.project-layout {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-6);
+    display: flex;
+    gap: var(--space-6);
+}
+.main-content {
+    flex: 1;
+    display: flex;
+    gap: var(--space-6);
+    align-items: flex-start;
+}
+
+/* Gallery View Modes */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+}
+@media (max-width: 1024px) {
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+    .gallery-grid { grid-template-columns: 1fr; }
+}
+
+/* Search Input */
+.search-wrapper {
+    position: relative;
+    flex: 1;
+    max-width: 448px;
+}
+.search-icon {
+    position: absolute;
+    left: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-slate-400);
+    pointer-events: none;
+}
+.search-input {
+    width: 100%;
+    padding: var(--space-2) var(--space-4);
+    padding-left: 40px;
+    border: 1px solid var(--color-slate-200);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-sm);
+    transition: all var(--transition-normal);
+}
+.search-input:focus {
+    outline: none;
+    border-color: var(--color-slate-400);
+    box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.3);
+}
+.search-clear {
+    position: absolute;
+    right: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-slate-400);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+.search-clear:hover { color: var(--color-slate-600); }
+
+/* Filter Select */
+.filter-select {
+    padding: var(--space-2) var(--space-3);
+    padding-right: var(--space-8);
+    border: 1px solid var(--color-slate-200);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-sm);
+    background-color: white;
+    cursor: pointer;
+}
+.filter-select:focus {
+    outline: none;
+    border-color: var(--color-slate-400);
+    box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.3);
+}
+
+/* View Toggle */
+.view-toggle {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-slate-100);
+    border-radius: var(--radius-lg);
+    padding: 2px;
+    height: 38px;
+}
+.view-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 34px;
+    border-radius: var(--radius-md);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-slate-500);
+    transition: all var(--transition-fast);
+}
+.view-toggle-btn:hover {
+    color: var(--color-slate-700);
+    background-color: var(--color-slate-50);
+}
+.view-toggle-btn.active {
+    background-color: white;
+    color: var(--color-slate-700);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Empty State */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-12) var(--space-4);
+    text-align: center;
+}
+.empty-state-icon {
+    width: 64px;
+    height: 64px;
+    background-color: var(--color-slate-100);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-4);
+}
+.empty-state-title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-medium);
+    color: var(--color-slate-900);
+    margin-bottom: var(--space-1);
+}
+.empty-state-desc {
+    font-size: var(--text-sm);
+    color: var(--color-slate-500);
+    margin-bottom: var(--space-4);
+    max-width: 384px;
+}
+
+/* Spinner */
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: var(--radius-full);
+    animation: spin 0.6s linear infinite;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Timeline */
+.timeline-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3);
+    border-radius: var(--radius-lg);
+    transition: background-color var(--transition-fast);
+}
+.timeline-item-done { background-color: var(--color-slate-50); }
+.timeline-item-pending {
+    background-color: var(--color-amber-50);
+    border: 1px solid var(--color-amber-100);
+}
+.timeline-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.timeline-icon-done { background-color: var(--color-emerald-100); }
+.timeline-icon-done .material-icon { color: var(--color-emerald-600); }
+.timeline-icon-pending { background-color: var(--color-amber-100); }
+.timeline-icon-pending .material-icon { color: var(--color-amber-600); }
+.timeline-content { flex: 1; min-width: 0; }
+.timeline-label {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--color-slate-900);
+}
+.timeline-label-done {
+    color: var(--color-slate-500);
+    text-decoration: line-through;
+}
+.timeline-date {
+    font-size: var(--text-xs);
+    color: var(--color-slate-500);
+}
+
+/* Variant Header Card */
+.variant-header {
+    background-color: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-slate-200);
+    overflow: hidden;
+    display: flex;
+}
+.variant-header-image {
+    width: 192px;
+    height: 160px;
+    position: relative;
+    flex-shrink: 0;
+}
+.variant-header-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.variant-header-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.3), transparent);
+}
+.variant-header-info {
+    position: absolute;
+    bottom: var(--space-3);
+    left: var(--space-3);
+    color: white;
+}
+.variant-header-name {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+}
+.variant-header-firm {
+    font-size: var(--text-xs);
+    opacity: 0.8;
+}
+.variant-header-code {
+    position: absolute;
+    top: var(--space-2);
+    left: var(--space-2);
+    padding: var(--space-0-5) var(--space-2);
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    border-radius: var(--radius-full);
+    color: white;
+    font-size: var(--text-xs);
+    font-family: ui-monospace, monospace;
+}
+.variant-header-details {
+    flex: 1;
+    padding: var(--space-5);
+}
+.variant-metrics {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-slate-100);
+}
+.variant-metric-value {
+    font-size: var(--text-lg);
+    font-weight: var(--font-bold);
+    color: var(--color-slate-900);
+}
+.variant-metric-label {
+    font-size: var(--text-xs);
+    color: var(--color-slate-500);
+}
+.variant-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.variant-meta-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    font-size: var(--text-sm);
+}
+.variant-assets {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+.variant-asset-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--text-xs);
+    color: var(--color-slate-600);
+    background: none;
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+.variant-asset-btn:hover { background-color: var(--color-slate-100); }
+
+/* ========================================
+   COMPONENT: Map Section
+   ======================================== */
+.map-section {
+    background-color: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-slate-200);
+    overflow: hidden;
+}
+.map-container {
+    width: 100%;
+    height: 256px;
+    border-radius: var(--radius-lg);
+}
+.map-address {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-slate-600);
+    margin-bottom: var(--space-4);
+}
+.map-edit-form {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+.map-edit-form .input {
+    flex: 1;
+}
+
+/* ========================================
+   COMPONENT: Image Gallery
+   ======================================== */
+.image-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+.image-gallery-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+.image-gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.image-gallery-item .delete-btn {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    width: 24px;
+    height: 24px;
+    background-color: var(--color-red-500);
+    color: white;
+    border: none;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.image-gallery-item .delete-btn:hover {
+    background-color: var(--color-red-600);
+}
+.image-gallery-item .overlay {
+    position: absolute;
+    inset: 0;
+    background-color: transparent;
+    transition: background-color var(--transition-fast);
+}
+.image-gallery-item:hover .overlay {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+.image-upload-zone {
+    border: 2px dashed var(--color-slate-200);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+.image-upload-zone:hover {
+    border-color: var(--color-slate-400);
+    background-color: var(--color-slate-50);
+}
+
+/* ========================================
+   COMPONENT: Team Member Row
+   ======================================== */
+.team-member-row {
+    padding: var(--space-3) 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.team-member-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+.team-member-details {
+    display: flex;
+    flex-direction: column;
+}
+.team-member-name {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--color-slate-900);
+}
+.team-member-email {
+    font-size: var(--text-xs);
+    color: var(--color-slate-500);
+}
+.team-role-badge {
+    font-size: var(--text-xs);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-slate-100);
+    color: var(--color-slate-600);
+}
+.team-role-badge.expert {
+    background-color: var(--color-emerald-100);
+    color: var(--color-emerald-700);
+}
+
+/* ========================================
+   COMPONENT: Collapsible Section Enhanced
+   ======================================== */
+.collapsible-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+.section-subtitle {
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    color: var(--color-slate-500);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    margin-bottom: var(--space-3);
+}
+
+/* ========================================
+   COMPONENT: Variant Dropdown (Breadcrumb)
+   ======================================== */
+.variant-dropdown {
+    position: relative;
+}
+.variant-dropdown-trigger {
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-slate-100);
+    color: var(--color-slate-900);
+    font-weight: var(--font-medium);
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    border: none;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+.variant-dropdown-trigger:hover {
+    background-color: var(--color-slate-200);
+}
+.variant-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: var(--space-1);
+    width: 224px;
+    background-color: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--color-slate-200);
+    padding: var(--space-1) 0;
+    z-index: var(--z-dropdown);
+}
+.variant-dropdown-item {
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    text-align: left;
+    font-size: var(--text-sm);
+    color: var(--color-slate-700);
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    transition: background-color var(--transition-fast);
+}
+.variant-dropdown-item:hover {
+    background-color: var(--color-slate-50);
+}
+.variant-dropdown-item.active {
+    background-color: var(--color-slate-100);
+    color: var(--color-slate-900);
+}
+.variant-dropdown-thumb {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-slate-200);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.variant-dropdown-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ========================================
+   COMPONENT: Filter Reset Button
+   ======================================== */
+.filter-reset-btn {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--color-slate-600);
+    background: none;
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    transition: all var(--transition-fast);
+}
+.filter-reset-btn:hover {
+    color: var(--color-slate-900);
+    background-color: var(--color-slate-100);
+}
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script>
+/* ========================================
+   VANILLA JS APPLICATION
+   ======================================== */
+
+// ============================================
+// STATE MANAGEMENT
+// ============================================
+const createStore = (initialState) => {
+    let state = { ...initialState };
+    const listeners = new Set();
+
+    return {
+        getState: () => state,
+        get: (key) => state[key],
+        set: (key, value) => {
+            if (state[key] !== value) {
+                state[key] = value;
+                listeners.forEach(fn => fn(state, key));
+            }
+        },
+        update: (updates) => {
+            state = { ...state, ...updates };
+            listeners.forEach(fn => fn(state, Object.keys(updates)));
+        },
+        subscribe: (fn) => {
+            listeners.add(fn);
+            return () => listeners.delete(fn);
+        }
+    };
+};
+
+// Application State
+const store = createStore({
+    role: 'admin',
+    currentProject: null,
+    galleryViewMode: 'grid',
+    sidebarView: 'overview',
+    selectedVariant: 0,
+    selectedVariantsForCompare: [0, 1, 2, 3, 4],
+    isEditMode: false,
+    expandedThemes: ['functionality'],
+    has3DModel: true,
+    isCreateModalOpen: false,
+    criteriaData: {},
+    searchQuery: '',
+    statusFilter: 'all',
+    usageFilter: 'all',
+    // New state for enhanced features
+    collapsedSections: {},
+    isVariantDropdownOpen: false,
+    isEditingAddress: false,
+    editingAddress: '',
+    projectImages: [], // Will be populated from data.json or current project
+    formErrors: {},
+    isSubmitting: false
+});
+
+// ============================================
+// DOM UTILITIES
+// ============================================
+const el = (tag, attrs = {}, children = []) => {
+    const element = document.createElement(tag);
+
+    Object.entries(attrs).forEach(([key, value]) => {
+        if (key === 'className') {
+            element.className = value;
+        } else if (key === 'style' && typeof value === 'object') {
+            Object.assign(element.style, value);
+        } else if (key.startsWith('on') && typeof value === 'function') {
+            const event = key.slice(2).toLowerCase();
+            element.addEventListener(event, value);
+        } else if (key === 'dataset') {
+            Object.entries(value).forEach(([k, v]) => element.dataset[k] = v);
+        } else if (value !== undefined && value !== null && value !== false) {
+            element.setAttribute(key, value);
+        }
+    });
+
+    const appendChildren = (items) => {
+        items.forEach(child => {
+            if (child === null || child === undefined) return;
+            if (typeof child === 'string' || typeof child === 'number') {
+                element.appendChild(document.createTextNode(child));
+            } else if (child instanceof Node) {
+                element.appendChild(child);
+            } else if (Array.isArray(child)) {
+                appendChildren(child);
+            }
+        });
+    };
+
+    appendChildren(Array.isArray(children) ? children : [children]);
+    return element;
+};
+
+const render = (component, container) => {
+    container.innerHTML = '';
+    const element = typeof component === 'function' ? component() : component;
+    if (element) container.appendChild(element);
+};
+
+const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => document.querySelectorAll(selector);
+
+// ============================================
+// DATA (loaded from data.json)
+// ============================================
+let APP_DATA = null;
+let MAPBOX_TOKEN = '';
+let VARIANTS = [];
+let PROJECTS = [];
+let THEMES = {};
+
+const loadAppData = async () => {
+    try {
+        const response = await fetch('data.json');
+        if (!response.ok) throw new Error('Failed to load data.json');
+        APP_DATA = await response.json();
+
+        // Populate global data references
+        MAPBOX_TOKEN = APP_DATA.config.mapbox.token;
+        VARIANTS = APP_DATA.variants;
+        PROJECTS = APP_DATA.projects;
+        THEMES = APP_DATA.themes;
+
+        // Set default images in store
+        store.set('projectImages', APP_DATA.config.defaultImages || []);
+
+        return APP_DATA;
+    } catch (error) {
+        console.error('Error loading app data:', error);
+        // Show error to user
+        document.getElementById('root').innerHTML = `
+            <div style="padding: 2rem; text-align: center; color: #dc2626;">
+                <h2>Error Loading Data</h2>
+                <p>Could not load application data. Please check that data.json exists.</p>
+                <pre style="text-align: left; background: #f1f5f9; padding: 1rem; border-radius: 0.5rem;">${error.message}</pre>
+            </div>
+        `;
+        throw error;
+    }
+};
+
+// Helper to get project images (from current project or defaults)
+const getProjectImages = () => {
+    const currentProject = store.get('currentProject');
+    if (currentProject?.images?.length > 0) {
+        return currentProject.images;
+    }
+    return APP_DATA?.config?.defaultImages || store.get('projectImages');
+};
+
+// Mock data generators
+const generateKennwertData = (variantIndex, kennwerte) => {
+    return kennwerte.map((k, i) => {
+        const baseValue = 50 + (variantIndex * 7 + i * 13) % 50;
+        const avgValue = 60 + (i * 11) % 30;
+        const rank = ((variantIndex + i) % 5) + 1;
+        const delta = baseValue - avgValue;
+        return { ...k, value: baseValue, avg: avgValue, rank, total: 5, delta };
+    });
+};
+
+const generateKriterienData = (variantIndex, kriterien) => {
+    const defaultRatings = ['positive', 'neutral', 'negative'];
+    const defaultComments = [
+        'Vorfahrt eingeschränkt berücksichtigt; Ver- und Entsorgung bedingt funktionstüchtig; günstige Positionierung Fahrradabstellplätze;',
+        'Gebäude eingeschränkt barrierefrei; Barrierefreiheit Aussenraum k. A. / unklar (Freitreppe);',
+        'vielfältiges Angebot im Gebäude (Ausstellung, Präsentation); vielfältiges Angebot im Aussenraum;',
+    ];
+    return kriterien.map((k, i) => {
+        const criteriaData = store.get('criteriaData');
+        const storedData = criteriaData[variantIndex]?.[k.id];
+        const defaultRating = defaultRatings[(variantIndex + i) % 3];
+        const defaultComment = defaultComments[(variantIndex + i) % defaultComments.length];
+        return {
+            ...k,
+            rating: storedData?.rating || defaultRating,
+            comment: storedData?.comment !== undefined ? storedData.comment : defaultComment
+        };
+    });
+};
+
+// ============================================
+// BASE COMPONENTS
+// ============================================
+const Icon = (name, { size = 20, className = '' } = {}) => {
+    return el('span', {
+        className: `material-symbols-outlined material-icon size-${size} ${className}`,
+        style: { fontSize: `${size}px` },
+        'aria-hidden': 'true'
+    }, [name]);
+};
+
+const Button = ({ children, variant = 'primary', size = 'md', icon, iconRight, onClick, disabled, className = '' }) => {
+    const content = [];
+    if (icon && !iconRight) content.push(Icon(icon, { size: size === 'sm' ? 14 : size === 'lg' ? 20 : 16 }));
+    if (children) content.push(typeof children === 'string' ? children : children);
+    if (icon && iconRight) content.push(Icon(icon, { size: size === 'sm' ? 14 : size === 'lg' ? 20 : 16 }));
+
+    return el('button', {
+        className: `btn btn-${variant} btn-${size} ${className}`,
+        onclick: onClick,
+        disabled
+    }, content);
+};
+
+const Badge = ({ status, label, showDot = true, size = 'md' }) => {
+    const content = [];
+    if (showDot) content.push(el('span', { className: 'badge-dot' }));
+    content.push(label);
+    return el('span', { className: `badge badge-${status} badge-${size}` }, content);
+};
+
+const Avatar = ({ name, src, size = 'md', className = '' }) => {
+    const getInitials = (n) => n ? n.split(' ').map(p => p[0]).join('').toUpperCase().slice(0, 2) : '?';
+
+    if (src) {
+        return el('div', { className: `avatar avatar-${size} ${className}` }, [
+            el('img', { src, alt: name })
+        ]);
+    }
+    return el('div', {
+        className: `avatar avatar-${size} avatar-default ${className}`,
+        title: name
+    }, [getInitials(name)]);
+};
+
+const LabelValue = ({ label, value }) => {
+    return el('div', { className: 'label-value' }, [
+        el('div', { className: 'label-value-label' }, [label]),
+        el('div', { className: 'label-value-value' }, [value])
+    ]);
+};
+
+const ProgressBar = ({ value, max = 100, color = 'emerald', size = 'md' }) => {
+    const percentage = Math.min(100, Math.max(0, (value / max) * 100));
+    return el('div', { className: `progress-bar progress-bar-${size}` }, [
+        el('div', {
+            className: `progress-bar-fill progress-bar-${color}`,
+            style: { width: `${percentage}%` }
+        })
+    ]);
+};
+
+const StatCard = ({ icon, value, label }) => {
+    return el('div', { className: 'stat-card' }, [
+        el('div', { className: 'stat-icon' }, [Icon(icon, { size: 20, className: 'text-slate-500' })]),
+        el('div', {}, [
+            el('div', { className: 'stat-value' }, [value]),
+            el('div', { className: 'stat-label' }, [label])
+        ])
+    ]);
+};
+
+// ============================================
+// HEADER COMPONENT
+// ============================================
+const AppHeader = () => {
+    const currentProject = store.get('currentProject');
+
+    const HeaderAction = ({ icon, label, badge }) => {
+        return el('button', { className: 'header-action', title: label, 'aria-label': label }, [
+            Icon(icon, { size: 20 }),
+            badge ? el('span', { className: 'header-action-badge' }) : null
+        ]);
+    };
+
+    return el('header', { className: 'app-header' }, [
+        el('div', { className: 'flex items-center gap-3' }, [
+            el('button', {
+                className: 'header-logo',
+                onclick: () => { store.set('currentProject', null); renderApp(); },
+                title: 'Zur Projektübersicht'
+            }, [Icon('insights', { size: 18 })]),
+            el('span', { className: 'header-title' }, ['Wettbewerb Cockpit']),
+            currentProject ? el('span', { className: 'header-breadcrumb' }, ['/']) : null,
+            currentProject ? el('span', { className: 'header-project-name' }, [currentProject.name]) : null
+        ]),
+        el('div', { className: 'flex items-center gap-1' }, [
+            HeaderAction({ icon: 'help_outline', label: 'Hilfe' }),
+            HeaderAction({ icon: 'notifications', label: 'Benachrichtigungen', badge: true }),
+            HeaderAction({ icon: 'settings', label: 'Einstellungen' }),
+            el('div', { className: 'header-divider' }),
+            el('button', { className: 'flex items-center gap-2 p-1 rounded-lg hover\\:bg-slate-800 transition-colors' }, [
+                Avatar({ name: 'David Admin', size: 'md', className: 'bg-slate-700 text-slate-300' })
+            ])
+        ])
+    ]);
+};
+
+// ============================================
+// SIDEBAR COMPONENT
+// ============================================
+const MainSidebar = () => {
+    const sidebarView = store.get('sidebarView');
+    const has3DModel = store.get('has3DModel');
+
+    const items = [
+        { id: 'overview', label: 'Übersicht', icon: 'home' },
+        { id: 'evaluation', label: 'Bewertung', icon: 'rate_review' },
+        { id: 'model3d', label: '3D Modell', icon: 'view_in_ar', requires3D: true },
+        { id: 'comparison', label: 'Vergleich', icon: 'compare' },
+    ].filter(item => !item.requires3D || has3DModel);
+
+    return el('aside', { className: 'sidebar' }, [
+        el('nav', { className: 'sidebar-nav' }, items.map(item =>
+            el('button', {
+                className: `sidebar-item ${sidebarView === item.id ? 'active' : ''}`,
+                onclick: () => { store.set('sidebarView', item.id); renderApp(); },
+                title: item.label
+            }, [
+                el('div', { className: 'sidebar-item-icon' }, [
+                    Icon(item.icon, { size: 22, className: sidebarView === item.id ? 'text-slate-700' : 'text-slate-400' })
+                ]),
+                el('span', { className: 'sidebar-item-label' }, [item.label])
+            ])
+        ))
+    ]);
+};
+
+// ============================================
+// BREADCRUMB COMPONENT
+// ============================================
+const VariantDropdownSelector = () => {
+    const selectedVariant = store.get('selectedVariant');
+    const isOpen = store.get('isVariantDropdownOpen');
+    const variant = VARIANTS[selectedVariant];
+
+    const toggleDropdown = (e) => {
+        e.stopPropagation();
+        store.set('isVariantDropdownOpen', !isOpen);
+        renderApp();
+    };
+
+    const selectVariant = (index) => {
+        store.update({ selectedVariant: index, isVariantDropdownOpen: false });
+        renderApp();
+    };
+
+    // Close dropdown when clicking outside
+    if (isOpen) {
+        setTimeout(() => {
+            const closeDropdown = (e) => {
+                if (!e.target.closest('.variant-dropdown')) {
+                    store.set('isVariantDropdownOpen', false);
+                    renderApp();
+                    document.removeEventListener('click', closeDropdown);
+                }
+            };
+            document.addEventListener('click', closeDropdown);
+        }, 0);
+    }
+
+    return el('div', { className: 'variant-dropdown' }, [
+        el('button', {
+            className: 'variant-dropdown-trigger',
+            onclick: toggleDropdown
+        }, [
+            variant.name,
+            Icon('expand_more', { size: 16 })
+        ]),
+        isOpen ? el('div', { className: 'variant-dropdown-menu' },
+            VARIANTS.map((v, i) =>
+                el('button', {
+                    className: `variant-dropdown-item ${i === selectedVariant ? 'active' : ''}`,
+                    onclick: () => selectVariant(i)
+                }, [
+                    el('div', { className: 'variant-dropdown-thumb' }, [
+                        el('img', { src: v.thumbnail, alt: v.name })
+                    ]),
+                    el('div', {}, [
+                        el('div', { className: 'text-sm font-medium' }, [v.name]),
+                        el('div', { className: 'text-xs text-slate-500' }, [v.code])
+                    ])
+                ])
+            )
+        ) : null
+    ]);
+};
+
+const Breadcrumb = () => {
+    const currentProject = store.get('currentProject');
+    const sidebarView = store.get('sidebarView');
+    const selectedVariant = store.get('selectedVariant');
+
+    if (!currentProject) return null;
+
+    const viewLabels = {
+        overview: 'Übersicht', evaluation: 'Bewertung',
+        model3d: '3D Modell', comparison: 'Vergleich'
+    };
+
+    const items = [
+        { label: 'Projekte', icon: 'folder', onClick: () => { store.set('currentProject', null); renderApp(); } },
+        { label: currentProject.name, onClick: () => { store.set('sidebarView', 'overview'); renderApp(); }, active: sidebarView === 'overview' }
+    ];
+
+    if (sidebarView !== 'overview' && sidebarView !== 'comparison') {
+        items[1].active = false;
+        items.push({ label: VARIANTS[selectedVariant].name, isDropdown: true });
+        items.push({ label: viewLabels[sidebarView], active: true });
+    } else if (sidebarView === 'comparison') {
+        items[1].active = false;
+        items.push({ label: viewLabels.comparison, active: true });
+    }
+
+    return el('nav', { className: 'breadcrumb-bar' }, [
+        el('div', { className: 'breadcrumb-content' }, [
+            el('ol', { className: 'breadcrumb-list' }, items.map((item, i) =>
+                el('li', { className: 'breadcrumb-item' }, [
+                    i > 0 ? el('span', { className: 'breadcrumb-separator' }, [Icon('chevron_right', { size: 16 })]) : null,
+                    item.isDropdown ?
+                        VariantDropdownSelector() :
+                    item.onClick ?
+                        el('button', {
+                            className: `breadcrumb-link ${item.active ? 'active' : ''}`,
+                            onclick: item.onClick
+                        }, [
+                            item.icon ? Icon(item.icon, { size: 14 }) : null,
+                            item.label
+                        ]) :
+                        el('span', { className: `breadcrumb-link ${item.active ? 'active' : ''}` }, [item.label])
+                ])
+            ))
+        ])
+    ]);
+};
+
+// ============================================
+// VARIANT SELECTOR COMPONENT
+// ============================================
+const VariantSelector = () => {
+    const sidebarView = store.get('sidebarView');
+    const selectedVariant = store.get('selectedVariant');
+    const selectedVariantsForCompare = store.get('selectedVariantsForCompare');
+    const isComparisonView = sidebarView === 'comparison';
+
+    const handleClick = (index) => {
+        if (isComparisonView) {
+            const current = [...selectedVariantsForCompare];
+            if (current.includes(index)) {
+                if (current.length > 1) {
+                    store.set('selectedVariantsForCompare', current.filter(i => i !== index).sort((a, b) => a - b));
+                }
+            } else {
+                store.set('selectedVariantsForCompare', [...current, index].sort((a, b) => a - b));
+            }
+        } else {
+            store.set('selectedVariant', index);
+        }
+        renderApp();
+    };
+
+    return el('div', { className: 'variant-list' }, [
+        el('div', { className: 'variant-list-header' }, [
+            el('div', { className: 'variant-list-title' }, ['Varianten']),
+            el('span', { className: 'variant-list-count' }, [String(VARIANTS.length)])
+        ]),
+        el('div', { className: 'variant-list-items' }, VARIANTS.map((v, i) => {
+            const isSelected = isComparisonView ? selectedVariantsForCompare.includes(i) : selectedVariant === i;
+            return el('button', {
+                className: `variant-item ${isSelected ? 'selected' : ''}`,
+                onclick: () => handleClick(i)
+            }, [
+                el('div', { className: 'variant-thumbnail' }, [
+                    el('img', { src: v.thumbnail, alt: v.name }),
+                    el('span', { className: 'variant-code' }, [v.code])
+                ]),
+                el('div', { className: 'variant-name' }, [v.name]),
+                el('div', { className: 'variant-firm' }, [v.firm])
+            ]);
+        }))
+    ]);
+};
+
+// ============================================
+// PROJECT CARD COMPONENT
+// ============================================
+const ProjectCard = (project) => {
+    return el('div', {
+        className: 'project-card',
+        onclick: () => {
+            store.set('currentProject', project);
+            store.set('sidebarView', 'overview');
+            renderApp();
+        },
+        tabindex: '0',
+        role: 'button'
+    }, [
+        el('div', { className: 'project-card-thumbnail' }, [
+            el('img', { src: project.thumbnail, alt: project.name }),
+            el('div', { className: 'project-card-gradient' }),
+            el('span', { className: 'project-card-id' }, [String(project.id).padStart(4, '0')]),
+            el('div', { className: 'project-card-status' }, [Badge({ status: project.status, label: project.statusLabel })]),
+            el('div', { className: 'project-card-info' }, [
+                el('div', { className: 'project-card-name' }, [project.name]),
+                el('div', { className: 'project-card-address' }, [project.address])
+            ])
+        ]),
+        el('div', { className: 'project-card-body' }, [
+            el('div', { className: 'project-card-meta' }, [
+                LabelValue({ label: 'Nutzung', value: project.usageType }),
+                LabelValue({ label: 'Framework', value: project.framework })
+            ]),
+            el('div', { className: 'project-card-footer' }, [
+                el('div', { className: 'flex items-center gap-4' }, [
+                    el('div', { className: 'project-card-stat' }, [
+                        Icon('apartment', { size: 16, className: 'text-slate-400' }),
+                        `${project.variantCount} Varianten`
+                    ]),
+                    el('div', { className: 'project-card-stat' }, [
+                        Icon('check_circle', { size: 16, className: 'text-emerald-500' }),
+                        `${project.evaluatedCount} bewertet`
+                    ])
+                ])
+            ])
+        ])
+    ]);
+};
+
+// ============================================
+// PROJECT LIST ROW COMPONENT
+// ============================================
+const ProjectListRow = (project) => {
+    return el('tr', {
+        className: 'table-row-clickable',
+        onclick: () => {
+            store.set('currentProject', project);
+            store.set('sidebarView', 'overview');
+            renderApp();
+        }
+    }, [
+        el('td', {}, [
+            el('div', { className: 'font-medium text-slate-900' }, [project.name]),
+            el('div', { className: 'text-sm text-slate-500' }, [project.address])
+        ]),
+        el('td', { className: 'text-slate-600' }, [project.usageType]),
+        el('td', { className: 'text-slate-600' }, [project.framework]),
+        el('td', { className: 'text-slate-600' }, [project.phase]),
+        el('td', {}, [Badge({ status: project.status, label: project.statusLabel })]),
+        el('td', { className: 'text-slate-600' }, [String(project.variantCount)]),
+        el('td', { className: 'text-slate-500' }, [project.lastUpdated])
+    ]);
+};
+
+// ============================================
+// PROJECTS MAP INITIALIZATION
+// ============================================
+let projectsMapInstance = null;
+
+const initProjectsMap = (projects) => {
+    const mapContainer = document.getElementById('projects-map');
+    if (!mapContainer || !window.mapboxgl) return;
+
+    // Prevent re-initialization
+    if (mapContainer.dataset.initialized === 'true') return;
+    mapContainer.dataset.initialized = 'true';
+
+    // Create map
+    const map = new mapboxgl.Map({
+        container: 'projects-map',
+        style: 'mapbox://styles/mapbox/light-v11',
+        center: [8.54, 47.38], // Zürich center
+        zoom: 11,
+        accessToken: MAPBOX_TOKEN
+    });
+
+    projectsMapInstance = map;
+
+    // Add markers for each project
+    projects.forEach(project => {
+        if (!project.coordinates) return;
+
+        // Create custom marker element
+        const markerEl = document.createElement('div');
+        markerEl.className = 'project-marker';
+        markerEl.style.cssText = `
+            width: 32px; height: 32px;
+            background: ${project.status === 'completed' ? '#10b981' : project.status === 'active' ? '#3b82f6' : '#6b7280'};
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        `;
+        markerEl.innerHTML = `<span style="color:white;font-size:12px;font-weight:bold;">${project.variantCount}</span>`;
+
+        // Create popup
+        const popup = new mapboxgl.Popup({ offset: 25, closeButton: false })
+            .setHTML(`
+                <div style="padding: 8px; min-width: 200px;">
+                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">${project.name}</div>
+                    <div style="font-size: 12px; color: #4b5563; margin-bottom: 8px;">${project.address}</div>
+                    <div style="display: flex; gap: 12px; font-size: 12px;">
+                        <span>${project.variantCount} Varianten</span>
+                        <span style="color: #10b981;">${project.evaluatedCount} bewertet</span>
+                    </div>
+                    <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #d1d5db;">
+                        <span style="font-size: 11px; color: #6b7280;">${project.framework} · ${project.phase}</span>
+                    </div>
+                </div>
+            `);
+
+        // Add marker to map
+        const marker = new mapboxgl.Marker(markerEl)
+            .setLngLat([project.coordinates.lng, project.coordinates.lat])
+            .setPopup(popup)
+            .addTo(map);
+
+        // Click to open project
+        markerEl.addEventListener('click', () => {
+            store.set('currentProject', project);
+            store.set('sidebarView', 'overview');
+            renderApp();
+        });
+    });
+
+    // Fit bounds to show all markers
+    if (projects.length > 0) {
+        const bounds = new mapboxgl.LngLatBounds();
+        projects.forEach(p => {
+            if (p.coordinates) {
+                bounds.extend([p.coordinates.lng, p.coordinates.lat]);
+            }
+        });
+        map.fitBounds(bounds, { padding: 50 });
+    }
+};
+
+// ============================================
+// GALLERY VIEW COMPONENT
+// ============================================
+const GalleryView = () => {
+    const viewMode = store.get('galleryViewMode');
+    const searchQuery = store.get('searchQuery');
+    const statusFilter = store.get('statusFilter');
+    const usageFilter = store.get('usageFilter');
+
+    const filteredProjects = PROJECTS.filter(p => {
+        const matchesSearch = !searchQuery ||
+            p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            p.address.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesStatus = statusFilter === 'all' || p.status === statusFilter;
+        const matchesUsage = usageFilter === 'all' || p.usageType === usageFilter;
+        return matchesSearch && matchesStatus && matchesUsage;
+    });
+
+    const totalProjects = PROJECTS.length;
+    const activeProjects = PROJECTS.filter(p => p.status === 'active').length;
+    const completedProjects = PROJECTS.filter(p => p.status === 'completed').length;
+    const usageTypes = [...new Set(PROJECTS.map(p => p.usageType))];
+
+    const ViewToggleBtn = (mode, icon, label) => {
+        return el('button', {
+            className: `view-toggle-btn ${viewMode === mode ? 'active' : ''}`,
+            onclick: () => { store.set('galleryViewMode', mode); renderApp(); },
+            title: label
+        }, [Icon(icon, { size: 20 })]);
+    };
+
+    return el('div', { className: 'flex-1 bg-slate-50' }, [
+        // Header
+        el('div', { className: 'gallery-header' }, [
+            el('div', { className: 'gallery-header-content' }, [
+                el('div', { className: 'flex items-center justify-between mb-4' }, [
+                    el('div', {}, [
+                        el('h1', { className: 'text-2xl font-bold text-slate-900' }, ['Projekte']),
+                        el('p', { className: 'text-sm text-slate-500 mt-1' }, [
+                            filteredProjects.length === totalProjects
+                                ? `${totalProjects} Projekte · ${activeProjects} aktiv · ${completedProjects} abgeschlossen`
+                                : `${filteredProjects.length} von ${totalProjects} Projekten`
+                        ])
+                    ]),
+                    el('div', { className: 'flex items-center gap-3' }, [
+                        el('div', { className: 'view-toggle' }, [
+                            ViewToggleBtn('grid', 'grid_view', 'Galerieansicht'),
+                            ViewToggleBtn('list', 'view_list', 'Listenansicht'),
+                            ViewToggleBtn('map', 'map', 'Kartenansicht')
+                        ]),
+                        Button({
+                            children: 'Neues Projekt',
+                            icon: 'add',
+                            onClick: () => { store.set('isCreateModalOpen', true); renderApp(); }
+                        })
+                    ])
+                ]),
+                // Filters
+                el('div', { className: 'flex items-center gap-3' }, [
+                    el('div', { className: 'search-wrapper' }, [
+                        el('span', { className: 'search-icon' }, [Icon('search', { size: 18 })]),
+                        el('input', {
+                            type: 'text',
+                            className: 'search-input',
+                            placeholder: 'Projekt suchen...',
+                            value: searchQuery,
+                            oninput: (e) => { store.set('searchQuery', e.target.value); renderApp(); }
+                        }),
+                        searchQuery ? el('button', {
+                            className: 'search-clear',
+                            onclick: () => { store.set('searchQuery', ''); renderApp(); }
+                        }, [Icon('close', { size: 16 })]) : null
+                    ]),
+                    el('select', {
+                        className: 'filter-select select',
+                        value: statusFilter,
+                        onchange: (e) => { store.set('statusFilter', e.target.value); renderApp(); }
+                    }, [
+                        el('option', { value: 'all' }, ['Alle Status']),
+                        el('option', { value: 'active' }, ['Aktiv']),
+                        el('option', { value: 'completed' }, ['Abgeschlossen']),
+                        el('option', { value: 'draft' }, ['Entwurf'])
+                    ]),
+                    el('select', {
+                        className: 'filter-select select',
+                        value: usageFilter,
+                        onchange: (e) => { store.set('usageFilter', e.target.value); renderApp(); }
+                    }, [
+                        el('option', { value: 'all' }, ['Alle Nutzungen']),
+                        ...usageTypes.map(type => el('option', { value: type }, [type]))
+                    ]),
+                    // Clear Filters Button (shows when any filter is active)
+                    (searchQuery || statusFilter !== 'all' || usageFilter !== 'all') ?
+                        el('button', {
+                            className: 'filter-reset-btn',
+                            onclick: () => {
+                                store.update({ searchQuery: '', statusFilter: 'all', usageFilter: 'all' });
+                                renderApp();
+                            }
+                        }, [
+                            Icon('filter_alt_off', { size: 16 }),
+                            'Filter zurücksetzen'
+                        ]) : null
+                ])
+            ])
+        ]),
+        // Content
+        el('div', { className: 'gallery-content' }, [
+            filteredProjects.length === 0 ?
+                el('div', { className: 'card' }, [
+                    el('div', { className: 'empty-state' }, [
+                        el('div', { className: 'empty-state-icon' }, [Icon('search_off', { size: 32, className: 'text-slate-400' })]),
+                        el('h3', { className: 'empty-state-title' }, ['Keine Projekte gefunden']),
+                        el('p', { className: 'empty-state-desc' }, ['Versuchen Sie, Ihre Suchkriterien anzupassen.']),
+                        Button({
+                            children: 'Filter zurücksetzen',
+                            onClick: () => {
+                                store.update({ searchQuery: '', statusFilter: 'all', usageFilter: 'all' });
+                                renderApp();
+                            }
+                        })
+                    ])
+                ]) :
+            viewMode === 'grid' ?
+                el('div', { className: 'gallery-grid' }, filteredProjects.map(p => ProjectCard(p))) :
+            viewMode === 'list' ?
+                el('div', { className: 'table-wrapper' }, [
+                    el('table', { className: 'table' }, [
+                        el('thead', {}, [
+                            el('tr', {}, [
+                                el('th', {}, ['Projekt']),
+                                el('th', {}, ['Nutzung']),
+                                el('th', {}, ['Framework']),
+                                el('th', {}, ['Phase']),
+                                el('th', {}, ['Status']),
+                                el('th', {}, ['Varianten']),
+                                el('th', {}, ['Aktualisiert'])
+                            ])
+                        ]),
+                        el('tbody', {}, filteredProjects.map(p => ProjectListRow(p)))
+                    ])
+                ]) :
+                (() => {
+                    // Initialize map after render
+                    setTimeout(() => initProjectsMap(filteredProjects), 100);
+                    return el('div', { className: 'card', style: { height: '600px' } }, [
+                        el('div', { id: 'projects-map', className: 'h-full w-full rounded-lg' })
+                    ]);
+                })()
+        ])
+    ]);
+};
+
+// ============================================
+// COLLAPSIBLE SECTION COMPONENT
+// ============================================
+const CollapsibleSection = ({ id, icon, title, badge, actions, children, defaultOpen = true }) => {
+    const collapsedSections = store.get('collapsedSections');
+    const isCollapsed = collapsedSections[id] ?? !defaultOpen;
+
+    const toggle = () => {
+        const updated = { ...collapsedSections, [id]: !isCollapsed };
+        store.set('collapsedSections', updated);
+        renderApp();
+    };
+
+    return el('div', { className: 'collapsible' }, [
+        el('button', { className: 'collapsible-header flex items-center gap-3 w-full', onclick: toggle }, [
+            el('div', { className: 'collapsible-icon-wrapper' }, [Icon(icon, { size: 18, className: 'text-slate-600' })]),
+            el('span', { className: 'collapsible-title flex-1 text-left' }, [title]),
+            badge ? el('span', { className: 'collapsible-badge' }, [badge]) : null,
+            actions ? el('div', { className: 'collapsible-actions', onclick: e => e.stopPropagation() }, actions) : null,
+            Icon(isCollapsed ? 'expand_more' : 'expand_less', { size: 20, className: 'text-slate-400' })
+        ]),
+        !isCollapsed ? el('div', { className: 'collapsible-content pt-4' }, children) : null
+    ]);
+};
+
+// ============================================
+// TEAM MEMBER ROW COMPONENT
+// ============================================
+const TeamMemberRow = ({ name, email, role, isExpert = false }) => {
+    return el('div', { className: 'team-member-row' }, [
+        el('div', { className: 'team-member-info' }, [
+            Avatar({
+                name,
+                size: 'md',
+                className: isExpert ? 'bg-emerald-100 text-emerald-700' : ''
+            }),
+            el('div', { className: 'team-member-details' }, [
+                el('span', { className: 'team-member-name' }, [name]),
+                el('span', { className: 'team-member-email' }, [email])
+            ])
+        ]),
+        el('span', { className: `team-role-badge ${isExpert ? 'expert' : ''}` }, [role])
+    ]);
+};
+
+// ============================================
+// MAP SECTION COMPONENT
+// ============================================
+const MapSection = () => {
+    const currentProject = store.get('currentProject');
+    const isEditingAddress = store.get('isEditingAddress');
+    const editingAddress = store.get('editingAddress');
+
+    const startEditing = () => {
+        store.update({ isEditingAddress: true, editingAddress: currentProject?.address || '' });
+        renderApp();
+    };
+
+    const cancelEditing = () => {
+        store.update({ isEditingAddress: false, editingAddress: '' });
+        renderApp();
+    };
+
+    const saveAddress = () => {
+        // In real app would geocode and update coordinates
+        store.update({ isEditingAddress: false, editingAddress: '' });
+        renderApp();
+    };
+
+    // Initialize map after render
+    setTimeout(() => {
+        const mapContainer = document.getElementById('project-map');
+        if (mapContainer && !mapContainer.dataset.initialized && window.mapboxgl) {
+            mapContainer.dataset.initialized = 'true';
+            const coords = currentProject?.coordinates || { lat: 47.3769, lng: 8.5017 };
+            const map = new mapboxgl.Map({
+                container: 'project-map',
+                style: 'mapbox://styles/mapbox/light-v11',
+                center: [coords.lng, coords.lat],
+                zoom: 15,
+                accessToken: MAPBOX_TOKEN
+            });
+            new mapboxgl.Marker({ color: '#475569' })
+                .setLngLat([coords.lng, coords.lat])
+                .addTo(map);
+        }
+    }, 100);
+
+    return CollapsibleSection({
+        id: 'map',
+        icon: 'location_on',
+        title: 'Standort',
+        actions: [
+            !isEditingAddress ? Button({
+                children: 'Bearbeiten',
+                variant: 'ghost',
+                size: 'sm',
+                icon: 'edit',
+                onClick: startEditing
+            }) : null
+        ],
+        children: [
+            isEditingAddress ?
+                el('div', { className: 'map-edit-form' }, [
+                    el('input', {
+                        type: 'text',
+                        className: 'input',
+                        value: editingAddress,
+                        placeholder: 'Adresse eingeben...',
+                        oninput: (e) => store.set('editingAddress', e.target.value)
+                    }),
+                    Button({ children: 'Speichern', size: 'sm', onClick: saveAddress }),
+                    Button({ children: 'Abbrechen', variant: 'ghost', size: 'sm', onClick: cancelEditing })
+                ]) :
+                el('div', { className: 'map-address' }, [
+                    Icon('place', { size: 16, className: 'text-slate-400' }),
+                    currentProject?.address || 'Badenerstrasse 501, 8048 Zürich'
+                ]),
+            el('div', { id: 'project-map', className: 'map-container bg-slate-200' })
+        ]
+    });
+};
+
+// ============================================
+// IMAGE GALLERY SECTION COMPONENT
+// ============================================
+const ImageGallerySection = () => {
+    const currentProject = store.get('currentProject');
+    // Use project-specific images, falling back to store images (for new/default projects)
+    const projectImages = currentProject?.images?.length > 0
+        ? currentProject.images
+        : store.get('projectImages');
+    const isEditMode = store.get('isEditMode');
+
+    const deleteImage = (index) => {
+        const images = [...projectImages];
+        images.splice(index, 1);
+        store.set('projectImages', images);
+        renderApp();
+    };
+
+    const handleUpload = () => {
+        // Simulate adding a new image
+        const newImages = [...projectImages, 'https://images.unsplash.com/photo-1448630360428-65456885c650?w=400&h=400&fit=crop'];
+        store.set('projectImages', newImages);
+        renderApp();
+    };
+
+    return CollapsibleSection({
+        id: 'gallery',
+        icon: 'photo_library',
+        title: 'Bilder',
+        badge: `${projectImages.length} Bilder`,
+        actions: [
+            Button({
+                children: isEditMode ? 'Fertig' : 'Bearbeiten',
+                variant: 'ghost',
+                size: 'sm',
+                icon: isEditMode ? 'check' : 'edit',
+                onClick: () => { store.set('isEditMode', !isEditMode); renderApp(); }
+            })
+        ],
+        children: [
+            el('div', { className: 'image-gallery-grid' },
+                projectImages.map((img, i) =>
+                    el('div', { className: 'image-gallery-item' }, [
+                        el('img', { src: img, alt: `Bild ${i + 1}` }),
+                        el('div', { className: 'overlay' }),
+                        isEditMode ? el('button', {
+                            className: 'delete-btn',
+                            onclick: () => deleteImage(i)
+                        }, [Icon('close', { size: 14 })]) : null
+                    ])
+                )
+            ),
+            el('div', { className: 'image-upload-zone', onclick: handleUpload }, [
+                el('div', { className: 'flex flex-col items-center gap-2' }, [
+                    Icon('cloud_upload', { size: 32, className: 'text-slate-400' }),
+                    el('span', { className: 'text-sm text-slate-600' }, ['Weitere Bilder hinzufügen']),
+                    el('span', { className: 'text-xs text-slate-400' }, ['oder Dateien hierher ziehen'])
+                ])
+            ])
+        ]
+    });
+};
+
+// ============================================
+// PROJECT OVERVIEW VIEW COMPONENT
+// ============================================
+const ProjectOverviewView = () => {
+    const currentProject = store.get('currentProject');
+
+    // Get project-specific data from JSON, with fallbacks
+    const teamMembers = currentProject?.team || [];
+    const experts = currentProject?.experts || [];
+    const milestones = currentProject?.milestones || [];
+
+    return el('div', { className: 'flex-1 space-y-4' }, [
+        // Quick Actions
+        el('div', { className: 'card' }, [
+            el('div', { className: 'card-body' }, [
+                el('div', { className: 'flex items-center justify-between' }, [
+                    el('div', { className: 'flex items-center gap-3' }, [
+                        el('div', { className: 'collapsible-icon-wrapper' }, [Icon('bolt', { size: 18, className: 'text-slate-600' })]),
+                        el('span', { className: 'font-semibold text-slate-900' }, ['Schnellaktionen'])
+                    ]),
+                    el('div', { className: 'flex flex-wrap gap-2' }, [
+                        Button({ children: 'Bericht exportieren', variant: 'secondary', size: 'sm', icon: 'download' }),
+                        Button({ children: 'Projekt teilen', variant: 'secondary', size: 'sm', icon: 'share' }),
+                        Button({ children: 'Archivieren', variant: 'secondary', size: 'sm', icon: 'archive' })
+                    ])
+                ])
+            ])
+        ]),
+        // Project Header Card
+        el('div', { className: 'card' }, [
+            el('div', { className: 'card-body' }, [
+                el('div', { className: 'flex items-start justify-between mb-6' }, [
+                    el('div', {}, [
+                        el('h2', { className: 'text-xl font-semibold text-slate-900' }, [currentProject?.name || 'Badenerstrasse 501']),
+                        el('p', { className: 'text-sm text-slate-500 mt-1' }, [currentProject?.address || 'Badenerstrasse 501, 8048 Zürich'])
+                    ]),
+                    Badge({ status: currentProject?.status || 'active', label: currentProject?.statusLabel || 'Bewertung läuft' })
+                ]),
+                // Stats Grid
+                el('div', { className: 'grid grid-cols-4 gap-4 mb-6' }, [
+                    StatCard({ icon: 'apartment', value: String(currentProject?.variantCount || 5), label: 'Varianten' }),
+                    StatCard({ icon: 'check_circle', value: String(currentProject?.evaluatedCount || 2), label: 'Bewertet' }),
+                    StatCard({ icon: 'pending', value: String((currentProject?.variantCount || 5) - (currentProject?.evaluatedCount || 2)), label: 'In Arbeit' }),
+                    StatCard({ icon: 'groups', value: String(teamMembers.length + experts.length), label: 'Teammitglieder' })
+                ]),
+                // Project Details
+                el('div', { className: 'border-t border-slate-100 pt-5' }, [
+                    el('div', { className: 'flex items-center justify-between mb-4' }, [
+                        el('h3', { className: 'text-sm font-semibold text-slate-700 uppercase tracking-wide' }, ['Projektdetails']),
+                        Button({ children: 'Bearbeiten', variant: 'ghost', size: 'sm', icon: 'edit' })
+                    ]),
+                    el('div', { className: 'grid grid-cols-3 gap-6' }, [
+                        LabelValue({ label: 'Nutzungstyp', value: currentProject?.usageType || 'Wohnen' }),
+                        LabelValue({ label: 'Bauphase SIA 102', value: currentProject?.phase || 'Vorprojekt' }),
+                        LabelValue({ label: 'Framework', value: currentProject?.framework || 'SNAP' })
+                    ])
+                ])
+            ])
+        ]),
+        // Evaluation Progress
+        el('div', { className: 'card' }, [
+            el('div', { className: 'card-body' }, [
+                el('div', { className: 'flex items-center gap-3 mb-5' }, [
+                    el('div', { className: 'collapsible-icon-wrapper' }, [Icon('assessment', { size: 18, className: 'text-slate-500' })]),
+                    el('h3', { className: 'font-semibold text-slate-900' }, ['Bewertungsfortschritt'])
+                ]),
+                el('div', { className: 'grid grid-cols-2 gap-x-8 gap-y-4' }, Object.values(THEMES).map(theme =>
+                    el('div', {}, [
+                        el('div', { className: 'flex justify-between text-sm mb-1' }, [
+                            el('span', { className: 'font-medium text-slate-700' }, [theme.name]),
+                            el('span', { className: theme.progress === 100 ? 'text-emerald-600 font-medium' : 'text-slate-500' }, [`${theme.progress}%`])
+                        ]),
+                        ProgressBar({ value: theme.progress, color: theme.progress === 100 ? 'emerald' : 'amber' })
+                    ])
+                ))
+            ])
+        ]),
+        // Map Section
+        MapSection(),
+        // Image Gallery Section
+        ImageGallerySection(),
+        // Team Section
+        CollapsibleSection({
+            id: 'team',
+            icon: 'groups',
+            title: 'Team',
+            badge: `${teamMembers.length + experts.length} Mitglieder`,
+            actions: [
+                Button({ children: 'Einladen', variant: 'ghost', size: 'sm', icon: 'person_add' }),
+                Button({ children: 'Bearbeiten', variant: 'ghost', size: 'sm', icon: 'edit' })
+            ],
+            children: [
+                el('div', { className: 'section-subtitle' }, ['Projektteam']),
+                el('div', { className: 'divide-y divide-slate-100' },
+                    teamMembers.map(m => TeamMemberRow(m))
+                ),
+                el('div', { className: 'section-subtitle mt-6' }, ['Experten']),
+                el('div', { className: 'divide-y divide-slate-100' },
+                    experts.map(e => TeamMemberRow({ ...e, isExpert: true }))
+                )
+            ]
+        }),
+        // Timeline Section (Collapsible)
+        CollapsibleSection({
+            id: 'timeline',
+            icon: 'schedule',
+            title: 'Zeitplan',
+            badge: `${milestones.filter(m => !m.done).length} offen`,
+            children: [
+                el('div', { className: 'space-y-3' }, milestones.map(m =>
+                    el('div', { className: `timeline-item ${m.done ? 'timeline-item-done' : 'timeline-item-pending'}` }, [
+                        el('div', { className: `timeline-icon ${m.done ? 'timeline-icon-done' : 'timeline-icon-pending'}` }, [
+                            Icon(m.done ? 'check' : 'schedule', { size: 16 })
+                        ]),
+                        el('div', { className: 'timeline-content' }, [
+                            el('div', { className: `timeline-label ${m.done ? 'timeline-label-done' : ''}` }, [m.label]),
+                            el('div', { className: 'timeline-date' }, [m.date])
+                        ]),
+                        !m.done ? Button({ children: 'Erledigt', variant: 'ghost', size: 'sm', icon: 'check' }) : null
+                    ])
+                ))
+            ]
+        })
+    ]);
+};
+
+// ============================================
+// EVALUATION VIEW COMPONENT
+// ============================================
+const EvaluationView = () => {
+    const selectedVariant = store.get('selectedVariant');
+    const expandedThemes = store.get('expandedThemes');
+    const isEditMode = store.get('isEditMode');
+    const variant = VARIANTS[selectedVariant];
+
+    const toggleTheme = (themeId) => {
+        const current = [...expandedThemes];
+        const index = current.indexOf(themeId);
+        if (index >= 0) current.splice(index, 1);
+        else current.push(themeId);
+        store.set('expandedThemes', current);
+        renderApp();
+    };
+
+    // Variant Header
+    const VariantHeader = () => el('div', { className: 'variant-header' }, [
+        el('div', { className: 'variant-header-image' }, [
+            el('img', { src: variant.thumbnail, alt: variant.name }),
+            el('div', { className: 'variant-header-gradient' }),
+            el('div', { className: 'variant-header-info' }, [
+                el('div', { className: 'variant-header-name' }, [variant.name]),
+                el('div', { className: 'variant-header-firm' }, [variant.firm])
+            ]),
+            el('span', { className: 'variant-header-code' }, [variant.code])
+        ]),
+        el('div', { className: 'variant-header-details' }, [
+            el('div', { className: 'variant-metrics' }, [
+                el('div', {}, [el('div', { className: 'variant-metric-value' }, ["7'816"]), el('div', { className: 'variant-metric-label' }, ['GF (m²)'])]),
+                el('div', {}, [el('div', { className: 'variant-metric-value' }, ["23'332"]), el('div', { className: 'variant-metric-label' }, ['GV (m³)'])]),
+                el('div', {}, [el('div', { className: 'variant-metric-value' }, ['0.64']), el('div', { className: 'variant-metric-label' }, ['NF/BGF'])]),
+                el('div', {}, [el('div', { className: 'variant-metric-value' }, ['14']), el('div', { className: 'variant-metric-label' }, ['Geschosse'])])
+            ]),
+            el('div', { className: 'variant-meta' }, [
+                el('div', { className: 'variant-meta-info' }, [
+                    el('span', { className: 'text-slate-500' }, ['Eingereicht: ']),
+                    el('span', { className: 'text-slate-700 font-medium' }, ['25.03.2023']),
+                    el('span', { className: 'flex items-center gap-1' }, [
+                        Icon('check_circle', { size: 14, className: 'text-emerald-500' }),
+                        el('span', { className: 'text-slate-700 text-xs' }, ['BIM Modell'])
+                    ])
+                ])
+            ])
+        ])
+    ]);
+
+    // Theme Card
+    const ThemeCard = (theme) => {
+        const isExpanded = expandedThemes.includes(theme.id);
+        const kennwerte = generateKennwertData(selectedVariant, theme.kennwerte);
+        const kriterien = generateKriterienData(selectedVariant, theme.kriterien);
+        const ratingCounts = kriterien.reduce((acc, k) => { acc[k.rating] = (acc[k.rating] || 0) + 1; return acc; }, {});
+
+        return el('div', { className: `theme-card ${isExpanded ? 'expanded' : ''}` }, [
+            el('button', { className: 'theme-card-header', onclick: () => toggleTheme(theme.id) }, [
+                el('div', { className: 'theme-indicator' }),
+                el('div', { className: 'theme-icon' }, [Icon(theme.icon, { size: 22, className: 'text-slate-500' })]),
+                el('div', { className: 'theme-info' }, [
+                    el('div', { className: 'theme-name' }, [theme.name]),
+                    el('div', { className: 'theme-meta' }, [`${theme.kennwerte.length} Quantitativ · ${theme.kriterien.length} Qualitativ`])
+                ]),
+                el('div', { className: 'theme-ratings' }, [
+                    ratingCounts.positive ? el('span', { className: 'theme-rating-badge' }, [Icon('thumb_up', { size: 14, className: 'text-emerald-500' }), ratingCounts.positive]) : null,
+                    ratingCounts.neutral ? el('span', { className: 'theme-rating-badge' }, [Icon('sentiment_neutral', { size: 14, className: 'text-amber-500' }), ratingCounts.neutral]) : null,
+                    ratingCounts.negative ? el('span', { className: 'theme-rating-badge' }, [Icon('thumb_down', { size: 14, className: 'text-red-500' }), ratingCounts.negative]) : null
+                ]),
+                el('div', { className: 'theme-progress' }, [
+                    el('div', { className: 'theme-progress-bar' }, [
+                        el('div', {
+                            className: `theme-progress-fill ${theme.progress === 100 ? 'bg-emerald-500' : 'bg-slate-400'}`,
+                            style: { width: `${theme.progress}%` }
+                        })
+                    ]),
+                    el('span', { className: 'theme-progress-label' }, [`${theme.progress}%`])
+                ]),
+                Icon(isExpanded ? 'expand_less' : 'expand_more', { size: 20, className: 'text-slate-400' })
+            ]),
+            isExpanded ? el('div', { className: 'theme-card-content' }, [
+                // Kennwerte Section
+                el('div', { className: 'theme-section' }, [
+                    el('div', { className: 'theme-section-header' }, [
+                        el('h4', { className: 'theme-section-title' }, ['Quantitativ'])
+                    ]),
+                    el('div', { className: 'space-y-4' }, kennwerte.map(k =>
+                        el('div', { className: 'kennwert-row' }, [
+                            el('div', { className: 'kennwert-label' }, [k.label, k.unit ? el('span', { className: 'kennwert-unit' }, [` (${k.unit})`]) : null]),
+                            el('div', { className: 'kennwert-bar-container' }, [
+                                el('div', { className: 'kennwert-bar-wrapper' }, [
+                                    el('span', { className: 'kennwert-avg-label', style: { left: `${k.avg}%` } }, [`Ø ${k.avg}${k.unit === '%' ? '%' : ''}`]),
+                                    el('div', { className: 'kennwert-bar' }, [
+                                        el('div', { className: 'kennwert-bar-fill', style: { width: `${Math.min(k.value, 100)}%` } }, [
+                                            el('span', { className: 'kennwert-bar-value' }, [`${k.value}${k.unit === '%' ? ' %' : ''}`])
+                                        ]),
+                                        el('div', { className: 'kennwert-avg-marker', style: { left: `${k.avg}%` } })
+                                    ])
+                                ]),
+                                el('div', { className: `kennwert-delta ${k.delta >= 0 ? 'kennwert-delta-positive' : 'kennwert-delta-negative'}` }, [`${k.delta >= 0 ? '+' : ''}${k.delta}%`]),
+                                el('div', { className: 'kennwert-rank' }, [`${k.rank}/${k.total}`])
+                            ])
+                        ])
+                    ))
+                ]),
+                // Kriterien Section
+                el('div', { className: 'theme-section' }, [
+                    el('div', { className: 'theme-section-header' }, [
+                        el('h4', { className: 'theme-section-title' }, ['Qualitativ']),
+                        Button({
+                            children: isEditMode ? 'Speichern' : 'Bearbeiten',
+                            variant: 'ghost', size: 'sm',
+                            icon: isEditMode ? 'check' : 'edit',
+                            onClick: (e) => { e.stopPropagation(); store.set('isEditMode', !isEditMode); renderApp(); }
+                        })
+                    ]),
+                    el('div', { className: 'space-y-2' }, kriterien.map(k =>
+                        el('div', { className: `criterion-row ${isEditMode ? 'editing' : ''}` }, [
+                            isEditMode ?
+                                el('div', { className: 'rating-selector' }, [
+                                    el('button', {
+                                        className: `rating-btn rating-btn-negative ${k.rating === 'negative' ? 'active' : ''}`,
+                                        onclick: (e) => { e.stopPropagation(); updateRating(selectedVariant, k.id, 'negative'); }
+                                    }, [Icon('thumb_down', { size: 18 })]),
+                                    el('button', {
+                                        className: `rating-btn rating-btn-neutral ${k.rating === 'neutral' ? 'active' : ''}`,
+                                        onclick: (e) => { e.stopPropagation(); updateRating(selectedVariant, k.id, 'neutral'); }
+                                    }, [Icon('sentiment_neutral', { size: 18 })]),
+                                    el('button', {
+                                        className: `rating-btn rating-btn-positive ${k.rating === 'positive' ? 'active' : ''}`,
+                                        onclick: (e) => { e.stopPropagation(); updateRating(selectedVariant, k.id, 'positive'); }
+                                    }, [Icon('thumb_up', { size: 18 })])
+                                ]) :
+                                el('div', { className: `rating-indicator rating-indicator-${k.rating}` }, [
+                                    Icon(k.rating === 'positive' ? 'thumb_up' : k.rating === 'neutral' ? 'sentiment_neutral' : 'thumb_down', { size: 20 })
+                                ]),
+                            el('div', { className: 'criterion-content' }, [
+                                el('div', { className: 'criterion-header' }, [
+                                    el('span', { className: 'criterion-id' }, [k.id]),
+                                    el('span', { className: 'criterion-name' }, [k.name])
+                                ]),
+                                k.desc ? el('div', { className: 'criterion-desc' }, [k.desc]) : null,
+                                isEditMode ?
+                                    el('textarea', {
+                                        className: 'input mt-2',
+                                        value: k.comment,
+                                        placeholder: 'Anmerkungen eingeben...',
+                                        onblur: (e) => updateComment(selectedVariant, k.id, e.target.value)
+                                    }) :
+                                    el('div', { className: 'criterion-comment mt-1' }, [k.comment])
+                            ])
+                        ])
+                    ))
+                ])
+            ]) : null
+        ]);
+    };
+
+    return el('div', { className: 'flex-1 space-y-4' }, [
+        VariantHeader(),
+        el('div', { className: 'flex items-center justify-between px-1' }, [
+            el('h2', { className: 'text-lg font-semibold text-slate-900' }, ['SNAP Bewertung']),
+            el('div', { className: 'flex items-center gap-2' }, [
+                el('button', {
+                    className: 'text-xs text-slate-500 hover\\:text-slate-700 px-2 py-1 hover\\:bg-slate-100 rounded-lg transition-colors',
+                    onclick: () => { store.set('expandedThemes', Object.keys(THEMES)); renderApp(); }
+                }, ['Alle öffnen']),
+                el('button', {
+                    className: 'text-xs text-slate-500 hover\\:text-slate-700 px-2 py-1 hover\\:bg-slate-100 rounded-lg transition-colors',
+                    onclick: () => { store.set('expandedThemes', []); renderApp(); }
+                }, ['Alle schließen'])
+            ])
+        ]),
+        ...Object.values(THEMES).map(theme => ThemeCard(theme))
+    ]);
+};
+
+const updateRating = (variantIndex, criterionId, newRating) => {
+    const criteriaData = { ...store.get('criteriaData') };
+    if (!criteriaData[variantIndex]) criteriaData[variantIndex] = {};
+    criteriaData[variantIndex][criterionId] = { ...criteriaData[variantIndex][criterionId], rating: newRating };
+    store.set('criteriaData', criteriaData);
+    renderApp();
+};
+
+const updateComment = (variantIndex, criterionId, newComment) => {
+    const criteriaData = { ...store.get('criteriaData') };
+    if (!criteriaData[variantIndex]) criteriaData[variantIndex] = {};
+    criteriaData[variantIndex][criterionId] = { ...criteriaData[variantIndex][criterionId], comment: newComment };
+    store.set('criteriaData', criteriaData);
+};
+
+// ============================================
+// COMPARISON VIEW COMPONENT
+// ============================================
+const ComparisonView = () => {
+    const selectedVariantsForCompare = store.get('selectedVariantsForCompare');
+    const filteredVariants = VARIANTS.filter((_, i) => selectedVariantsForCompare.includes(i));
+
+    const getRating = (variantIndex, criterionId) => {
+        const hash = (variantIndex * 17 + parseInt(criterionId) * 13) % 10;
+        if (hash < 3) return 'negative';
+        if (hash < 6) return 'neutral';
+        return 'positive';
+    };
+
+    const quantData = [
+        { id: 1, name: 'Geschossfläche GF', unit: 'm²', values: [7816, 7444, 7864, 8171, 7988] },
+        { id: 2, name: 'Gebäudevolumen GV', unit: 'm³', values: [23332, 23210, 22202, 24644, 23920] },
+        { id: 3, name: 'Flächeneffizienz NF/BGF', unit: '', values: [0.64, 0.66, 0.61, 0.61, 0.63] },
+        { id: 4, name: 'A/V-Verhältnis', unit: '', values: [0.29, 0.31, 0.28, 0.32, 0.30] },
+        { id: 5, name: 'Fensterflächenanteil', unit: '%', values: [47, 52, 44, 49, 51] },
+        { id: 6, name: 'Primärenergiebedarf', unit: '%', values: [107, 95, 112, 98, 103], lowerIsBetter: true },
+    ];
+
+    return el('div', { className: 'comparison-wrapper overflow-x-auto' }, [
+        el('table', { className: 'comparison-table' }, [
+            el('thead', {}, [
+                el('tr', {}, [
+                    el('th', { className: 'comparison-sticky header text-left text-sm font-medium text-slate-600', style: { width: '256px' } }, ['Kriterium']),
+                    ...filteredVariants.map(v => el('th', { className: 'text-center', style: { minWidth: '128px' } }, [
+                        el('div', { className: 'text-sm font-semibold text-slate-900' }, [v.name]),
+                        el('div', { className: 'text-xs text-slate-500 font-normal' }, [v.firm])
+                    ]))
+                ])
+            ]),
+            el('tbody', {}, [
+                // Images row
+                el('tr', {}, [
+                    el('td', { className: 'comparison-sticky' }),
+                    ...filteredVariants.map(v => el('td', {}, [
+                        el('div', { className: 'w-full h-20 rounded-lg bg-slate-200 overflow-hidden' }, [
+                            el('img', { src: v.thumbnail, alt: v.name, className: 'w-full h-full object-cover' })
+                        ])
+                    ]))
+                ]),
+                // Summary row
+                el('tr', { className: 'comparison-summary-row' }, [
+                    el('td', { className: 'comparison-sticky text-sm font-semibold text-emerald-800' }, ['Gesamtbewertung']),
+                    ...filteredVariants.map((v, i) => {
+                        const score = 60 + (selectedVariantsForCompare[i] * 7) % 30;
+                        return el('td', { className: 'text-center' }, [
+                            el('div', { className: 'flex items-center justify-center gap-2' }, [
+                                el('div', { className: 'w-16 h-2 bg-slate-200 rounded-full overflow-hidden' }, [
+                                    el('div', { className: 'h-full bg-emerald-500 rounded-full', style: { width: `${score}%` } })
+                                ]),
+                                el('span', { className: 'text-sm font-semibold text-emerald-700' }, [`${score}%`])
+                            ])
+                        ]);
+                    })
+                ]),
+                // Theme sections
+                ...Object.values(THEMES).flatMap(theme => [
+                    el('tr', { className: 'comparison-theme-row' }, [
+                        el('td', { colspan: filteredVariants.length + 1 }, [theme.name])
+                    ]),
+                    ...theme.kriterien.map(criterion =>
+                        el('tr', { className: 'hover\\:bg-slate-50' }, [
+                            el('td', { className: 'comparison-sticky text-sm text-slate-700' }, [
+                                el('span', { className: 'text-slate-400 mr-2' }, [criterion.id]),
+                                criterion.name
+                            ]),
+                            ...filteredVariants.map((v, i) => {
+                                const rating = getRating(selectedVariantsForCompare[i], parseInt(criterion.id));
+                                const iconName = rating === 'positive' ? 'thumb_up' : rating === 'neutral' ? 'sentiment_neutral' : 'thumb_down';
+                                const iconColor = rating === 'positive' ? 'text-emerald-500' : rating === 'neutral' ? 'text-amber-500' : 'text-red-500';
+                                return el('td', { className: 'text-center' }, [
+                                    el('div', { className: 'flex justify-center' }, [Icon(iconName, { size: 22, className: iconColor })])
+                                ]);
+                            })
+                        ])
+                    )
+                ]),
+                // Quantitative section
+                el('tr', { className: 'comparison-theme-row' }, [
+                    el('td', { colspan: filteredVariants.length + 1 }, ['Quantitativ'])
+                ]),
+                ...quantData.map(kw => {
+                    const selectedValues = selectedVariantsForCompare.map(i => kw.values[i]);
+                    const best = kw.lowerIsBetter ? Math.min(...selectedValues) : Math.max(...selectedValues);
+                    return el('tr', { className: 'hover\\:bg-slate-50' }, [
+                        el('td', { className: 'comparison-sticky text-sm text-slate-700' }, [
+                            kw.name, kw.unit ? el('span', { className: 'text-slate-400' }, [` (${kw.unit})`]) : null
+                        ]),
+                        ...filteredVariants.map((v, i) => {
+                            const value = kw.values[selectedVariantsForCompare[i]];
+                            const isBest = value === best;
+                            return el('td', { className: 'text-center' }, [
+                                el('span', { className: `text-sm font-medium ${isBest ? 'comparison-best' : 'text-slate-700'}` }, [
+                                    typeof value === 'number' && value % 1 !== 0 ? value.toFixed(2) : value.toLocaleString(),
+                                    kw.unit === '%' ? '%' : ''
+                                ]),
+                                isBest ? el('span', { className: 'comparison-star' }, ['★']) : null
+                            ]);
+                        })
+                    ]);
+                })
+            ])
+        ]),
+        el('div', { className: 'comparison-legend' }, [
+            el('span', { className: 'font-medium' }, ['Legende:']),
+            el('div', { className: 'comparison-legend-item' }, [Icon('thumb_up', { size: 20, className: 'text-emerald-500' }), 'Gut']),
+            el('div', { className: 'comparison-legend-item' }, [Icon('sentiment_neutral', { size: 20, className: 'text-amber-500' }), 'Mittel']),
+            el('div', { className: 'comparison-legend-item' }, [Icon('thumb_down', { size: 20, className: 'text-red-500' }), 'Schwach']),
+            el('div', { className: 'comparison-legend-item ml-4' }, [el('span', { className: 'text-emerald-500 text-lg' }, ['★']), 'Bester Wert'])
+        ])
+    ]);
+};
+
+// ============================================
+// 3D MODEL VIEW COMPONENT
+// ============================================
+const Model3DView = () => {
+    const selectedVariant = store.get('selectedVariant');
+    const variant = VARIANTS[selectedVariant];
+
+    return el('div', { className: 'viewer-3d' }, [
+        el('div', { className: 'viewer-toolbar' }, [
+            el('div', { className: 'flex items-center gap-1' }, [
+                el('button', { className: 'viewer-toolbar-btn' }, [Icon('restart_alt', { size: 16 }), 'Reset']),
+                el('button', { className: 'viewer-toolbar-btn' }, [Icon('carpenter', { size: 16 }), 'Schnitt']),
+                el('button', { className: 'viewer-toolbar-btn' }, [Icon('straighten', { size: 16 }), 'Messen']),
+                el('div', { className: 'w-px h-6 bg-slate-200 mx-2' }),
+                el('button', { className: 'viewer-toolbar-btn' }, [Icon('layers', { size: 16 }), 'Geschosse']),
+                el('button', { className: 'viewer-toolbar-btn' }, [Icon('visibility', { size: 16 }), 'Sichtbarkeit'])
+            ]),
+            el('div', { className: 'flex items-center gap-2 text-sm text-slate-500' }, [
+                Icon('description', { size: 16 }),
+                'IFC Model',
+                el('span', { className: 'text-slate-300' }, ['|']),
+                'Hochgeladen: 25.03.2023'
+            ])
+        ]),
+        el('div', { className: 'viewer-canvas' }, [
+            // Fake 3D building
+            el('div', { className: 'absolute inset-0 flex items-center justify-center' }, [
+                el('div', { style: { perspective: '1000px' } }, [
+                    el('div', {
+                        className: 'relative',
+                        style: { width: '256px', height: '320px', transformStyle: 'preserve-3d', transform: 'rotateX(-15deg) rotateY(-25deg)' }
+                    }, [...Array(12)].map((_, i) =>
+                        el('div', {
+                            className: 'absolute w-full bg-gradient-to-r from-slate-600 to-slate-700 border border-slate-500',
+                            style: { height: '20px', bottom: `${i * 22}px`, transform: 'translateZ(20px)', boxShadow: '4px 4px 0 rgba(0,0,0,0.3)' }
+                        }, [
+                            el('div', { className: 'absolute inset-1 flex gap-1' }, [...Array(8)].map(() =>
+                                el('div', { className: 'flex-1 bg-amber-200', style: { opacity: Math.random() > 0.3 ? 0.7 : 0.2 } })
+                            ))
+                        ])
+                    ))
+                ])
+            ]),
+            el('div', { className: 'viewer-overlay viewer-info' }, [
+                el('div', { className: 'font-medium' }, [variant.name]),
+                el('div', { className: 'text-slate-300 text-xs' }, [variant.firm])
+            ]),
+            el('div', { className: 'viewer-overlay viewer-controls space-y-1' }, [
+                el('div', { className: 'flex items-center gap-2' }, [Icon('mouse', { size: 14 }), 'Drehen: Linksklick + Ziehen']),
+                el('div', { className: 'flex items-center gap-2' }, [Icon('zoom_in', { size: 14 }), 'Zoom: Scrollrad']),
+                el('div', { className: 'flex items-center gap-2' }, [Icon('pan_tool', { size: 14 }), 'Verschieben: Rechtsklick'])
+            ]),
+            el('div', { className: 'viewer-overlay viewer-stats' }, [
+                el('div', { className: 'text-xs text-slate-400 uppercase tracking-wide mb-2' }, ['Modell-Daten']),
+                el('div', { className: 'grid grid-cols-2 gap-x-4 gap-y-1 text-sm' }, [
+                    el('span', { className: 'text-slate-400' }, ['GF Total:']),
+                    el('span', { className: 'font-medium' }, ["7'816 m²"]),
+                    el('span', { className: 'text-slate-400' }, ['GV Total:']),
+                    el('span', { className: 'font-medium' }, ["23'332 m³"]),
+                    el('span', { className: 'text-slate-400' }, ['Geschosse:']),
+                    el('span', { className: 'font-medium' }, ['14']),
+                    el('span', { className: 'text-slate-400' }, ['Elemente:']),
+                    el('span', { className: 'font-medium' }, ["12'847"])
+                ])
+            ])
+        ])
+    ]);
+};
+
+// ============================================
+// CREATE MODAL COMPONENT
+// ============================================
+const CreateProjectModal = () => {
+    const isOpen = store.get('isCreateModalOpen');
+    const formErrors = store.get('formErrors');
+    const isSubmitting = store.get('isSubmitting');
+
+    if (!isOpen) return null;
+
+    const close = () => {
+        store.update({ isCreateModalOpen: false, formErrors: {}, isSubmitting: false });
+        renderApp();
+    };
+
+    const validate = () => {
+        const errors = {};
+        const nameInput = document.getElementById('project-name');
+        const usageSelect = document.getElementById('project-usage');
+        const frameworkSelect = document.getElementById('project-framework');
+
+        if (!nameInput?.value?.trim()) {
+            errors.name = 'Projektname ist erforderlich';
+        }
+        if (!usageSelect?.value) {
+            errors.usage = 'Bitte Nutzungstyp wählen';
+        }
+        if (!frameworkSelect?.value) {
+            errors.framework = 'Bitte Framework wählen';
+        }
+
+        return errors;
+    };
+
+    const handleSubmit = () => {
+        const errors = validate();
+        if (Object.keys(errors).length > 0) {
+            store.set('formErrors', errors);
+            renderApp();
+            return;
+        }
+
+        store.set('isSubmitting', true);
+        renderApp();
+
+        // Simulate API call
+        setTimeout(() => {
+            close();
+        }, 1000);
+    };
+
+    const InputError = (message) => message ?
+        el('p', { className: 'text-xs text-red-500 mt-1' }, [message]) : null;
+
+    return el('div', { className: 'modal-backdrop', onclick: (e) => { if (e.target === e.currentTarget) close(); } }, [
+        el('div', { className: 'modal' }, [
+            el('div', { className: 'modal-header' }, [
+                el('div', {}, [
+                    el('h2', { className: 'modal-title' }, ['Neues Projekt erstellen']),
+                    el('p', { className: 'modal-subtitle' }, ['Felder mit ', el('span', { className: 'text-red-500' }, ['*']), ' sind erforderlich'])
+                ]),
+                el('button', { className: 'modal-close', onclick: close }, [Icon('close', { size: 20 })])
+            ]),
+            el('div', { className: 'modal-body space-y-4' }, [
+                el('div', { className: 'input-wrapper' }, [
+                    el('label', { className: 'input-label' }, ['Projektname ', el('span', { className: 'input-required' }, ['*'])]),
+                    el('input', {
+                        type: 'text',
+                        id: 'project-name',
+                        className: `input ${formErrors.name ? 'border-red-500' : ''}`,
+                        placeholder: 'z.B. Musterstrasse 123'
+                    }),
+                    InputError(formErrors.name)
+                ]),
+                el('div', { className: 'input-wrapper' }, [
+                    el('label', { className: 'input-label' }, ['Adresse']),
+                    el('input', { type: 'text', id: 'project-address', className: 'input', placeholder: 'Strasse, PLZ Ort' })
+                ]),
+                el('div', { className: 'grid grid-cols-2 gap-4' }, [
+                    el('div', { className: 'input-wrapper' }, [
+                        el('label', { className: 'input-label' }, ['Nutzungstyp ', el('span', { className: 'input-required' }, ['*'])]),
+                        el('select', {
+                            id: 'project-usage',
+                            className: `input select ${formErrors.usage ? 'border-red-500' : ''}`
+                        }, [
+                            el('option', { value: '' }, ['Bitte wählen...']),
+                            el('option', { value: 'Wohnen' }, ['Wohnen']),
+                            el('option', { value: 'Büro / Gewerbe' }, ['Büro / Gewerbe']),
+                            el('option', { value: 'Wohnen / Gewerbe' }, ['Wohnen / Gewerbe']),
+                            el('option', { value: 'Stadion / Wohnen' }, ['Stadion / Wohnen']),
+                            el('option', { value: 'Bildung' }, ['Bildung'])
+                        ]),
+                        InputError(formErrors.usage)
+                    ]),
+                    el('div', { className: 'input-wrapper' }, [
+                        el('label', { className: 'input-label' }, ['Framework ', el('span', { className: 'input-required' }, ['*'])]),
+                        el('select', {
+                            id: 'project-framework',
+                            className: `input select ${formErrors.framework ? 'border-red-500' : ''}`
+                        }, [
+                            el('option', { value: '' }, ['Bitte wählen...']),
+                            el('option', { value: 'SNAP' }, ['SNAP']),
+                            el('option', { value: 'SNBS' }, ['SNBS']),
+                            el('option', { value: 'Minergie' }, ['Minergie']),
+                            el('option', { value: 'Minergie-ECO' }, ['Minergie-ECO'])
+                        ]),
+                        InputError(formErrors.framework)
+                    ])
+                ]),
+                el('div', { className: 'grid grid-cols-2 gap-4' }, [
+                    el('div', { className: 'input-wrapper' }, [
+                        el('label', { className: 'input-label' }, ['Bauphase SIA 102']),
+                        el('select', { id: 'project-phase', className: 'input select' }, [
+                            el('option', { value: '' }, ['Bitte wählen...']),
+                            el('option', { value: 'Machbarkeit' }, ['Machbarkeit']),
+                            el('option', { value: 'Vorprojekt' }, ['Vorprojekt']),
+                            el('option', { value: 'Bauprojekt' }, ['Bauprojekt']),
+                            el('option', { value: 'Realisierung' }, ['Realisierung'])
+                        ])
+                    ]),
+                    el('div', { className: 'input-wrapper' }, [
+                        el('label', { className: 'input-label' }, ['Geplante Varianten']),
+                        el('input', { type: 'number', id: 'project-variants', className: 'input', placeholder: '5', min: '1', max: '20' })
+                    ])
+                ])
+            ]),
+            el('div', { className: 'modal-footer' }, [
+                Button({ children: 'Abbrechen', variant: 'ghost', onClick: close, disabled: isSubmitting }),
+                Button({
+                    children: isSubmitting ? el('span', { className: 'flex items-center gap-2' }, [
+                        el('span', { className: 'animate-spin', style: { display: 'inline-block' } }, ['⟳']),
+                        'Erstellen...'
+                    ]) : 'Projekt erstellen',
+                    onClick: handleSubmit,
+                    disabled: isSubmitting
+                })
+            ])
+        ])
+    ]);
+};
+
+// ============================================
+// MAIN APP
+// ============================================
+const App = () => {
+    const currentProject = store.get('currentProject');
+    const sidebarView = store.get('sidebarView');
+    const showVariantList = currentProject && sidebarView !== 'overview';
+
+    // Gallery view
+    if (!currentProject) {
+        return el('div', { className: 'min-h-screen flex flex-col bg-slate-50' }, [
+            AppHeader(),
+            GalleryView(),
+            CreateProjectModal()
+        ]);
+    }
+
+    // Project view
+    const getContentView = () => {
+        switch (sidebarView) {
+            case 'overview': return ProjectOverviewView();
+            case 'evaluation': return EvaluationView();
+            case 'comparison': return ComparisonView();
+            case 'model3d': return Model3DView();
+            default: return ProjectOverviewView();
+        }
+    };
+
+    return el('div', { className: 'min-h-screen flex flex-col bg-slate-100' }, [
+        AppHeader(),
+        Breadcrumb(),
+        el('div', { className: 'project-content' }, [
+            el('div', { className: 'project-layout' }, [
+                MainSidebar(),
+                el('div', { className: 'main-content' }, [
+                    showVariantList ? VariantSelector() : null,
+                    getContentView()
+                ])
+            ])
+        ]),
+        CreateProjectModal()
+    ]);
+};
+
+// ============================================
+// RENDER
+// ============================================
+const renderApp = () => render(App, $('#root'));
+
+// Initial render - load data first, then render
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadAppData();
+    renderApp();
+});
+    </script>
+</body>
+</html>
