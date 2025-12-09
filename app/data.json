@@ -20,9 +20,9 @@
   "variants": [
     {
       "id": 1,
-      "name": "Baukontor",
-      "firm": "Baukontor AG",
-      "code": "1001",
+      "name": "Alpstein",
+      "firm": "Alpstein Architekten AG",
+      "code": "2001",
       "thumbnail": "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400&h=300&fit=crop",
       "images": [
         "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&h=600&fit=crop",
@@ -32,9 +32,9 @@
     },
     {
       "id": 2,
-      "name": "Berrel_Kräutler",
-      "firm": "Berrel Kräutler",
-      "code": "1002",
+      "name": "Limmat_Bau",
+      "firm": "Limmat Bau + Planung",
+      "code": "2002",
       "thumbnail": "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop",
       "images": [
         "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop",
@@ -45,9 +45,9 @@
     },
     {
       "id": 3,
-      "name": "Meier_Hug",
-      "firm": "Meier und Hug",
-      "code": "1003",
+      "name": "Helvetia_Design",
+      "firm": "Helvetia Design GmbH",
+      "code": "2003",
       "thumbnail": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop",
       "images": [
         "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop",
@@ -56,9 +56,9 @@
     },
     {
       "id": 4,
-      "name": "Spillmann_Echsle",
-      "firm": "Spillmann Echsle",
-      "code": "1004",
+      "name": "Rhone_Atelier",
+      "firm": "Atelier Rhône SA",
+      "code": "2004",
       "thumbnail": "https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=400&h=300&fit=crop",
       "images": [
         "https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=800&h=600&fit=crop",
@@ -70,13 +70,24 @@
     },
     {
       "id": 5,
-      "name": "Z2G",
-      "firm": "Planer",
-      "code": "1005",
+      "name": "Jura_Partner",
+      "firm": "Jura Partner Architektur",
+      "code": "2005",
       "thumbnail": "https://images.unsplash.com/photo-1494526585095-c41746248156?w=400&h=300&fit=crop",
       "images": [
         "https://images.unsplash.com/photo-1494526585095-c41746248156?w=800&h=600&fit=crop",
         "https://images.unsplash.com/photo-1448630360428-65456885c650?w=800&h=600&fit=crop"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Gotthard_Studio",
+      "firm": "Gotthard Studio AG",
+      "code": "2006",
+      "thumbnail": "https://images.unsplash.com/photo-1448630360428-65456885c650?w=400&h=300&fit=crop",
+      "images": [
+        "https://images.unsplash.com/photo-1448630360428-65456885c650?w=800&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&h=600&fit=crop"
       ]
     }
   ],
@@ -84,9 +95,9 @@
   "projects": [
     {
       "id": 1,
-      "name": "Badenerstrasse 501",
-      "address": "Badenerstrasse 501, 8048 Zürich",
-      "usageType": "Wohnen",
+      "name": "Bahnhofquai Entwicklung",
+      "address": "Bahnhofquai 15, 8001 Zürich",
+      "usageType": "Büro / Gewerbe",
       "status": "active",
       "statusLabel": "Bewertung läuft",
       "variantCount": 5,
@@ -94,7 +105,7 @@
       "thumbnail": "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400&h=300&fit=crop",
       "framework": "SNAP",
       "phase": "Vorprojekt",
-      "coordinates": { "lat": 47.3769, "lng": 8.5017 },
+      "coordinates": { "lat": 47.3769, "lng": 8.5417 },
       "lastUpdated": "18.11.2024",
       "images": [
         "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400&h=400&fit=crop",
@@ -103,14 +114,14 @@
         "https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=400&h=400&fit=crop"
       ],
       "team": [
-        { "name": "David Rasner", "email": "david.rasner@example.ch", "role": "Projektleiter" },
-        { "name": "Matthias Spiss", "email": "matthias.spiss@allreal.ch", "role": "Admin" },
-        { "name": "Sarah Weber", "email": "sarah.weber@example.ch", "role": "Mitglied" }
+        { "name": "Lukas Frei", "email": "lukas.frei@bauamt-zh.ch", "role": "Projektleiter" },
+        { "name": "Nadine Gerber", "email": "nadine.gerber@bauamt-zh.ch", "role": "Admin" },
+        { "name": "Marco Wirth", "email": "marco.wirth@bauamt-zh.ch", "role": "Mitglied" }
       ],
       "experts": [
-        { "name": "Dr. Michael Braun", "email": "michael.braun@expert.ch", "role": "Tageslicht/Raumklima" },
-        { "name": "Prof. Anna Schmidt", "email": "anna.schmidt@eth.ch", "role": "Lebenszykluskosten" },
-        { "name": "Thomas Keller", "email": "thomas.keller@energie.ch", "role": "Energie" }
+        { "name": "Dr. Claudia Ammann", "email": "claudia.ammann@licht-experten.ch", "role": "Tageslicht/Raumklima" },
+        { "name": "Prof. René Dubois", "email": "rene.dubois@hslu.ch", "role": "Lebenszykluskosten" },
+        { "name": "Beat Zimmermann", "email": "beat.zimmermann@energie-beratung.ch", "role": "Energie" }
       ],
       "milestones": [
         { "date": "15.07.2024", "label": "Abgabe BIM Modelle (90%)", "done": true },
@@ -123,28 +134,29 @@
     },
     {
       "id": 2,
-      "name": "Europaallee Baufeld G",
-      "address": "Europaallee 21, 8004 Zürich",
-      "usageType": "Büro / Gewerbe",
+      "name": "Campus Novartis Erweiterung",
+      "address": "Fabrikstrasse 22, 4056 Basel",
+      "usageType": "Forschung / Büro",
       "status": "completed",
       "statusLabel": "Abgeschlossen",
-      "variantCount": 3,
-      "evaluatedCount": 3,
+      "variantCount": 4,
+      "evaluatedCount": 4,
       "thumbnail": "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop",
-      "framework": "SNAP",
+      "framework": "SNBS",
       "phase": "Bauprojekt",
-      "coordinates": { "lat": 47.3782, "lng": 8.5314 },
+      "coordinates": { "lat": 47.5596, "lng": 7.5806 },
       "lastUpdated": "02.10.2024",
       "images": [
         "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=400&fit=crop",
         "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400&h=400&fit=crop"
       ],
       "team": [
-        { "name": "Lisa Müller", "email": "lisa.mueller@example.ch", "role": "Projektleiter" },
-        { "name": "Marco Bianchi", "email": "marco.bianchi@example.ch", "role": "Mitglied" }
+        { "name": "Simone Bühler", "email": "simone.buehler@stadtplanung-bs.ch", "role": "Projektleiter" },
+        { "name": "Yannick Favre", "email": "yannick.favre@stadtplanung-bs.ch", "role": "Mitglied" }
       ],
       "experts": [
-        { "name": "Dr. Hans Meier", "email": "hans.meier@expert.ch", "role": "Wirtschaftlichkeit" }
+        { "name": "Dr. Helena Ritter", "email": "helena.ritter@nachhaltig-bauen.ch", "role": "Nachhaltigkeit" },
+        { "name": "Prof. Andreas Moser", "email": "andreas.moser@fhnw.ch", "role": "Wirtschaftlichkeit" }
       ],
       "milestones": [
         { "date": "01.03.2024", "label": "Projektstart", "done": true },
@@ -154,17 +166,17 @@
     },
     {
       "id": 3,
-      "name": "Glattpark Mitte",
-      "address": "Lindberghplatz 1, 8152 Opfikon",
+      "name": "Wankdorf City Quartier",
+      "address": "Papiermühlestrasse 65, 3014 Bern",
       "usageType": "Wohnen / Gewerbe",
       "status": "active",
       "statusLabel": "In Bearbeitung",
-      "variantCount": 4,
-      "evaluatedCount": 1,
+      "variantCount": 6,
+      "evaluatedCount": 3,
       "thumbnail": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop",
-      "framework": "SNBS",
+      "framework": "SNAP",
       "phase": "Vorprojekt",
-      "coordinates": { "lat": 47.4234, "lng": 8.5687 },
+      "coordinates": { "lat": 46.9631, "lng": 7.4661 },
       "lastUpdated": "25.11.2024",
       "images": [
         "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=400&fit=crop",
@@ -172,13 +184,13 @@
         "https://images.unsplash.com/photo-1494526585095-c41746248156?w=400&h=400&fit=crop"
       ],
       "team": [
-        { "name": "Peter Huber", "email": "peter.huber@example.ch", "role": "Projektleiter" },
-        { "name": "Anna Keller", "email": "anna.keller@example.ch", "role": "Admin" },
-        { "name": "Thomas Brunner", "email": "thomas.brunner@example.ch", "role": "Mitglied" }
+        { "name": "Ursula Hofstetter", "email": "ursula.hofstetter@stadt-bern.ch", "role": "Projektleiter" },
+        { "name": "Christian Kunz", "email": "christian.kunz@stadt-bern.ch", "role": "Admin" },
+        { "name": "Fabienne Lehmann", "email": "fabienne.lehmann@stadt-bern.ch", "role": "Mitglied" }
       ],
       "experts": [
-        { "name": "Dr. Eva Schneider", "email": "eva.schneider@expert.ch", "role": "Nachhaltigkeit" },
-        { "name": "Martin Weber", "email": "martin.weber@expert.ch", "role": "Energie" }
+        { "name": "Dr. Stefan Häusler", "email": "stefan.haeusler@bauphysik.ch", "role": "Bauphysik" },
+        { "name": "Monika Egger", "email": "monika.egger@verkehr-be.ch", "role": "Mobilität" }
       ],
       "milestones": [
         { "date": "01.09.2024", "label": "Projektstart", "done": true },
@@ -189,23 +201,23 @@
     },
     {
       "id": 4,
-      "name": "Hardturm Areal",
-      "address": "Pfingstweidstrasse 100, 8005 Zürich",
-      "usageType": "Stadion / Wohnen",
+      "name": "Lac Léman Résidence",
+      "address": "Quai du Mont-Blanc 33, 1201 Genève",
+      "usageType": "Wohnen",
       "status": "draft",
       "statusLabel": "Entwurf",
-      "variantCount": 6,
+      "variantCount": 4,
       "evaluatedCount": 0,
       "thumbnail": "https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=400&h=300&fit=crop",
-      "framework": "SNAP",
+      "framework": "Minergie-P",
       "phase": "Machbarkeit",
-      "coordinates": { "lat": 47.3912, "lng": 8.5043 },
+      "coordinates": { "lat": 46.2088, "lng": 6.1507 },
       "lastUpdated": "10.11.2024",
       "images": [
         "https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=400&h=400&fit=crop"
       ],
       "team": [
-        { "name": "Felix Gerber", "email": "felix.gerber@example.ch", "role": "Projektleiter" }
+        { "name": "Jean-Pierre Rochat", "email": "jp.rochat@urbanisme-ge.ch", "role": "Projektleiter" }
       ],
       "experts": [],
       "milestones": [
@@ -215,28 +227,28 @@
     },
     {
       "id": 5,
-      "name": "Greencity Süd",
-      "address": "Maneggstrasse 50, 8041 Zürich",
-      "usageType": "Wohnen",
+      "name": "Kulturzentrum Flon",
+      "address": "Place de l'Europe 9, 1003 Lausanne",
+      "usageType": "Kultur / Veranstaltung",
       "status": "completed",
       "statusLabel": "Abgeschlossen",
-      "variantCount": 2,
-      "evaluatedCount": 2,
+      "variantCount": 3,
+      "evaluatedCount": 3,
       "thumbnail": "https://images.unsplash.com/photo-1494526585095-c41746248156?w=400&h=300&fit=crop",
-      "framework": "Minergie-ECO",
+      "framework": "SNBS",
       "phase": "Realisierung",
-      "coordinates": { "lat": 47.3456, "lng": 8.5234 },
+      "coordinates": { "lat": 46.5197, "lng": 6.6323 },
       "lastUpdated": "15.09.2024",
       "images": [
         "https://images.unsplash.com/photo-1494526585095-c41746248156?w=400&h=400&fit=crop",
         "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400&h=400&fit=crop"
       ],
       "team": [
-        { "name": "Sandra Roth", "email": "sandra.roth@example.ch", "role": "Projektleiter" },
-        { "name": "Michael Steiner", "email": "michael.steiner@example.ch", "role": "Mitglied" }
+        { "name": "Isabelle Vuilloud", "email": "isabelle.vuilloud@lausanne.ch", "role": "Projektleiter" },
+        { "name": "Nicolas Bonvin", "email": "nicolas.bonvin@lausanne.ch", "role": "Mitglied" }
       ],
       "experts": [
-        { "name": "Prof. Klaus Fischer", "email": "klaus.fischer@expert.ch", "role": "Minergie" }
+        { "name": "Prof. Marie-Claire Dutoit", "email": "mc.dutoit@epfl.ch", "role": "Akustik" }
       ],
       "milestones": [
         { "date": "01.01.2024", "label": "Projektstart", "done": true },
@@ -246,17 +258,17 @@
     },
     {
       "id": 6,
-      "name": "Seefeld Quartier",
-      "address": "Seefeldstrasse 123, 8008 Zürich",
-      "usageType": "Wohnen",
+      "name": "Technopark Winterthur",
+      "address": "Technoparkstrasse 2, 8406 Winterthur",
+      "usageType": "Büro / Forschung",
       "status": "active",
       "statusLabel": "Bewertung läuft",
-      "variantCount": 3,
-      "evaluatedCount": 2,
+      "variantCount": 5,
+      "evaluatedCount": 4,
       "thumbnail": "https://images.unsplash.com/photo-1448630360428-65456885c650?w=400&h=300&fit=crop",
       "framework": "SNAP",
       "phase": "Vorprojekt",
-      "coordinates": { "lat": 47.3543, "lng": 8.5567 },
+      "coordinates": { "lat": 47.4979, "lng": 8.7246 },
       "lastUpdated": "20.11.2024",
       "images": [
         "https://images.unsplash.com/photo-1448630360428-65456885c650?w=400&h=400&fit=crop",
@@ -264,18 +276,149 @@
         "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=400&fit=crop"
       ],
       "team": [
-        { "name": "David Rasner", "email": "david.rasner@example.ch", "role": "Projektleiter" },
-        { "name": "Julia Hofmann", "email": "julia.hofmann@example.ch", "role": "Admin" }
+        { "name": "Roland Brunner", "email": "roland.brunner@winterthur.ch", "role": "Projektleiter" },
+        { "name": "Sabine Keller", "email": "sabine.keller@winterthur.ch", "role": "Admin" }
       ],
       "experts": [
-        { "name": "Dr. Michael Braun", "email": "michael.braun@expert.ch", "role": "Tageslicht/Raumklima" },
-        { "name": "Andrea Vogel", "email": "andrea.vogel@expert.ch", "role": "Akustik" }
+        { "name": "Dr. Thomas Frischknecht", "email": "thomas.frischknecht@zhaw.ch", "role": "Innovation" },
+        { "name": "Andrea Baumann", "email": "andrea.baumann@gebaeude-energie.ch", "role": "Energie" }
       ],
       "milestones": [
         { "date": "01.10.2024", "label": "Projektstart", "done": true },
         { "date": "15.11.2024", "label": "Erste Bewertungsrunde", "done": true },
         { "date": "01.12.2024", "label": "Expertenworkshop", "done": false },
         { "date": "15.12.2024", "label": "Abschlussbewertung", "done": false }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Seeufer Luzern",
+      "address": "Alpenquai 48, 6005 Luzern",
+      "usageType": "Wohnen / Hotel",
+      "status": "active",
+      "statusLabel": "In Bearbeitung",
+      "variantCount": 4,
+      "evaluatedCount": 2,
+      "thumbnail": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop",
+      "framework": "Minergie-ECO",
+      "phase": "Vorprojekt",
+      "coordinates": { "lat": 47.0502, "lng": 8.3093 },
+      "lastUpdated": "28.11.2024",
+      "images": [
+        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=400&h=400&fit=crop"
+      ],
+      "team": [
+        { "name": "Markus Odermatt", "email": "markus.odermatt@luzern.ch", "role": "Projektleiter" },
+        { "name": "Corinne Schmid", "email": "corinne.schmid@luzern.ch", "role": "Mitglied" },
+        { "name": "Daniel Wyss", "email": "daniel.wyss@luzern.ch", "role": "Mitglied" }
+      ],
+      "experts": [
+        { "name": "Dr. Petra Gisler", "email": "petra.gisler@landschaftsschutz.ch", "role": "Landschaftsschutz" },
+        { "name": "Felix Arnold", "email": "felix.arnold@hotelplanung.ch", "role": "Hotellerie" }
+      ],
+      "milestones": [
+        { "date": "15.08.2024", "label": "Wettbewerbsstart", "done": true },
+        { "date": "01.11.2024", "label": "Abgabe Entwürfe", "done": true },
+        { "date": "15.12.2024", "label": "Jury-Vorbewertung", "done": false },
+        { "date": "30.01.2025", "label": "Entscheid", "done": false }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Hochschulcampus St.Gallen",
+      "address": "Dufourstrasse 50, 9000 St.Gallen",
+      "usageType": "Bildung",
+      "status": "draft",
+      "statusLabel": "Vorbereitung",
+      "variantCount": 0,
+      "evaluatedCount": 0,
+      "thumbnail": "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400&h=300&fit=crop",
+      "framework": "SNAP",
+      "phase": "Konzept",
+      "coordinates": { "lat": 47.4245, "lng": 9.3767 },
+      "lastUpdated": "05.12.2024",
+      "images": [
+        "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400&h=400&fit=crop"
+      ],
+      "team": [
+        { "name": "Kathrin Eberle", "email": "kathrin.eberle@sg.ch", "role": "Projektleiter" },
+        { "name": "Reto Ammann", "email": "reto.ammann@sg.ch", "role": "Admin" }
+      ],
+      "experts": [],
+      "milestones": [
+        { "date": "01.12.2024", "label": "Bedarfsanalyse", "done": true },
+        { "date": "15.01.2025", "label": "Ausschreibung", "done": false },
+        { "date": "01.04.2025", "label": "Wettbewerbsstart", "done": false }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Bahnhofsareal Lugano",
+      "address": "Piazza della Stazione 1, 6900 Lugano",
+      "usageType": "Verkehr / Gewerbe",
+      "status": "active",
+      "statusLabel": "Bewertung läuft",
+      "variantCount": 5,
+      "evaluatedCount": 3,
+      "thumbnail": "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop",
+      "framework": "SNBS",
+      "phase": "Bauprojekt",
+      "coordinates": { "lat": 46.0037, "lng": 8.9511 },
+      "lastUpdated": "22.11.2024",
+      "images": [
+        "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1494526585095-c41746248156?w=400&h=400&fit=crop"
+      ],
+      "team": [
+        { "name": "Giorgio Bentivoglio", "email": "giorgio.bentivoglio@lugano.ch", "role": "Projektleiter" },
+        { "name": "Alessia Fontana", "email": "alessia.fontana@lugano.ch", "role": "Mitglied" }
+      ],
+      "experts": [
+        { "name": "Ing. Roberto Martinelli", "email": "roberto.martinelli@mobilitaet-ti.ch", "role": "Verkehr" },
+        { "name": "Dr. Silvia Bernasconi", "email": "silvia.bernasconi@supsi.ch", "role": "Städtebau" }
+      ],
+      "milestones": [
+        { "date": "01.06.2024", "label": "Projektstart", "done": true },
+        { "date": "15.09.2024", "label": "Erste Runde", "done": true },
+        { "date": "30.11.2024", "label": "Zweite Runde", "done": false },
+        { "date": "28.02.2025", "label": "Abschluss", "done": false }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Innovationspark Dübendorf",
+      "address": "Überlandstrasse 129, 8600 Dübendorf",
+      "usageType": "Forschung / Innovation",
+      "status": "completed",
+      "statusLabel": "Abgeschlossen",
+      "variantCount": 6,
+      "evaluatedCount": 6,
+      "thumbnail": "https://images.unsplash.com/photo-1448630360428-65456885c650?w=400&h=300&fit=crop",
+      "framework": "SNAP",
+      "phase": "Realisierung",
+      "coordinates": { "lat": 47.3977, "lng": 8.6184 },
+      "lastUpdated": "30.09.2024",
+      "images": [
+        "https://images.unsplash.com/photo-1448630360428-65456885c650?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=400&fit=crop"
+      ],
+      "team": [
+        { "name": "Stefan Widmer", "email": "stefan.widmer@innovationspark.ch", "role": "Projektleiter" },
+        { "name": "Laura Meili", "email": "laura.meili@innovationspark.ch", "role": "Admin" },
+        { "name": "Patrick Hess", "email": "patrick.hess@innovationspark.ch", "role": "Mitglied" }
+      ],
+      "experts": [
+        { "name": "Prof. Dr. Martin Keller", "email": "martin.keller@ethz.ch", "role": "Forschungsinfrastruktur" },
+        { "name": "Dr. Yvonne Tobler", "email": "yvonne.tobler@empa.ch", "role": "Technologie" },
+        { "name": "Hans-Peter Müller", "email": "hp.mueller@bfe.admin.ch", "role": "Energie" }
+      ],
+      "milestones": [
+        { "date": "01.02.2024", "label": "Wettbewerbsstart", "done": true },
+        { "date": "15.05.2024", "label": "Abgabe Entwürfe", "done": true },
+        { "date": "01.08.2024", "label": "Jurysitzung", "done": true },
+        { "date": "30.09.2024", "label": "Siegerprojekt gewählt", "done": true }
       ]
     }
   ],
