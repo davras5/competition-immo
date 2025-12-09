@@ -1497,7 +1497,7 @@
                             Export als PDF
                         </li>
                     </ul>
-                    <button class="btn btn--secondary">Kostenlos starten</button>
+                    <a href="app/index.html" class="btn btn--secondary">Kostenlos starten</a>
                 </div>
 
                 <div class="pricing-card pricing-card--featured">
@@ -1534,7 +1534,7 @@
                             Interaktive Karten
                         </li>
                     </ul>
-                    <button class="btn btn--primary">Projekt starten</button>
+                    <a href="app/index.html" class="btn btn--primary">Projekt starten</a>
                 </div>
 
                 <div class="pricing-card">
@@ -1651,7 +1651,7 @@
                 lng: 7.4474,
                 status: 'completed',
                 frameworks: ['SNBS', 'Minergie-P'],
-                image: null
+                image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&h=400&fit=crop'
             },
             {
                 id: 2,
@@ -1661,7 +1661,7 @@
                 lng: 8.5417,
                 status: 'completed',
                 frameworks: ['DGNB', 'WELL'],
-                image: null
+                image: 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=600&h=400&fit=crop'
             },
             {
                 id: 3,
@@ -1671,7 +1671,7 @@
                 lng: 8.3093,
                 status: 'completed',
                 frameworks: ['SNBS', 'Level(s)'],
-                image: null
+                image: 'https://images.unsplash.com/photo-1562516155-e0c1ee44059b?w=600&h=400&fit=crop'
             },
             {
                 id: 4,
@@ -1681,7 +1681,7 @@
                 lng: 8.5686,
                 status: 'in-progress',
                 frameworks: ['SNBS', 'Basis-KPIs'],
-                image: null
+                image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=400&fit=crop'
             },
             {
                 id: 5,
@@ -1691,7 +1691,7 @@
                 lng: 8.5294,
                 status: 'completed',
                 frameworks: ['Minergie-ECO'],
-                image: null
+                image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&h=400&fit=crop'
             },
             {
                 id: 6,
@@ -1701,7 +1701,7 @@
                 lng: 8.5187,
                 status: 'completed',
                 frameworks: ['LEED', 'WELL'],
-                image: null
+                image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop'
             }
         ];
         
@@ -1711,9 +1711,10 @@
             container.innerHTML = projects.map(p => `
                 <div class="project-card">
                     <div class="project-card__image">
-                        <div class="project-card__placeholder">
-                            <span class="material-symbols-outlined">apartment</span>
-                        </div>
+                        ${p.image
+                            ? `<img src="${p.image}" alt="${p.title}">`
+                            : `<div class="project-card__placeholder"><span class="material-symbols-outlined">apartment</span></div>`
+                        }
                         <span class="project-card__status ${p.status === 'in-progress' ? 'project-card__status--in-progress' : ''}">
                             ${p.status === 'completed' ? 'Abgeschlossen' : 'In Bearbeitung'}
                         </span>
@@ -1738,9 +1739,10 @@
             container.innerHTML = projects.map(p => `
                 <div class="project-row">
                     <div class="project-row__image">
-                        <div class="project-card__placeholder" style="height:100%;">
-                            <span class="material-symbols-outlined">apartment</span>
-                        </div>
+                        ${p.image
+                            ? `<img src="${p.image}" alt="${p.title}">`
+                            : `<div class="project-card__placeholder" style="height:100%;"><span class="material-symbols-outlined">apartment</span></div>`
+                        }
                     </div>
                     <div class="project-row__info">
                         <div class="project-row__title">${p.title}</div>
