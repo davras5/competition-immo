@@ -16,11 +16,6 @@ A professional dashboard application for managing and evaluating architecture co
 
 ### Variant Evaluation System
 - Support for multiple architectural variants per project
-- Multi-dimensional assessment across 4 evaluation themes:
-  - **Funktionalität** (Functionality) - Accessibility, circulation, usability
-  - **Komfort & Gesundheit** (Comfort & Health) - Lighting, air quality, climate
-  - **Wirtschaftlichkeit** (Economics) - Costs, lifecycle analysis
-  - **Ressourcen & Energie** (Resources & Energy) - Sustainability metrics
 - Integration with evaluation frameworks (SNAP, SNBS, Minergie-P, Minergie-ECO, LEED)
 - Quantitative metrics (Kennwerte) and qualitative criteria (Kriterien)
 - Visual progress tracking per theme
