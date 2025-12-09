@@ -44,6 +44,81 @@
         .btn .material-symbols-outlined {
             font-size: 18px;
         }
+
+        /* Metadata badges for framework cards */
+        .framework-card__badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-2);
+            margin: var(--space-4) 0;
+            padding-top: var(--space-3);
+            border-top: 1px solid var(--color-border);
+        }
+
+        .meta-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-1);
+            padding: var(--space-1) var(--space-2);
+            font-size: var(--text-xs);
+            font-weight: 500;
+            border-radius: var(--radius-sm);
+            background-color: var(--color-surface-secondary);
+            color: var(--color-text-secondary);
+        }
+
+        .meta-badge .material-symbols-outlined {
+            font-size: 14px;
+        }
+
+        .meta-badge--country {
+            background-color: var(--color-blue-50, #eff6ff);
+            color: var(--color-blue-700, #1d4ed8);
+        }
+
+        .meta-badge--scope {
+            background-color: var(--color-purple-50, #f5f3ff);
+            color: var(--color-purple-700, #6d28d9);
+        }
+
+        .meta-badge--certified {
+            background-color: var(--color-green-50, #f0fdf4);
+            color: var(--color-green-700, #15803d);
+        }
+
+        .meta-badge--complexity {
+            background-color: var(--color-surface-secondary);
+            color: var(--color-text-secondary);
+        }
+
+        .meta-badge--basic {
+            background-color: var(--color-green-50, #f0fdf4);
+            color: var(--color-green-700, #15803d);
+        }
+
+        .meta-badge--intermediate {
+            background-color: var(--color-yellow-50, #fefce8);
+            color: var(--color-yellow-700, #a16207);
+        }
+
+        .meta-badge--advanced {
+            background-color: var(--color-red-50, #fef2f2);
+            color: var(--color-red-700, #b91c1c);
+        }
+
+        .meta-badge--phase {
+            background-color: var(--color-surface-secondary);
+            color: var(--color-text-secondary);
+        }
+
+        /* Error message styling */
+        .error-message {
+            padding: var(--space-6);
+            text-align: center;
+            color: var(--color-text-secondary);
+            background-color: var(--color-surface-secondary);
+            border-radius: var(--radius-md);
+        }
     </style>
 </head>
 <body>
@@ -266,474 +341,11 @@
             });
         }
 
-        // Framework data - Standards
-        const standards = [
-            {
-                id: 'snbs',
-                logo: 'SNBS',
-                name: 'Standard Nachhaltiges Bauen Schweiz',
-                description: 'Der Schweizer Standard für nachhaltiges Bauen. Deckt Gesellschaft, Wirtschaft und Umwelt ab.',
-                link: 'https://www.snbs.ch',
-                criteria: [
-                    {
-                        theme: 'Gesellschaft',
-                        icon: 'groups',
-                        items: [
-                            { name: 'Regionale Wertschöpfung', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Öffentliche Räume', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Mobilität', type: 'quantitative', unit: 'Stellplätze' },
-                            { name: 'Barrierefreiheit', type: 'qualitative', unit: 'Bewertung' }
-                        ]
-                    },
-                    {
-                        theme: 'Wirtschaft',
-                        icon: 'payments',
-                        items: [
-                            { name: 'Lebenszykluskosten', type: 'quantitative', unit: 'CHF/m²' },
-                            { name: 'Flexibilität', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Betriebskosten', type: 'quantitative', unit: 'CHF/m²/a' }
-                        ]
-                    },
-                    {
-                        theme: 'Umwelt',
-                        icon: 'eco',
-                        items: [
-                            { name: 'Primärenergie', type: 'quantitative', unit: 'kWh/m²' },
-                            { name: 'Treibhausgasemissionen', type: 'quantitative', unit: 'kg CO₂/m²' },
-                            { name: 'Biodiversität', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Wasserverbrauch', type: 'quantitative', unit: 'l/Person' }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'dgnb',
-                logo: 'DGNB',
-                name: 'Deutsche Gesellschaft für Nachhaltiges Bauen',
-                description: 'Internationales Zertifizierungssystem mit ganzheitlichem Ansatz für Gebäudebewertung.',
-                link: 'https://www.dgnb.de',
-                criteria: [
-                    {
-                        theme: 'Ökologische Qualität',
-                        icon: 'eco',
-                        items: [
-                            { name: 'Ökobilanz', type: 'quantitative', unit: 'kg CO₂-eq' },
-                            { name: 'Trinkwasserbedarf', type: 'quantitative', unit: 'm³/a' },
-                            { name: 'Flächeninanspruchnahme', type: 'quantitative', unit: 'm²' }
-                        ]
-                    },
-                    {
-                        theme: 'Ökonomische Qualität',
-                        icon: 'payments',
-                        items: [
-                            { name: 'Lebenszykluskosten', type: 'quantitative', unit: '€/m²' },
-                            { name: 'Wertstabilität', type: 'qualitative', unit: 'Bewertung' }
-                        ]
-                    },
-                    {
-                        theme: 'Soziokulturelle Qualität',
-                        icon: 'diversity_3',
-                        items: [
-                            { name: 'Thermischer Komfort', type: 'quantitative', unit: 'PMV' },
-                            { name: 'Innenraumluftqualität', type: 'quantitative', unit: 'ppm CO₂' },
-                            { name: 'Visueller Komfort', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Gestaltungsqualität', type: 'qualitative', unit: 'Bewertung' }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'snap',
-                logo: 'SNAP',
-                name: 'Systematik für Nachhaltigkeitsanforderungen in Planungswettbewerben',
-                description: 'Deutsche Methodik zur Integration von Nachhaltigkeitsanforderungen in Planungswettbewerbe. Basiert auf dem BNB-System mit 15 vorentwurfsrelevanten Kriterien.',
-                link: 'https://www.bbsr.bund.de/BBSR/DE/veroeffentlichungen/zukunft-bauen-fp/2021/band-28.html',
-                criteria: [
-                    {
-                        theme: 'Ökologische Qualität',
-                        icon: 'eco',
-                        items: [
-                            { name: 'Treibhauspotenzial (GWP)', type: 'quantitative', unit: 'kg CO₂-eq/m²' },
-                            { name: 'Primärenergiebedarf', type: 'quantitative', unit: 'kWh/m²a' },
-                            { name: 'Flächeninanspruchnahme', type: 'quantitative', unit: 'm²' },
-                            { name: 'Biodiversität am Standort', type: 'qualitative', unit: 'Bewertung' }
-                        ]
-                    },
-                    {
-                        theme: 'Ökonomische Qualität',
-                        icon: 'payments',
-                        items: [
-                            { name: 'Lebenszykluskosten', type: 'quantitative', unit: '€/m²' },
-                            { name: 'Drittverwendungsfähigkeit', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Flächeneffizienz', type: 'quantitative', unit: 'NUF/BGF' }
-                        ]
-                    },
-                    {
-                        theme: 'Soziokulturelle Qualität',
-                        icon: 'diversity_3',
-                        items: [
-                            { name: 'Thermischer Komfort', type: 'quantitative', unit: 'PMV' },
-                            { name: 'Tageslichtversorgung', type: 'quantitative', unit: 'Tageslichtquotient %' },
-                            { name: 'Gestalterische Qualität', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Barrierefreiheit', type: 'qualitative', unit: 'Bewertung' }
-                        ]
-                    },
-                    {
-                        theme: 'Technische Qualität',
-                        icon: 'engineering',
-                        items: [
-                            { name: 'Schallschutz', type: 'quantitative', unit: 'dB' },
-                            { name: 'Rückbaubarkeit', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Reinigungsfreundlichkeit', type: 'qualitative', unit: 'Bewertung' }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'leed',
-                logo: 'LEED',
-                name: 'Leadership in Energy and Environmental Design',
-                description: 'US-amerikanisches Bewertungssystem mit weltweiter Verbreitung. Fokus auf Energie und Ressourcen.',
-                link: 'https://www.usgbc.org/leed',
-                criteria: [
-                    {
-                        theme: 'Energy & Atmosphere',
-                        icon: 'bolt',
-                        items: [
-                            { name: 'Energy Performance', type: 'quantitative', unit: '% Reduction' },
-                            { name: 'Renewable Energy', type: 'quantitative', unit: 'kWh' },
-                            { name: 'Commissioning', type: 'qualitative', unit: 'Assessment' }
-                        ]
-                    },
-                    {
-                        theme: 'Water Efficiency',
-                        icon: 'water_drop',
-                        items: [
-                            { name: 'Indoor Water Use', type: 'quantitative', unit: '% Reduction' },
-                            { name: 'Outdoor Water Use', type: 'quantitative', unit: 'l/m²' }
-                        ]
-                    },
-                    {
-                        theme: 'Indoor Environment',
-                        icon: 'air',
-                        items: [
-                            { name: 'Ventilation', type: 'quantitative', unit: 'l/s/Person' },
-                            { name: 'Daylighting', type: 'quantitative', unit: 'Lux' },
-                            { name: 'Acoustic Performance', type: 'qualitative', unit: 'Assessment' }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'well',
-                logo: 'WELL',
-                name: 'WELL Building Standard',
-                description: 'Fokussiert auf Gesundheit und Wohlbefinden der Gebäudenutzer.',
-                link: 'https://www.wellcertified.com',
-                criteria: [
-                    {
-                        theme: 'Air',
-                        icon: 'air',
-                        items: [
-                            { name: 'Air Quality', type: 'quantitative', unit: 'PM2.5 µg/m³' },
-                            { name: 'Ventilation Effectiveness', type: 'quantitative', unit: 'ACH' }
-                        ]
-                    },
-                    {
-                        theme: 'Light',
-                        icon: 'light_mode',
-                        items: [
-                            { name: 'Visual Lighting Design', type: 'quantitative', unit: 'Lux' },
-                            { name: 'Circadian Lighting', type: 'qualitative', unit: 'Assessment' }
-                        ]
-                    },
-                    {
-                        theme: 'Mind',
-                        icon: 'psychology',
-                        items: [
-                            { name: 'Restorative Spaces', type: 'qualitative', unit: 'Assessment' },
-                            { name: 'Stress Management', type: 'qualitative', unit: 'Assessment' }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'levels',
-                logo: 'Level(s)',
-                name: 'EU Framework for Sustainable Buildings',
-                description: 'EU-weites Rahmenwerk zur Bewertung der Umweltleistung von Gebäuden.',
-                link: 'https://environment.ec.europa.eu/topics/circular-economy/levels_en',
-                criteria: [
-                    {
-                        theme: 'Greenhouse Gas Emissions',
-                        icon: 'cloud',
-                        items: [
-                            { name: 'Life Cycle GWP', type: 'quantitative', unit: 'kg CO₂-eq/m²' },
-                            { name: 'Operational Energy', type: 'quantitative', unit: 'kWh/m²/a' }
-                        ]
-                    },
-                    {
-                        theme: 'Resource Efficiency',
-                        icon: 'recycling',
-                        items: [
-                            { name: 'Bill of Materials', type: 'quantitative', unit: 'kg/m²' },
-                            { name: 'Construction Waste', type: 'quantitative', unit: 'kg/m²' }
-                        ]
-                    },
-                    {
-                        theme: 'Health & Comfort',
-                        icon: 'favorite',
-                        items: [
-                            { name: 'Indoor Air Quality', type: 'quantitative', unit: 'µg/m³ TVOC' },
-                            { name: 'Thermal Comfort', type: 'quantitative', unit: 'Hours >26°C' }
-                        ]
-                    }
-                ]
-            }
-        ];
-        
-        // Framework data - Use Cases
-        const useCases = [
-            {
-                id: 'minimum',
-                logo: 'Basis',
-                name: 'Minimum Information',
-                description: 'Grundlegende Projektdaten, die für jeden Wettbewerb erfasst werden sollten.',
-                criteria: [
-                    {
-                        theme: 'Flächen',
-                        icon: 'square_foot',
-                        items: [
-                            { name: 'Geschossfläche (GF)', type: 'quantitative', unit: 'm²' },
-                            { name: 'Hauptnutzfläche (HNF)', type: 'quantitative', unit: 'm²' },
-                            { name: 'Grundstücksfläche', type: 'quantitative', unit: 'm²' },
-                            { name: 'Aussenraumfläche', type: 'quantitative', unit: 'm²' }
-                        ]
-                    },
-                    {
-                        theme: 'Volumen',
-                        icon: 'view_in_ar',
-                        items: [
-                            { name: 'Gebäudevolumen', type: 'quantitative', unit: 'm³' },
-                            { name: 'Anzahl Geschosse', type: 'quantitative', unit: 'Anzahl' }
-                        ]
-                    },
-                    {
-                        theme: 'Kapazität',
-                        icon: 'groups',
-                        items: [
-                            { name: 'Arbeitsplätze', type: 'quantitative', unit: 'Anzahl' },
-                            { name: 'Nutzer maximal', type: 'quantitative', unit: 'Personen' }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'costs',
-                logo: 'Erstellungskosten',
-                name: 'Kostenschätzung',
-                description: 'Strukturierte Erfassung von Baukosten nach BKP für den Variantenvergleich.',
-                criteria: [
-                    {
-                        theme: 'BKP Hauptgruppen',
-                        icon: 'payments',
-                        items: [
-                            { name: 'BKP 1 - Vorbereitungsarbeiten', type: 'quantitative', unit: 'CHF' },
-                            { name: 'BKP 2 - Gebäude', type: 'quantitative', unit: 'CHF' },
-                            { name: 'BKP 3 - Betriebseinrichtungen', type: 'quantitative', unit: 'CHF' },
-                            { name: 'BKP 4 - Umgebung', type: 'quantitative', unit: 'CHF' },
-                            { name: 'BKP 5 - Baunebenkosten', type: 'quantitative', unit: 'CHF' }
-                        ]
-                    },
-                    {
-                        theme: 'Kennwerte',
-                        icon: 'analytics',
-                        items: [
-                            { name: 'Kosten pro m² GF', type: 'quantitative', unit: 'CHF/m²' },
-                            { name: 'Kosten pro Arbeitsplatz', type: 'quantitative', unit: 'CHF/AP' }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'energy',
-                logo: 'Energie',
-                name: 'Energieanalyse',
-                description: 'Energetische Kennwerte für den Vergleich der Gebäudeperformance.',
-                criteria: [
-                    {
-                        theme: 'Energiebedarf',
-                        icon: 'bolt',
-                        items: [
-                            { name: 'Heizwärmebedarf', type: 'quantitative', unit: 'kWh/m²a' },
-                            { name: 'Kühlbedarf', type: 'quantitative', unit: 'kWh/m²a' },
-                            { name: 'Strombedarf Beleuchtung', type: 'quantitative', unit: 'kWh/m²a' },
-                            { name: 'Strombedarf Geräte', type: 'quantitative', unit: 'kWh/m²a' }
-                        ]
-                    },
-                    {
-                        theme: 'Gebäudehülle',
-                        icon: 'home',
-                        items: [
-                            { name: 'U-Wert Aussenwand', type: 'quantitative', unit: 'W/m²K' },
-                            { name: 'U-Wert Fenster', type: 'quantitative', unit: 'W/m²K' },
-                            { name: 'Fensteranteil Fassade', type: 'quantitative', unit: '%' }
-                        ]
-                    },
-                    {
-                        theme: 'Eigenproduktion',
-                        icon: 'solar_power',
-                        items: [
-                            { name: 'PV-Fläche', type: 'quantitative', unit: 'm²' },
-                            { name: 'PV-Ertrag', type: 'quantitative', unit: 'kWh/a' },
-                            { name: 'Eigendeckungsgrad', type: 'quantitative', unit: '%' }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'quality',
-                logo: 'Qualität',
-                name: 'Architektonische Qualität',
-                description: 'Qualitative Bewertung gestalterischer und funktionaler Aspekte.',
-                criteria: [
-                    {
-                        theme: 'Gestaltung',
-                        icon: 'palette',
-                        items: [
-                            { name: 'Architektonischer Ausdruck', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Materialisierung', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Detailqualität', type: 'qualitative', unit: 'Bewertung' }
-                        ]
-                    },
-                    {
-                        theme: 'Städtebau',
-                        icon: 'location_city',
-                        items: [
-                            { name: 'Einbindung Kontext', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Aussenraumqualität', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Erschliessung', type: 'qualitative', unit: 'Bewertung' }
-                        ]
-                    },
-                    {
-                        theme: 'Funktion',
-                        icon: 'space_dashboard',
-                        items: [
-                            { name: 'Raumorganisation', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Flexibilität', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Belichtung / Belüftung', type: 'qualitative', unit: 'Bewertung' }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'lifecycle',
-                logo: 'LZK',
-                name: 'Lebenszykluskosten',
-                description: 'Wirtschaftlichkeitsbetrachtung über den gesamten Lebenszyklus.',
-                criteria: [
-                    {
-                        theme: 'Investition',
-                        icon: 'account_balance',
-                        items: [
-                            { name: 'Erstellungskosten', type: 'quantitative', unit: 'CHF' },
-                            { name: 'Planungskosten', type: 'quantitative', unit: 'CHF' }
-                        ]
-                    },
-                    {
-                        theme: 'Betrieb (p.a.)',
-                        icon: 'settings',
-                        items: [
-                            { name: 'Energiekosten', type: 'quantitative', unit: 'CHF/a' },
-                            { name: 'Wartung & Instandhaltung', type: 'quantitative', unit: 'CHF/a' },
-                            { name: 'Reinigung', type: 'quantitative', unit: 'CHF/a' }
-                        ]
-                    },
-                    {
-                        theme: 'Kennwerte',
-                        icon: 'query_stats',
-                        items: [
-                            { name: 'LZK total (30a)', type: 'quantitative', unit: 'CHF' },
-                            { name: 'LZK pro m² GF', type: 'quantitative', unit: 'CHF/m²' }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'lca',
-                logo: 'LCA',
-                name: 'Ökobilanz',
-                description: 'Lebenszyklusanalyse zur Bewertung der Umweltauswirkungen über alle Phasen – von der Herstellung bis zum Rückbau.',
-                criteria: [
-                    {
-                        theme: 'Treibhausgas-Emissionen',
-                        icon: 'cloud',
-                        items: [
-                            { name: 'GWP Erstellung', type: 'quantitative', unit: 'kg CO₂-eq/m²' },
-                            { name: 'GWP Betrieb (p.a.)', type: 'quantitative', unit: 'kg CO₂-eq/m²a' },
-                            { name: 'GWP Rückbau', type: 'quantitative', unit: 'kg CO₂-eq/m²' },
-                            { name: 'GWP Total (50a)', type: 'quantitative', unit: 'kg CO₂-eq/m²' }
-                        ]
-                    },
-                    {
-                        theme: 'Primärenergie',
-                        icon: 'bolt',
-                        items: [
-                            { name: 'PENRT (nicht erneuerbar)', type: 'quantitative', unit: 'MJ/m²' },
-                            { name: 'PERT (erneuerbar)', type: 'quantitative', unit: 'MJ/m²' },
-                            { name: 'Anteil erneuerbare Energie', type: 'quantitative', unit: '%' }
-                        ]
-                    },
-                    {
-                        theme: 'Weitere Umweltindikatoren',
-                        icon: 'eco',
-                        items: [
-                            { name: 'Versauerungspotenzial (AP)', type: 'quantitative', unit: 'kg SO₂-eq/m²' },
-                            { name: 'Eutrophierungspotenzial (EP)', type: 'quantitative', unit: 'kg PO₄-eq/m²' },
-                            { name: 'Ozonabbaupotenzial (ODP)', type: 'quantitative', unit: 'kg R11-eq/m²' }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'fm',
-                logo: 'pFM',
-                name: 'Planungsbegleitendes Facility Management',
-                description: 'Frühzeitige Berücksichtigung von Betriebs- und Unterhaltsaspekten für eine optimierte Gebäudebewirtschaftung.',
-                criteria: [
-                    {
-                        theme: 'Betriebskonzept',
-                        icon: 'settings',
-                        items: [
-                            { name: 'Zonenkonzept Reinigung', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Schliesssystem / Zutrittskontrolle', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Abfallkonzept', type: 'qualitative', unit: 'Bewertung' }
-                        ]
-                    },
-                    {
-                        theme: 'Wartung & Instandhaltung',
-                        icon: 'build',
-                        items: [
-                            { name: 'Zugänglichkeit Technikräume', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Wartungsfreundlichkeit Fassade', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Revisionierbarkeit Installationen', type: 'qualitative', unit: 'Bewertung' },
-                            { name: 'Ersatzteilbeschaffung', type: 'qualitative', unit: 'Bewertung' }
-                        ]
-                    },
-                    {
-                        theme: 'Flächenkennwerte FM',
-                        icon: 'square_foot',
-                        items: [
-                            { name: 'Reinigungsfläche', type: 'quantitative', unit: 'm²' },
-                            { name: 'Glasfläche (Reinigung)', type: 'quantitative', unit: 'm²' },
-                            { name: 'Grünfläche (Pflege)', type: 'quantitative', unit: 'm²' },
-                            { name: 'Technikfläche', type: 'quantitative', unit: 'm²' }
-                        ]
-                    }
-                ]
-            }
-        ];
-        
+        // Framework data - loaded from JSON
+        let standards = [];
+        let useCases = [];
+        let frameworkEnums = {};
+
         // Count criteria by type
         function countByType(criteria) {
             let quantitative = 0;
@@ -747,10 +359,42 @@
             return { quantitative, qualitative, total: quantitative + qualitative };
         }
         
+        // Helper to get translated enum value
+        function getEnumLabel(category, value) {
+            if (frameworkEnums[category] && frameworkEnums[category][value]) {
+                return frameworkEnums[category][value];
+            }
+            return value;
+        }
+
         // Render framework card
         function renderFrameworkCard(framework, isStandard = true) {
             const counts = countByType(framework.criteria);
-            
+
+            // Build metadata badges for standards
+            let metadataBadges = '';
+            if (isStandard) {
+                const countryLabel = getEnumLabel('countries', framework.country);
+                const scopeLabel = getEnumLabel('scope', framework.scope);
+                metadataBadges = `
+                    <div class="framework-card__badges">
+                        ${framework.country ? `<span class="meta-badge meta-badge--country" title="Land"><span class="material-symbols-outlined">location_on</span>${countryLabel}</span>` : ''}
+                        ${framework.scope ? `<span class="meta-badge meta-badge--scope" title="Geltungsbereich"><span class="material-symbols-outlined">public</span>${scopeLabel}</span>` : ''}
+                        ${framework.certification ? `<span class="meta-badge meta-badge--certified" title="Zertifizierung verfügbar"><span class="material-symbols-outlined">verified</span>Zertifizierung</span>` : ''}
+                    </div>
+                `;
+            } else {
+                // Build metadata badges for use cases
+                const complexityLabel = getEnumLabel('complexity', framework.complexity);
+                const phaseLabel = getEnumLabel('phase', framework.phase);
+                metadataBadges = `
+                    <div class="framework-card__badges">
+                        ${framework.complexity ? `<span class="meta-badge meta-badge--complexity meta-badge--${framework.complexity}" title="Komplexität"><span class="material-symbols-outlined">speed</span>${complexityLabel}</span>` : ''}
+                        ${framework.phase ? `<span class="meta-badge meta-badge--phase" title="Projektphase"><span class="material-symbols-outlined">schedule</span>${phaseLabel}</span>` : ''}
+                    </div>
+                `;
+            }
+
             return `
                 <div class="framework-card" data-id="${framework.id}">
                     <div class="framework-card__header" onclick="toggleFramework('${framework.id}')">
@@ -781,6 +425,7 @@
                             ${framework.description}
                             ${framework.link ? `<br><a href="${framework.link}" target="_blank">Mehr erfahren →</a>` : ''}
                         </div>
+                        ${metadataBadges}
                         <div class="criteria-list">
                             ${framework.criteria.map(group => `
                                 <div class="criteria-group">
@@ -838,8 +483,32 @@
             });
         });
         
+        // Load frameworks data from JSON and initialize
+        async function loadFrameworks() {
+            try {
+                const response = await fetch('app/frameworks.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                standards = data.standards || [];
+                useCases = data.useCases || [];
+                frameworkEnums = data.enums || {};
+
+                renderFrameworks();
+            } catch (error) {
+                console.error('Error loading frameworks:', error);
+                // Show error message in the UI
+                document.getElementById('standards-grid').innerHTML =
+                    '<p class="error-message">Fehler beim Laden der Standards. Bitte laden Sie die Seite neu.</p>';
+                document.getElementById('usecases-grid').innerHTML =
+                    '<p class="error-message">Fehler beim Laden der Anwendungsfälle. Bitte laden Sie die Seite neu.</p>';
+            }
+        }
+
         // Initialize
-        renderFrameworks();
+        loadFrameworks();
     </script>
 </body>
 </html>
