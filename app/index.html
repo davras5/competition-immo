@@ -3362,7 +3362,7 @@ const ProjectOverviewView = () => {
             title: 'Zeitplan',
             badge: `${milestones.filter(m => !m.done).length} offen`,
             actions: [
-                Button({ children: '', variant: 'ghost', size: 'sm', icon: 'add', title: 'Meilenstein hinzufügen' })
+                Button({ children: 'Neuer Meilenstein', variant: 'ghost', size: 'sm', icon: 'add' })
             ],
             children: [
                 el('div', { className: 'space-y-3' }, milestones.map(m =>
