@@ -72,6 +72,10 @@ a:hover {
     margin: 0 auto var(--space-16);
 }
 
+.section--first .section-intro .heading-2 {
+    margin-top: 80px;
+}
+
 .text-center {
     text-align: center;
 }
