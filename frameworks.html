@@ -45,15 +45,6 @@
             font-size: 18px;
         }
 
-        /* Header badges for framework cards */
-        .framework-card__header-badges {
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
-            margin-left: auto;
-            margin-right: var(--space-3);
-        }
-
         .meta-badge {
             display: inline-flex;
             align-items: center;
@@ -185,13 +176,25 @@
             color: white;
         }
 
-        .active-filters {
+        .active-filters-bar {
+            display: none;
+            align-items: center;
+            gap: var(--space-2);
+            margin-bottom: var(--space-4);
+            padding: var(--space-2) var(--space-3);
+            background-color: var(--color-surface-secondary);
+            border-radius: var(--radius-md);
+        }
+
+        .active-filters-bar.visible {
+            display: flex;
+        }
+
+        .active-filters-bar__tags {
             display: flex;
             flex-wrap: wrap;
             gap: var(--space-2);
-            margin-top: var(--space-3);
-            padding-top: var(--space-3);
-            border-top: 1px solid var(--color-border);
+            flex: 1;
         }
 
         .active-filter {
@@ -212,6 +215,39 @@
 
         .active-filter .material-symbols-outlined {
             font-size: 14px;
+        }
+
+        .active-filters-bar__clear {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: var(--radius-sm);
+            background-color: transparent;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            transition: background-color 0.15s, color 0.15s;
+        }
+
+        .active-filters-bar__clear:hover {
+            background-color: var(--color-surface);
+            color: var(--color-text-primary);
+        }
+
+        .active-filters-bar__clear .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+        /* Clickable meta badges */
+        .meta-badge--clickable {
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .meta-badge--clickable:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .filter-btn.has-filters {
@@ -483,8 +519,14 @@
                     </div>
                 </div>
 
-                <!-- Active filters display -->
-                <div class="active-filters" id="active-filters" style="display: none;"></div>
+            </div>
+
+            <!-- Active Filters Bar (always visible when filters active) -->
+            <div class="active-filters-bar" id="active-filters-bar">
+                <div class="active-filters-bar__tags" id="active-filters"></div>
+                <button class="active-filters-bar__clear" id="clear-all-filters" title="Alle Filter zurücksetzen">
+                    <span class="material-symbols-outlined">replay</span>
+                </button>
             </div>
 
             <!-- Standards Tab -->
@@ -639,22 +681,18 @@
             const counts = countCriteria(framework.criteria);
             const isStandard = framework.type === 'standard';
 
-            // Build header badges based on type (shown in collapsed state)
-            let headerBadges = '';
+            // Build meta badges based on type
+            let metaBadges = '';
             if (isStandard) {
                 const countryLabel = getEnumLabel('countries', framework.country);
-                headerBadges = `
-                    <div class="framework-card__header-badges">
-                        ${framework.country ? `<span class="meta-badge meta-badge--country" title="Land">${countryLabel}</span>` : ''}
-                        ${framework.certification ? `<span class="meta-badge meta-badge--certified" title="Zertifizierung"><span class="material-symbols-outlined">verified</span></span>` : ''}
-                    </div>
+                metaBadges = `
+                    ${framework.country ? `<span class="meta-badge meta-badge--country meta-badge--clickable" onclick="event.stopPropagation(); addFilter('country', '${framework.country}')" title="Filter: ${countryLabel}">${countryLabel}</span>` : ''}
+                    ${framework.certification ? `<span class="meta-badge meta-badge--certified meta-badge--clickable" onclick="event.stopPropagation(); addFilter('certification', 'true')" title="Filter: Zertifizierung"><span class="material-symbols-outlined">verified</span></span>` : ''}
                 `;
             } else {
                 const complexityLabel = getEnumLabel('complexity', framework.complexity);
-                headerBadges = `
-                    <div class="framework-card__header-badges">
-                        ${framework.complexity ? `<span class="meta-badge meta-badge--complexity meta-badge--${framework.complexity}" title="Komplexität">${complexityLabel}</span>` : ''}
-                    </div>
+                metaBadges = `
+                    ${framework.complexity ? `<span class="meta-badge meta-badge--complexity meta-badge--${framework.complexity} meta-badge--clickable" onclick="event.stopPropagation(); addFilter('complexity', '${framework.complexity}')" title="Filter: ${complexityLabel}">${complexityLabel}</span>` : ''}
                 `;
             }
 
@@ -669,17 +707,17 @@
                                     <span class="material-symbols-outlined">checklist</span>
                                     ${counts.total} Kriterien
                                 </span>
-                                <span class="type-badge type-badge--quantitative">
+                                <span class="type-badge type-badge--quantitative" title="Quantitative Kriterien">
                                     <span class="material-symbols-outlined">straighten</span>
                                     ${counts.quantitative}
                                 </span>
-                                <span class="type-badge type-badge--qualitative">
+                                <span class="type-badge type-badge--qualitative" title="Qualitative Kriterien">
                                     <span class="material-symbols-outlined">psychology</span>
                                     ${counts.qualitative}
                                 </span>
+                                ${metaBadges}
                             </div>
                         </div>
-                        ${headerBadges}
                         <div class="framework-card__toggle">
                             <span class="material-symbols-outlined">expand_more</span>
                         </div>
@@ -949,15 +987,16 @@
 
         // Update active filters display
         function updateActiveFiltersDisplay() {
+            const bar = document.getElementById('active-filters-bar');
             const container = document.getElementById('active-filters');
             const checked = document.querySelectorAll('.filter-panel input[type="checkbox"]:checked');
 
             if (checked.length === 0) {
-                container.style.display = 'none';
+                bar.classList.remove('visible');
                 return;
             }
 
-            container.style.display = 'flex';
+            bar.classList.add('visible');
             container.innerHTML = [...checked].map(checkbox => {
                 const label = checkbox.parentElement.textContent.trim();
                 return `
@@ -983,6 +1022,17 @@
             });
         }
 
+        // Add filter from badge click
+        function addFilter(name, value) {
+            // Find the corresponding checkbox in the filter panel
+            const checkbox = document.querySelector(`.filter-panel input[name="${name}"][value="${value}"]`);
+            if (checkbox && !checkbox.checked) {
+                checkbox.checked = true;
+                updateURL();
+                applyFilters();
+            }
+        }
+
         // Clear all filters
         function clearFilters() {
             document.querySelectorAll('.filter-panel input[type="checkbox"]').forEach(cb => cb.checked = false);
@@ -997,8 +1047,11 @@
                 document.getElementById('filter-panel').classList.toggle('active');
             });
 
-            // Clear filters button
+            // Clear filters button in panel
             document.getElementById('clear-filters').addEventListener('click', clearFilters);
+
+            // Clear all filters button (replay icon)
+            document.getElementById('clear-all-filters').addEventListener('click', clearFilters);
 
             // Filter checkboxes
             document.querySelectorAll('.filter-panel input[type="checkbox"]').forEach(checkbox => {
