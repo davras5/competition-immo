@@ -658,10 +658,6 @@ textarea.input {
    COMPONENT: Header
    ======================================== */
 .app-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
     background-color: white;
     height: 64px;
     display: flex;
@@ -669,7 +665,6 @@ textarea.input {
     justify-content: space-between;
     padding: 0 var(--space-6);
     border-bottom: 1px solid var(--color-slate-200);
-    z-index: var(--z-sticky);
 }
 .header-logo {
     display: flex;
@@ -1727,7 +1722,6 @@ textarea.input {
     max-width: 1200px;
     margin: 0 auto;
     padding: var(--space-6);
-    padding-top: calc(64px + var(--space-6));
 }
 .project-content {
     flex: 1;
@@ -1736,7 +1730,6 @@ textarea.input {
     max-width: 1200px;
     margin: 0 auto;
     padding: var(--space-6);
-    padding-top: calc(64px + var(--space-6));
     display: flex;
     gap: var(--space-6);
 }
