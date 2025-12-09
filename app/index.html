@@ -2550,7 +2550,7 @@ const AppHeader = () => {
 
     return el('header', { className: 'app-header' }, [
         el('a', { href: '../index.html', className: 'header-brand-link', title: 'Zur Landing Page' }, [
-            el('div', { className: 'header-logo' }, [Icon('dashboard', { size: 18 })]),
+            el('div', { className: 'header-logo' }, [Icon('analytics', { size: 18 })]),
             el('span', { className: 'header-title' }, ['Wettbewerb Cockpit']),
             currentProject ? el('span', { className: 'header-breadcrumb' }, ['/']) : null,
             currentProject ? el('span', { className: 'header-project-name' }, [currentProject.name]) : null
