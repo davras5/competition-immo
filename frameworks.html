@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bewertungsrahmen – Wettbewerb Cockpit</title>
+    <title>Bewertungskriterien – Wettbewerb Cockpit</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -947,18 +947,128 @@
             .header__nav {
                 display: none;
             }
-            
+
             .frameworks-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .process {
                 grid-template-columns: 1fr;
             }
-            
+
             .footer__grid {
                 grid-template-columns: 1fr;
             }
+
+            .choice-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ========================================
+           CHOICE CARDS
+           ======================================== */
+        .choice-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-6);
+        }
+
+        .choice-card {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-8);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            transition: all var(--transition-base);
+        }
+
+        .choice-card:hover {
+            border-color: var(--color-slate-300);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .choice-card__icon {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-5);
+        }
+
+        .choice-card__icon--frameworks {
+            background: var(--color-blue-100);
+            color: var(--color-blue-600);
+        }
+
+        .choice-card__icon--custom {
+            background: var(--color-emerald-100);
+            color: var(--color-emerald-600);
+        }
+
+        .choice-card__icon .material-symbols-outlined {
+            font-size: 28px;
+        }
+
+        .choice-card__title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--color-slate-800);
+            margin-bottom: var(--space-3);
+        }
+
+        .choice-card__desc {
+            font-size: var(--font-size-base);
+            color: var(--color-text-muted);
+            line-height: 1.6;
+            margin-bottom: var(--space-5);
+        }
+
+        .choice-card__features {
+            list-style: none;
+            margin-bottom: var(--space-6);
+            flex: 1;
+        }
+
+        .choice-card__features li {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) 0;
+            font-size: var(--font-size-sm);
+            color: var(--color-text-tertiary);
+        }
+
+        .choice-card__features .material-symbols-outlined {
+            font-size: 18px;
+            color: var(--color-emerald-500);
+        }
+
+        .choice-card__link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-weight: 600;
+            color: var(--color-slate-700);
+            font-size: var(--font-size-sm);
+        }
+
+        .choice-card__link .material-symbols-outlined {
+            font-size: 18px;
+            transition: transform var(--transition-fast);
+        }
+
+        .choice-card:hover .choice-card__link {
+            color: var(--color-slate-900);
+        }
+
+        .choice-card:hover .choice-card__link .material-symbols-outlined {
+            transform: translateX(4px);
         }
     </style>
 </head>
@@ -972,7 +1082,8 @@
             </a>
             <nav class="header__nav">
                 <a href="index.html">Startseite</a>
-                <a href="#" class="active">Bewertungsrahmen</a>
+                <a href="#frameworks">Bewertungsrahmen</a>
+                <a href="#eigene-kriterien">Eigene Kriterien</a>
                 <a href="app/index.html" class="btn btn--primary btn--sm">Demo starten</a>
             </nav>
         </div>
@@ -981,16 +1092,56 @@
     <!-- Page Hero -->
     <section class="page-hero">
         <div class="container">
-            <h1 class="heading-1 page-hero__title">Bewertungsrahmen</h1>
+            <h1 class="heading-1 page-hero__title">Bewertungskriterien</h1>
             <p class="page-hero__subtitle">
-                Nutzen Sie etablierte Nachhaltigkeitsstandards oder praktische Anwendungsfälle für Ihre Wettbewerbsbewertung. 
-                Kombinieren Sie mehrere Frameworks pro Projekt.
+                Wählen Sie Ihren Weg: Nutzen Sie etablierte Standards als Grundlage oder
+                definieren Sie massgeschneiderte Kriterien für Ihre spezifischen Anforderungen.
             </p>
         </div>
     </section>
-    
+
+    <!-- Choice Section -->
+    <section class="section section--alt">
+        <div class="container">
+            <div class="choice-grid">
+                <a href="#frameworks" class="choice-card">
+                    <div class="choice-card__icon choice-card__icon--frameworks">
+                        <span class="material-symbols-outlined">verified</span>
+                    </div>
+                    <h3 class="choice-card__title">Bestehende Rahmenwerke nutzen</h3>
+                    <p class="choice-card__desc">
+                        Greifen Sie auf etablierte Nachhaltigkeitsstandards wie SNBS, DGNB oder LEED zurück.
+                        Sofort einsatzbereit mit vordefinierten Kriterien.
+                    </p>
+                    <ul class="choice-card__features">
+                        <li><span class="material-symbols-outlined">check</span>Etablierte Standards (SNBS, DGNB, LEED, etc.)</li>
+                        <li><span class="material-symbols-outlined">check</span>Praxiserprobte Anwendungsfälle</li>
+                        <li><span class="material-symbols-outlined">check</span>Kombinierbar pro Projekt</li>
+                    </ul>
+                    <span class="choice-card__link">Standards entdecken <span class="material-symbols-outlined">arrow_forward</span></span>
+                </a>
+                <a href="#eigene-kriterien" class="choice-card">
+                    <div class="choice-card__icon choice-card__icon--custom">
+                        <span class="material-symbols-outlined">tune</span>
+                    </div>
+                    <h3 class="choice-card__title">Eigene Kriterien definieren</h3>
+                    <p class="choice-card__desc">
+                        Erstellen Sie massgeschneiderte Bewertungskriterien, die exakt auf Ihre
+                        Anforderungen und internen Standards abgestimmt sind.
+                    </p>
+                    <ul class="choice-card__features">
+                        <li><span class="material-symbols-outlined">check</span>Individuelle Kriterien und Gewichtungen</li>
+                        <li><span class="material-symbols-outlined">check</span>Abgestimmt auf interne Standards</li>
+                        <li><span class="material-symbols-outlined">check</span>Flexible Anpassung pro Projekt</li>
+                    </ul>
+                    <span class="choice-card__link">Mehr erfahren <span class="material-symbols-outlined">arrow_forward</span></span>
+                </a>
+            </div>
+        </div>
+    </section>
+
     <!-- Frameworks Catalog -->
-    <section class="section">
+    <section class="section" id="frameworks">
         <div class="container">
             <!-- Section header with tabs and filter -->
             <div class="section-header">
@@ -1031,7 +1182,7 @@
     </section>
 
     <!-- Custom Criteria Section -->
-    <section class="section section--alt">
+    <section class="section section--alt" id="eigene-kriterien">
         <div class="container">
             <div style="max-width: 700px; margin: 0 auto; text-align: center;">
                 <h2 class="heading-2" style="margin-bottom: var(--space-4);">Eigene Kriterien definieren</h2>
