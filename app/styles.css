@@ -723,7 +723,7 @@ textarea.input {
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 100%;
+    width: 100vw;
     background-color: white;
     border-bottom: 1px solid var(--color-slate-200);
     z-index: -1;
