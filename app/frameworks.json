@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "version": "3.0.0",
-    "lastUpdated": "2025-12-09",
-    "description": "Framework catalog for sustainability standards and use cases in architectural competitions"
+    "version": "4.0.0",
+    "lastUpdated": "2025-12-10",
+    "description": "Framework catalog for sustainability standards and use cases in architectural competitions. Focus: DACH region, European standards, early-design phase applicability."
   },
   "frameworks": [
     {
@@ -10,11 +10,12 @@
       "type": "standard",
       "logo": "SNBS",
       "name": "Standard Nachhaltiges Bauen Schweiz",
-      "description": "Der Schweizer Standard für nachhaltiges Bauen. Deckt Gesellschaft, Wirtschaft und Umwelt ab.",
-      "link": "https://www.snbs.ch",
+      "description": "Der Schweizer Standard für nachhaltiges Bauen. Version 2.1 mit Kriterienkatalog 2023.1. Deckt Gesellschaft, Wirtschaft und Umwelt ab. Pre-Check Tool und Leitfaden für Auswahlverfahren verfügbar.",
+      "link": "https://www.snbs-hochbau.ch",
       "country": "CH",
       "complexity": "intermediate",
       "certification": true,
+      "earlyDesignRelevance": "very-high",
       "criteria": [
         {
           "theme": "Gesellschaft",
@@ -52,37 +53,76 @@
       "type": "standard",
       "logo": "DGNB",
       "name": "Deutsche Gesellschaft für Nachhaltiges Bauen",
-      "description": "Internationales Zertifizierungssystem mit ganzheitlichem Ansatz für Gebäudebewertung.",
+      "description": "Führendes deutsches Zertifizierungssystem (Version 2023). Ganzheitlicher Ansatz mit sechs Qualitätskategorien. Vorzertifikat in Planungsphase möglich. 80%+ Marktanteil bei Neubau in Deutschland.",
       "link": "https://www.dgnb.de",
       "country": "DE",
       "complexity": "advanced",
       "certification": true,
+      "earlyDesignRelevance": "high",
       "criteria": [
         {
           "theme": "Ökologische Qualität",
           "icon": "eco",
+          "weight": 22.5,
           "items": [
-            { "name": "Ökobilanz", "type": "quantitative", "unit": "kg CO₂-eq", "bim": false },
+            { "name": "Ökobilanz (LCA)", "type": "quantitative", "unit": "kg CO₂-eq/m²", "bim": false },
             { "name": "Trinkwasserbedarf", "type": "quantitative", "unit": "m³/a", "bim": false },
-            { "name": "Flächeninanspruchnahme", "type": "quantitative", "unit": "m²", "bim": true }
+            { "name": "Flächeninanspruchnahme", "type": "quantitative", "unit": "m²", "bim": true },
+            { "name": "Biodiversität am Standort", "type": "qualitative", "unit": "Bewertung", "bim": false }
           ]
         },
         {
           "theme": "Ökonomische Qualität",
           "icon": "payments",
+          "weight": 22.5,
           "items": [
             { "name": "Lebenszykluskosten", "type": "quantitative", "unit": "€/m²", "bim": false },
-            { "name": "Wertstabilität", "type": "qualitative", "unit": "Bewertung", "bim": false }
+            { "name": "Wertstabilität", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Flächeneffizienz", "type": "quantitative", "unit": "NUF/BGF", "bim": true }
           ]
         },
         {
-          "theme": "Soziokulturelle Qualität",
+          "theme": "Soziokulturelle und funktionale Qualität",
           "icon": "diversity_3",
+          "weight": 22.5,
           "items": [
             { "name": "Thermischer Komfort", "type": "quantitative", "unit": "PMV", "bim": false },
             { "name": "Innenraumluftqualität", "type": "quantitative", "unit": "ppm CO₂", "bim": false },
             { "name": "Visueller Komfort", "type": "qualitative", "unit": "Bewertung", "bim": false },
-            { "name": "Gestaltungsqualität", "type": "qualitative", "unit": "Bewertung", "bim": false }
+            { "name": "Gestaltungsqualität", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Barrierefreiheit", "type": "qualitative", "unit": "Bewertung", "bim": true }
+          ]
+        },
+        {
+          "theme": "Technische Qualität",
+          "icon": "engineering",
+          "weight": 15,
+          "items": [
+            { "name": "Schallschutz", "type": "quantitative", "unit": "dB", "bim": false },
+            { "name": "Wärme- und Feuchteschutz", "type": "quantitative", "unit": "U-Wert", "bim": false },
+            { "name": "Rückbau- und Recyclingfreundlichkeit", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Reinigungsfreundlichkeit", "type": "qualitative", "unit": "Bewertung", "bim": false }
+          ]
+        },
+        {
+          "theme": "Prozessqualität",
+          "icon": "task_alt",
+          "weight": 12.5,
+          "items": [
+            { "name": "Qualität der Projektvorbereitung", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Integrale Planung", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Nachhaltigkeitsaspekte in Ausschreibung", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Dokumentation für Nachhaltigkeit", "type": "qualitative", "unit": "Bewertung", "bim": false }
+          ]
+        },
+        {
+          "theme": "Standortqualität",
+          "icon": "location_on",
+          "weight": 5,
+          "items": [
+            { "name": "Mikrostandort", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Verkehrsanbindung", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Nähe zu nutzungsrelevanten Einrichtungen", "type": "qualitative", "unit": "Bewertung", "bim": false }
           ]
         }
       ]
@@ -92,11 +132,12 @@
       "type": "standard",
       "logo": "SNAP",
       "name": "Systematik für Nachhaltigkeitsanforderungen in Planungswettbewerben",
-      "description": "Deutsche Methodik zur Integration von Nachhaltigkeitsanforderungen in Planungswettbewerbe. Basiert auf dem BNB-System mit 15 vorentwurfsrelevanten Kriterien.",
+      "description": "Deutsche Methodik zur Integration von Nachhaltigkeitsanforderungen in Planungswettbewerbe (2021). Basiert auf BNB-System mit 15 vorentwurfsrelevanten, gestaltprägenden Kriterien. Excel-Tool und Erfassungsbögen verfügbar.",
       "link": "https://www.bbsr.bund.de/BBSR/DE/veroeffentlichungen/zukunft-bauen-fp/2021/band-28.html",
       "country": "DE",
       "complexity": "intermediate",
       "certification": false,
+      "earlyDesignRelevance": "very-high",
       "criteria": [
         {
           "theme": "Ökologische Qualität",
@@ -139,15 +180,370 @@
       ]
     },
     {
+      "id": "bnb",
+      "type": "standard",
+      "logo": "BNB",
+      "name": "Bewertungssystem Nachhaltiges Bauen",
+      "description": "Offizielles Bewertungssystem des Bundes für nachhaltiges Bauen. Kostenlos nutzbar, verpflichtend für Bundesbauten. Gleiche Struktur wie DGNB. Varianten für Büro, Bildung, Labor, Aussenanlagen.",
+      "link": "https://www.bnb-nachhaltigesbauen.de",
+      "country": "DE",
+      "complexity": "advanced",
+      "certification": true,
+      "earlyDesignRelevance": "high",
+      "criteria": [
+        {
+          "theme": "Ökologische Qualität",
+          "icon": "eco",
+          "items": [
+            { "name": "Treibhauspotenzial (GWP)", "type": "quantitative", "unit": "kg CO₂-eq/m²", "bim": false },
+            { "name": "Ozonschichtabbaupotenzial", "type": "quantitative", "unit": "kg R11-eq/m²", "bim": false },
+            { "name": "Primärenergiebedarf", "type": "quantitative", "unit": "kWh/m²a", "bim": false },
+            { "name": "Trinkwasserbedarf", "type": "quantitative", "unit": "m³/a", "bim": false }
+          ]
+        },
+        {
+          "theme": "Ökonomische Qualität",
+          "icon": "payments",
+          "items": [
+            { "name": "Lebenszykluskosten", "type": "quantitative", "unit": "€/m²", "bim": false },
+            { "name": "Wertstabilität", "type": "qualitative", "unit": "Bewertung", "bim": false }
+          ]
+        },
+        {
+          "theme": "Soziokulturelle Qualität",
+          "icon": "diversity_3",
+          "items": [
+            { "name": "Thermischer Komfort", "type": "quantitative", "unit": "PMV", "bim": false },
+            { "name": "Innenraumluftqualität", "type": "quantitative", "unit": "ppm CO₂", "bim": false },
+            { "name": "Tageslicht", "type": "quantitative", "unit": "%", "bim": false },
+            { "name": "Barrierefreiheit", "type": "qualitative", "unit": "Bewertung", "bim": true }
+          ]
+        },
+        {
+          "theme": "Technische Qualität",
+          "icon": "engineering",
+          "items": [
+            { "name": "Schallschutz", "type": "quantitative", "unit": "dB", "bim": false },
+            { "name": "Rückbaubarkeit", "type": "qualitative", "unit": "Bewertung", "bim": false }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qng",
+      "type": "standard",
+      "logo": "QNG",
+      "name": "Qualitätssiegel Nachhaltiges Gebäude",
+      "description": "Staatliches Qualitätssiegel (seit 2021). Voraussetzung für erhöhte KfW-Förderung (bis 150.000€/Wohneinheit). Stufen QNG-PLUS und QNG-PREMIUM. Max. 24 kg CO₂e/(m²·a) Lebenszyklusemissionen.",
+      "link": "https://www.qng.info",
+      "country": "DE",
+      "complexity": "advanced",
+      "certification": true,
+      "earlyDesignRelevance": "medium",
+      "criteria": [
+        {
+          "theme": "Treibhausgasemissionen",
+          "icon": "cloud",
+          "items": [
+            { "name": "Lebenszyklus-THG", "type": "quantitative", "unit": "kg CO₂-eq/m²a", "bim": false },
+            { "name": "Grenzwert PLUS", "type": "quantitative", "unit": "≤24 kg CO₂-eq/m²a", "bim": false },
+            { "name": "Grenzwert PREMIUM", "type": "quantitative", "unit": "≤20 kg CO₂-eq/m²a", "bim": false }
+          ]
+        },
+        {
+          "theme": "Anforderungen",
+          "icon": "checklist",
+          "items": [
+            { "name": "Effizienzhaus 40", "type": "qualitative", "unit": "Erfüllt", "bim": false },
+            { "name": "Kein fossiler Brennstoff", "type": "qualitative", "unit": "Erfüllt", "bim": false },
+            { "name": "Nachhaltige Materialgewinnung", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Schadstoffvermeidung", "type": "qualitative", "unit": "Bewertung", "bim": false }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "klimaaktiv",
+      "type": "standard",
+      "logo": "klimaaktiv",
+      "name": "klimaaktiv Gebäudestandard",
+      "description": "Österreichisches Qualitätszeichen des Klimaschutzministeriums. Kriterienkatalog 2025. 1000-Punkte-System. Kostenlos, Selbstdeklaration möglich. Oft Voraussetzung für Wohnbauförderung.",
+      "link": "https://www.klimaaktiv.at",
+      "country": "AT",
+      "complexity": "intermediate",
+      "certification": true,
+      "earlyDesignRelevance": "high",
+      "criteria": [
+        {
+          "theme": "Standort und Klimawandelanpassung",
+          "icon": "location_on",
+          "items": [
+            { "name": "Standortqualität", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Klimawandelanpassung", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Hitzeschutz", "type": "quantitative", "unit": "Bewertung", "bim": false }
+          ]
+        },
+        {
+          "theme": "Energie und Versorgung",
+          "icon": "bolt",
+          "maxPoints": 550,
+          "items": [
+            { "name": "Heizwärmebedarf", "type": "quantitative", "unit": "kWh/m²a", "bim": false },
+            { "name": "Primärenergiebedarf", "type": "quantitative", "unit": "kWh/m²a", "bim": false },
+            { "name": "CO₂-Emissionen", "type": "quantitative", "unit": "kg/m²a", "bim": false },
+            { "name": "Erneuerbare Energieträger", "type": "quantitative", "unit": "%", "bim": false }
+          ]
+        },
+        {
+          "theme": "Baustoffe und Konstruktion",
+          "icon": "foundation",
+          "items": [
+            { "name": "Ökologischer Index OI3", "type": "quantitative", "unit": "Punkte", "bim": false },
+            { "name": "Ausschluss kritischer Stoffe", "type": "qualitative", "unit": "Erfüllt", "bim": false },
+            { "name": "Recyclingfähigkeit", "type": "qualitative", "unit": "Bewertung", "bim": false }
+          ]
+        },
+        {
+          "theme": "Komfort und Raumluftqualität",
+          "icon": "air",
+          "items": [
+            { "name": "Thermischer Komfort Sommer", "type": "quantitative", "unit": "°C", "bim": false },
+            { "name": "Tageslicht", "type": "quantitative", "unit": "%", "bim": false },
+            { "name": "Raumluftqualität", "type": "quantitative", "unit": "ppm CO₂", "bim": false }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "oegnb",
+      "type": "standard",
+      "logo": "TQB",
+      "name": "Total Quality Building (ÖGNB)",
+      "description": "Österreichisches Open-Source-Bewertungssystem der ÖGNB. 1000-Punkte-System mit 5 gleichgewichteten Kategorien. 100% kompatibel mit klimaaktiv. Kostengünstige Alternative zu DGNB.",
+      "link": "https://www.oegnb.net",
+      "country": "AT",
+      "complexity": "intermediate",
+      "certification": true,
+      "earlyDesignRelevance": "high",
+      "criteria": [
+        {
+          "theme": "Standort und Ausstattung",
+          "icon": "location_on",
+          "maxPoints": 200,
+          "items": [
+            { "name": "Infrastrukturelle Anbindung", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Soziale Infrastruktur", "type": "qualitative", "unit": "Bewertung", "bim": false }
+          ]
+        },
+        {
+          "theme": "Wirtschaft und technische Qualität",
+          "icon": "engineering",
+          "maxPoints": 200,
+          "items": [
+            { "name": "Lebenszykluskosten", "type": "quantitative", "unit": "€/m²", "bim": false },
+            { "name": "Nutzungsflexibilität", "type": "qualitative", "unit": "Bewertung", "bim": false }
+          ]
+        },
+        {
+          "theme": "Energie und Versorgung",
+          "icon": "bolt",
+          "maxPoints": 200,
+          "items": [
+            { "name": "Heizwärmebedarf", "type": "quantitative", "unit": "kWh/m²a", "bim": false },
+            { "name": "Primärenergiebedarf", "type": "quantitative", "unit": "kWh/m²a", "bim": false },
+            { "name": "CO₂-Emissionen", "type": "quantitative", "unit": "kg/m²a", "bim": false }
+          ]
+        },
+        {
+          "theme": "Gesundheit und Komfort",
+          "icon": "favorite",
+          "maxPoints": 200,
+          "items": [
+            { "name": "Thermischer Komfort", "type": "quantitative", "unit": "Bewertung", "bim": false },
+            { "name": "Raumluftqualität", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Tageslicht", "type": "quantitative", "unit": "%", "bim": false }
+          ]
+        },
+        {
+          "theme": "Baustoffe und Konstruktion",
+          "icon": "foundation",
+          "maxPoints": 200,
+          "items": [
+            { "name": "OI3-Index", "type": "quantitative", "unit": "Punkte", "bim": false },
+            { "name": "Rückbaubarkeit", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Schadstoffvermeidung", "type": "qualitative", "unit": "Bewertung", "bim": false }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ogni",
+      "type": "standard",
+      "logo": "ÖGNI",
+      "name": "ÖGNI Zertifizierung",
+      "description": "Österreichischer DGNB-Partner seit 2009. Angepasstes DGNB-System für Österreich. Vorzertifizierung in Planungsphase möglich. Stufen: Platin, Gold, Silber.",
+      "link": "https://www.ogni.at",
+      "country": "AT",
+      "complexity": "advanced",
+      "certification": true,
+      "earlyDesignRelevance": "high",
+      "criteria": [
+        {
+          "theme": "Ökologische Qualität",
+          "icon": "eco",
+          "items": [
+            { "name": "Ökobilanz", "type": "quantitative", "unit": "kg CO₂-eq/m²", "bim": false },
+            { "name": "Ressourceninanspruchnahme", "type": "quantitative", "unit": "Bewertung", "bim": false }
+          ]
+        },
+        {
+          "theme": "Ökonomische Qualität",
+          "icon": "payments",
+          "items": [
+            { "name": "Lebenszykluskosten", "type": "quantitative", "unit": "€/m²", "bim": false },
+            { "name": "Wertstabilität", "type": "qualitative", "unit": "Bewertung", "bim": false }
+          ]
+        },
+        {
+          "theme": "Soziokulturelle Qualität",
+          "icon": "diversity_3",
+          "items": [
+            { "name": "Thermischer Komfort", "type": "quantitative", "unit": "Bewertung", "bim": false },
+            { "name": "Innenraumluftqualität", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Barrierefreiheit", "type": "qualitative", "unit": "Bewertung", "bim": true }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "minergie",
+      "type": "standard",
+      "logo": "Minergie",
+      "name": "Minergie",
+      "description": "Schweizer Energiestandard. Varianten: Minergie, Minergie-P (Passivhaus), Minergie-A (Plusenergie), Minergie-ECO (Gesundheit/Ökologie). Ca. 1 von 5 Neubauten zertifiziert. Provisorisches Zertifikat in Planungsphase.",
+      "link": "https://www.minergie.ch",
+      "country": "CH",
+      "complexity": "intermediate",
+      "certification": true,
+      "earlyDesignRelevance": "high",
+      "criteria": [
+        {
+          "theme": "Primäranforderungen",
+          "icon": "bolt",
+          "items": [
+            { "name": "Minergie-Kennzahl", "type": "quantitative", "unit": "kWh/m²", "bim": false },
+            { "name": "Heizwärmebedarf", "type": "quantitative", "unit": "kWh/m²a", "bim": false },
+            { "name": "Luftdichtheit", "type": "quantitative", "unit": "n50", "bim": false }
+          ]
+        },
+        {
+          "theme": "Zusatzanforderungen",
+          "icon": "add_circle",
+          "items": [
+            { "name": "Lüftung", "type": "qualitative", "unit": "Erfüllt", "bim": false },
+            { "name": "Sommerlicher Wärmeschutz", "type": "quantitative", "unit": "g-Wert", "bim": false },
+            { "name": "Eigenstromerzeugung", "type": "quantitative", "unit": "kWh/m²a", "bim": false }
+          ]
+        },
+        {
+          "theme": "ECO-Zusatz",
+          "icon": "eco",
+          "items": [
+            { "name": "Tageslicht", "type": "quantitative", "unit": "%", "bim": false },
+            { "name": "Schallschutz", "type": "quantitative", "unit": "dB", "bim": false },
+            { "name": "Graue Energie", "type": "quantitative", "unit": "kWh/m²", "bim": false },
+            { "name": "Raumluftqualität", "type": "qualitative", "unit": "Bewertung", "bim": false }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sia112-1",
+      "type": "standard",
+      "logo": "SIA",
+      "name": "SIA 112/1 Nachhaltiges Bauen – Hochbau",
+      "description": "Schweizer Verständigungsnorm für nachhaltiges Planen. Definiert Nachhaltigkeitsziele zwischen Bauherrschaft und Planern. Strukturelle Grundlage für SNBS. Ideal für strategische Zielsetzung in Phase 1.",
+      "link": "https://www.sia.ch",
+      "country": "CH",
+      "complexity": "basic",
+      "certification": false,
+      "earlyDesignRelevance": "very-high",
+      "criteria": [
+        {
+          "theme": "Gesellschaft",
+          "icon": "groups",
+          "items": [
+            { "name": "Wohlbefinden", "type": "qualitative", "unit": "Zieldefinition", "bim": false },
+            { "name": "Solidarität", "type": "qualitative", "unit": "Zieldefinition", "bim": false }
+          ]
+        },
+        {
+          "theme": "Wirtschaft",
+          "icon": "payments",
+          "items": [
+            { "name": "Wirtschaftlichkeit", "type": "qualitative", "unit": "Zieldefinition", "bim": false },
+            { "name": "Werterhaltung", "type": "qualitative", "unit": "Zieldefinition", "bim": false }
+          ]
+        },
+        {
+          "theme": "Umwelt",
+          "icon": "eco",
+          "items": [
+            { "name": "Ressourcenschonung", "type": "qualitative", "unit": "Zieldefinition", "bim": false },
+            { "name": "Umweltverträglichkeit", "type": "qualitative", "unit": "Zieldefinition", "bim": false }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sia2040",
+      "type": "standard",
+      "logo": "SIA",
+      "name": "SIA 2040 Effizienzpfad Energie",
+      "description": "Schweizer Merkblatt zur Umsetzung der 2000-Watt-Gesellschaft im Gebäudebereich. Zielwerte für Erstellung, Betrieb und Mobilität. Rechenhilfe für Vorentwurfsphase verfügbar.",
+      "link": "https://www.2000watt.swiss",
+      "country": "CH",
+      "complexity": "intermediate",
+      "certification": false,
+      "earlyDesignRelevance": "high",
+      "criteria": [
+        {
+          "theme": "Erstellung",
+          "icon": "construction",
+          "items": [
+            { "name": "Graue Energie", "type": "quantitative", "unit": "kWh/m²a", "bim": false },
+            { "name": "Treibhausgasemissionen Erstellung", "type": "quantitative", "unit": "kg CO₂/m²a", "bim": false }
+          ]
+        },
+        {
+          "theme": "Betrieb",
+          "icon": "settings",
+          "items": [
+            { "name": "Primärenergie Betrieb", "type": "quantitative", "unit": "kWh/m²a", "bim": false },
+            { "name": "Treibhausgasemissionen Betrieb", "type": "quantitative", "unit": "kg CO₂/m²a", "bim": false }
+          ]
+        },
+        {
+          "theme": "Mobilität",
+          "icon": "directions_car",
+          "items": [
+            { "name": "Primärenergie Mobilität", "type": "quantitative", "unit": "kWh/m²a", "bim": false },
+            { "name": "Treibhausgasemissionen Mobilität", "type": "quantitative", "unit": "kg CO₂/m²a", "bim": false }
+          ]
+        }
+      ]
+    },
+    {
       "id": "leed",
       "type": "standard",
       "logo": "LEED",
       "name": "Leadership in Energy and Environmental Design",
-      "description": "US-amerikanisches Bewertungssystem mit weltweiter Verbreitung. Fokus auf Energie und Ressourcen.",
+      "description": "US-amerikanisches Bewertungssystem mit weltweiter Verbreitung. Version v5 (2025). In DACH hauptsächlich für internationale Konzerne. GBCI Europe Büro in München.",
       "link": "https://www.usgbc.org/leed",
       "country": "US",
       "complexity": "advanced",
       "certification": true,
+      "earlyDesignRelevance": "medium",
       "criteria": [
         {
           "theme": "Energy & Atmosphere",
@@ -182,18 +578,28 @@
       "type": "standard",
       "logo": "WELL",
       "name": "WELL Building Standard",
-      "description": "Fokussiert auf Gesundheit und Wohlbefinden der Gebäudenutzer.",
+      "description": "Fokussiert auf Gesundheit und Wohlbefinden der Gebäudenutzer. Version v2. 10 Konzepte. WELL Precertification in Planungsphase möglich. Rezertifizierung alle 3 Jahre.",
       "link": "https://www.wellcertified.com",
       "country": "US",
       "complexity": "advanced",
       "certification": true,
+      "earlyDesignRelevance": "medium-high",
       "criteria": [
         {
           "theme": "Air",
           "icon": "air",
           "items": [
-            { "name": "Air Quality", "type": "quantitative", "unit": "PM2.5 µg/m³", "bim": false },
-            { "name": "Ventilation Effectiveness", "type": "quantitative", "unit": "ACH", "bim": false }
+            { "name": "Ventilation", "type": "quantitative", "unit": "l/s/Person", "bim": false },
+            { "name": "Air Filtration", "type": "quantitative", "unit": "MERV", "bim": false },
+            { "name": "VOC Reduction", "type": "quantitative", "unit": "µg/m³", "bim": false }
+          ]
+        },
+        {
+          "theme": "Water",
+          "icon": "water_drop",
+          "items": [
+            { "name": "Water Quality", "type": "quantitative", "unit": "Assessment", "bim": false },
+            { "name": "Drinking Water Promotion", "type": "qualitative", "unit": "Assessment", "bim": false }
           ]
         },
         {
@@ -201,7 +607,24 @@
           "icon": "light_mode",
           "items": [
             { "name": "Visual Lighting Design", "type": "quantitative", "unit": "Lux", "bim": false },
-            { "name": "Circadian Lighting", "type": "qualitative", "unit": "Assessment", "bim": false }
+            { "name": "Circadian Lighting", "type": "quantitative", "unit": "EML", "bim": false },
+            { "name": "Daylight", "type": "quantitative", "unit": "sDA %", "bim": false }
+          ]
+        },
+        {
+          "theme": "Thermal Comfort",
+          "icon": "thermostat",
+          "items": [
+            { "name": "Thermal Performance", "type": "quantitative", "unit": "PMV", "bim": false },
+            { "name": "Humidity", "type": "quantitative", "unit": "% RH", "bim": false }
+          ]
+        },
+        {
+          "theme": "Sound",
+          "icon": "volume_up",
+          "items": [
+            { "name": "Sound Mapping", "type": "quantitative", "unit": "dB", "bim": false },
+            { "name": "Reverberation Time", "type": "quantitative", "unit": "s", "bim": false }
           ]
         },
         {
@@ -218,104 +641,104 @@
       "id": "levels",
       "type": "standard",
       "logo": "Level(s)",
-      "name": "EU Framework for Sustainable Buildings",
-      "description": "EU-weites Rahmenwerk zur Bewertung der Umweltleistung von Gebäuden.",
-      "link": "https://environment.ec.europa.eu/topics/circular-economy/levels_en",
+      "name": "Level(s) – EU Framework",
+      "description": "Freiwilliges EU-Berichtsframework der Europäischen Kommission. Gemeinsame Sprache für Nachhaltigkeit. 6 Makroziele. 3 Bewertungsstufen inkl. Entwurfsphase. Kostenlos und offen.",
+      "link": "https://green-forum.ec.europa.eu/green-business/levels_en",
       "country": "EU",
       "complexity": "intermediate",
       "certification": false,
+      "earlyDesignRelevance": "high",
       "criteria": [
         {
-          "theme": "Greenhouse Gas Emissions",
+          "theme": "Treibhausgasemissionen",
           "icon": "cloud",
           "items": [
-            { "name": "Life Cycle GWP", "type": "quantitative", "unit": "kg CO₂-eq/m²", "bim": false },
-            { "name": "Operational Energy", "type": "quantitative", "unit": "kWh/m²/a", "bim": false }
+            { "name": "Lebenszyklus-GWP", "type": "quantitative", "unit": "kg CO₂-eq/m²", "bim": false },
+            { "name": "Betriebsenergie", "type": "quantitative", "unit": "kWh/m²a", "bim": false }
           ]
         },
         {
-          "theme": "Resource Efficiency",
+          "theme": "Ressourceneffizienz und Kreislaufwirtschaft",
           "icon": "recycling",
           "items": [
-            { "name": "Bill of Materials", "type": "quantitative", "unit": "kg/m²", "bim": true },
-            { "name": "Construction Waste", "type": "quantitative", "unit": "kg/m²", "bim": false }
+            { "name": "Materialströme", "type": "quantitative", "unit": "kg/m²", "bim": false },
+            { "name": "Rückbaubarkeit", "type": "qualitative", "unit": "Bewertung", "bim": false }
           ]
         },
         {
-          "theme": "Health & Comfort",
+          "theme": "Wassernutzung",
+          "icon": "water_drop",
+          "items": [
+            { "name": "Wasserverbrauch", "type": "quantitative", "unit": "m³/Person/a", "bim": false }
+          ]
+        },
+        {
+          "theme": "Gesunde Innenräume",
           "icon": "favorite",
           "items": [
-            { "name": "Indoor Air Quality", "type": "quantitative", "unit": "µg/m³ TVOC", "bim": false },
-            { "name": "Thermal Comfort", "type": "quantitative", "unit": "Hours >26°C", "bim": false }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "minimum",
-      "type": "useCase",
-      "logo": "Basis",
-      "name": "Minimum Information",
-      "description": "Grundlegende Projektdaten, die für jeden Wettbewerb erfasst werden sollten.",
-      "country": null,
-      "complexity": "basic",
-      "certification": false,
-      "criteria": [
-        {
-          "theme": "Flächen",
-          "icon": "square_foot",
-          "items": [
-            { "name": "Geschossfläche (GF)", "type": "quantitative", "unit": "m²", "bim": true },
-            { "name": "Hauptnutzfläche (HNF)", "type": "quantitative", "unit": "m²", "bim": true },
-            { "name": "Grundstücksfläche", "type": "quantitative", "unit": "m²", "bim": true },
-            { "name": "Aussenraumfläche", "type": "quantitative", "unit": "m²", "bim": true }
+            { "name": "Innenraumluftqualität", "type": "quantitative", "unit": "Bewertung", "bim": false },
+            { "name": "Thermischer Komfort", "type": "quantitative", "unit": "Bewertung", "bim": false }
           ]
         },
         {
-          "theme": "Volumen",
-          "icon": "view_in_ar",
+          "theme": "Klimaanpassung",
+          "icon": "thermostat",
           "items": [
-            { "name": "Gebäudevolumen", "type": "quantitative", "unit": "m³", "bim": true },
-            { "name": "Anzahl Geschosse", "type": "quantitative", "unit": "Anzahl", "bim": true }
+            { "name": "Klimarisikobewertung", "type": "qualitative", "unit": "Bewertung", "bim": false }
           ]
         },
         {
-          "theme": "Kapazität",
-          "icon": "groups",
-          "items": [
-            { "name": "Arbeitsplätze", "type": "quantitative", "unit": "Anzahl", "bim": true },
-            { "name": "Nutzer maximal", "type": "quantitative", "unit": "Personen", "bim": false }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "costs",
-      "type": "useCase",
-      "logo": "Kosten",
-      "name": "Kostenschätzung",
-      "description": "Strukturierte Erfassung von Baukosten nach BKP für den Variantenvergleich.",
-      "country": "CH",
-      "complexity": "intermediate",
-      "certification": false,
-      "criteria": [
-        {
-          "theme": "BKP Hauptgruppen",
+          "theme": "Lebenszykluskosten",
           "icon": "payments",
           "items": [
-            { "name": "BKP 1 - Vorbereitungsarbeiten", "type": "quantitative", "unit": "CHF", "bim": false },
-            { "name": "BKP 2 - Gebäude", "type": "quantitative", "unit": "CHF", "bim": false },
-            { "name": "BKP 3 - Betriebseinrichtungen", "type": "quantitative", "unit": "CHF", "bim": false },
-            { "name": "BKP 4 - Umgebung", "type": "quantitative", "unit": "CHF", "bim": false },
-            { "name": "BKP 5 - Baunebenkosten", "type": "quantitative", "unit": "CHF", "bim": false }
+            { "name": "LZK-Berechnung", "type": "quantitative", "unit": "€/m²", "bim": false }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "breeam",
+      "type": "standard",
+      "logo": "BREEAM",
+      "name": "BREEAM International",
+      "description": "Britisches Bewertungssystem mit internationaler Verbreitung. Version V6 (2024). TÜV SÜD ist National Scheme Operator für DACH. Pre-Assessment und Design Stage Certificate verfügbar.",
+      "link": "https://breeam.com",
+      "country": "UK",
+      "complexity": "advanced",
+      "certification": true,
+      "earlyDesignRelevance": "medium-high",
+      "criteria": [
+        {
+          "theme": "Energy",
+          "icon": "bolt",
+          "items": [
+            { "name": "Energy Performance", "type": "quantitative", "unit": "kWh/m²a", "bim": false },
+            { "name": "CO₂ Emissions", "type": "quantitative", "unit": "kg CO₂/m²a", "bim": false }
           ]
         },
         {
-          "theme": "Kennwerte",
-          "icon": "analytics",
+          "theme": "Materials",
+          "icon": "foundation",
           "items": [
-            { "name": "Kosten pro m² GF", "type": "quantitative", "unit": "CHF/m²", "bim": false },
-            { "name": "Kosten pro Arbeitsplatz", "type": "quantitative", "unit": "CHF/AP", "bim": false }
+            { "name": "Life Cycle Impacts", "type": "quantitative", "unit": "Assessment", "bim": false },
+            { "name": "Responsible Sourcing", "type": "qualitative", "unit": "Assessment", "bim": false }
+          ]
+        },
+        {
+          "theme": "Health & Wellbeing",
+          "icon": "favorite",
+          "items": [
+            { "name": "Visual Comfort", "type": "quantitative", "unit": "Lux", "bim": false },
+            { "name": "Indoor Air Quality", "type": "qualitative", "unit": "Assessment", "bim": false },
+            { "name": "Acoustic Performance", "type": "quantitative", "unit": "dB", "bim": false }
+          ]
+        },
+        {
+          "theme": "Land Use & Ecology",
+          "icon": "park",
+          "items": [
+            { "name": "Ecological Value", "type": "qualitative", "unit": "Assessment", "bim": false },
+            { "name": "Biodiversity Enhancement", "type": "quantitative", "unit": "%", "bim": false }
           ]
         }
       ]
@@ -324,11 +747,13 @@
       "id": "energy",
       "type": "useCase",
       "logo": "Energie",
-      "name": "Energieanalyse",
-      "description": "Energetische Kennwerte für den Vergleich der Gebäudeperformance.",
+      "name": "Energiebilanz",
+      "description": "Energetische Bewertung mit Fokus auf Bedarf, Eigenproduktion und Effizienz.",
+      "link": null,
       "country": null,
       "complexity": "intermediate",
       "certification": false,
+      "earlyDesignRelevance": "high",
       "criteria": [
         {
           "theme": "Energiebedarf",
@@ -336,17 +761,8 @@
           "items": [
             { "name": "Heizwärmebedarf", "type": "quantitative", "unit": "kWh/m²a", "bim": false },
             { "name": "Kühlbedarf", "type": "quantitative", "unit": "kWh/m²a", "bim": false },
-            { "name": "Strombedarf Beleuchtung", "type": "quantitative", "unit": "kWh/m²a", "bim": false },
-            { "name": "Strombedarf Geräte", "type": "quantitative", "unit": "kWh/m²a", "bim": false }
-          ]
-        },
-        {
-          "theme": "Gebäudehülle",
-          "icon": "home",
-          "items": [
-            { "name": "U-Wert Aussenwand", "type": "quantitative", "unit": "W/m²K", "bim": true },
-            { "name": "U-Wert Fenster", "type": "quantitative", "unit": "W/m²K", "bim": true },
-            { "name": "Fensteranteil Fassade", "type": "quantitative", "unit": "%", "bim": true }
+            { "name": "Strombedarf", "type": "quantitative", "unit": "kWh/m²a", "bim": false },
+            { "name": "Warmwasser", "type": "quantitative", "unit": "kWh/m²a", "bim": false }
           ]
         },
         {
@@ -366,9 +782,11 @@
       "logo": "Qualität",
       "name": "Architektonische Qualität",
       "description": "Qualitative Bewertung gestalterischer und funktionaler Aspekte.",
+      "link": null,
       "country": null,
       "complexity": "advanced",
       "certification": false,
+      "earlyDesignRelevance": "very-high",
       "criteria": [
         {
           "theme": "Gestaltung",
@@ -405,9 +823,11 @@
       "logo": "LZK",
       "name": "Lebenszykluskosten",
       "description": "Wirtschaftlichkeitsbetrachtung über den gesamten Lebenszyklus.",
+      "link": null,
       "country": null,
       "complexity": "advanced",
       "certification": false,
+      "earlyDesignRelevance": "high",
       "criteria": [
         {
           "theme": "Investition",
@@ -442,9 +862,11 @@
       "logo": "LCA",
       "name": "Ökobilanz",
       "description": "Lebenszyklusanalyse zur Bewertung der Umweltauswirkungen über alle Phasen – von der Herstellung bis zum Rückbau.",
+      "link": null,
       "country": null,
       "complexity": "advanced",
       "certification": false,
+      "earlyDesignRelevance": "high",
       "criteria": [
         {
           "theme": "Treibhausgas-Emissionen",
@@ -482,9 +904,11 @@
       "logo": "pFM",
       "name": "Planungsbegleitendes Facility Management",
       "description": "Frühzeitige Berücksichtigung von Betriebs- und Unterhaltsaspekten für eine optimierte Gebäudebewirtschaftung.",
+      "link": null,
       "country": null,
       "complexity": "advanced",
       "certification": false,
+      "earlyDesignRelevance": "medium-high",
       "criteria": [
         {
           "theme": "Betriebskonzept",
@@ -516,6 +940,131 @@
           ]
         }
       ]
+    },
+    {
+      "id": "circularity",
+      "type": "useCase",
+      "logo": "Circular",
+      "name": "Kreislaufwirtschaft",
+      "description": "Bewertung der Zirkularität von Materialien und Konstruktionen. Basiert auf Konzepten von Madaster, Platform CB'23 und Ellen MacArthur Foundation.",
+      "link": null,
+      "country": null,
+      "complexity": "advanced",
+      "certification": false,
+      "earlyDesignRelevance": "high",
+      "criteria": [
+        {
+          "theme": "Materialherkunft",
+          "icon": "inventory_2",
+          "items": [
+            { "name": "Recyclinganteil Input", "type": "quantitative", "unit": "%", "bim": false },
+            { "name": "Nachwachsende Rohstoffe", "type": "quantitative", "unit": "%", "bim": false },
+            { "name": "Regionale Materialien", "type": "quantitative", "unit": "%", "bim": false }
+          ]
+        },
+        {
+          "theme": "Konstruktion",
+          "icon": "construction",
+          "items": [
+            { "name": "Demontierbarkeit", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Trennbarkeit der Schichten", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Standardisierung", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Dokumentation (Materialpass)", "type": "qualitative", "unit": "Bewertung", "bim": true }
+          ]
+        },
+        {
+          "theme": "End-of-Life",
+          "icon": "recycling",
+          "items": [
+            { "name": "Wiederverwendungspotenzial", "type": "quantitative", "unit": "%", "bim": false },
+            { "name": "Recyclingpotenzial", "type": "quantitative", "unit": "%", "bim": false },
+            { "name": "Deponiefraktion", "type": "quantitative", "unit": "%", "bim": false }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "biodiversity",
+      "type": "useCase",
+      "logo": "Bio",
+      "name": "Biodiversität",
+      "description": "Bewertung der ökologischen Qualität und Biodiversitätsförderung. Basiert auf Biotopflächenfaktor (Berlin), Animal-Aided Design und Building with Nature.",
+      "link": null,
+      "country": null,
+      "complexity": "intermediate",
+      "certification": false,
+      "earlyDesignRelevance": "very-high",
+      "criteria": [
+        {
+          "theme": "Biotopflächenfaktor",
+          "icon": "grass",
+          "items": [
+            { "name": "BAF / GRZ ökologisch", "type": "quantitative", "unit": "0-1", "bim": false },
+            { "name": "Versiegelte Fläche", "type": "quantitative", "unit": "m²", "bim": true },
+            { "name": "Begrünte Dachfläche", "type": "quantitative", "unit": "m²", "bim": true },
+            { "name": "Fassadenbegrünung", "type": "quantitative", "unit": "m²", "bim": true }
+          ]
+        },
+        {
+          "theme": "Habitatqualität",
+          "icon": "park",
+          "items": [
+            { "name": "Einheimische Pflanzenarten", "type": "quantitative", "unit": "%", "bim": false },
+            { "name": "Strukturvielfalt", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Vernetzung Grünräume", "type": "qualitative", "unit": "Bewertung", "bim": false }
+          ]
+        },
+        {
+          "theme": "Ökosystemleistungen",
+          "icon": "eco",
+          "items": [
+            { "name": "Regenwasserretention", "type": "quantitative", "unit": "l/m²", "bim": false },
+            { "name": "Kühlungseffekt", "type": "quantitative", "unit": "°C Reduktion", "bim": false },
+            { "name": "CO₂-Bindung Vegetation", "type": "quantitative", "unit": "kg CO₂/a", "bim": false }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "climate-resilience",
+      "type": "useCase",
+      "logo": "Klima",
+      "name": "Klimaresilienz",
+      "description": "Bewertung der Anpassung an Klimawandelfolgen wie Hitze, Starkregen und Trockenheit.",
+      "link": null,
+      "country": null,
+      "complexity": "intermediate",
+      "certification": false,
+      "earlyDesignRelevance": "high",
+      "criteria": [
+        {
+          "theme": "Hitzeschutz",
+          "icon": "thermostat",
+          "items": [
+            { "name": "Sommerlicher Wärmeschutz", "type": "quantitative", "unit": "Übertemperaturgradstunden", "bim": false },
+            { "name": "Verschattung", "type": "quantitative", "unit": "g-Wert", "bim": false },
+            { "name": "Nachtauskühlung", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Kühlende Oberflächen", "type": "quantitative", "unit": "Albedo", "bim": false }
+          ]
+        },
+        {
+          "theme": "Wassermanagement",
+          "icon": "water_drop",
+          "items": [
+            { "name": "Regenwasserretention", "type": "quantitative", "unit": "l/m²", "bim": false },
+            { "name": "Versickerungsfähigkeit", "type": "quantitative", "unit": "l/s/ha", "bim": false },
+            { "name": "Überflutungsschutz", "type": "qualitative", "unit": "Bewertung", "bim": false }
+          ]
+        },
+        {
+          "theme": "Robustheit",
+          "icon": "security",
+          "items": [
+            { "name": "Materialbeständigkeit", "type": "qualitative", "unit": "Bewertung", "bim": false },
+            { "name": "Redundanz Haustechnik", "type": "qualitative", "unit": "Bewertung", "bim": false }
+          ]
+        }
+      ]
     }
   ],
   "enums": {
@@ -526,13 +1075,21 @@
     "countries": {
       "CH": "Schweiz",
       "DE": "Deutschland",
+      "AT": "Österreich",
       "US": "USA",
+      "UK": "Vereinigtes Königreich",
       "EU": "Europäische Union"
     },
     "complexity": {
       "basic": "Basis",
       "intermediate": "Fortgeschritten",
       "advanced": "Expertenwissen"
+    },
+    "earlyDesignRelevance": {
+      "very-high": "Sehr hoch – Speziell für Wettbewerbe/Vorentwurf",
+      "high": "Hoch – Gut anwendbar in früher Phase",
+      "medium-high": "Mittel-Hoch – Teilweise anwendbar",
+      "medium": "Mittel – Eingeschränkt in früher Phase"
     }
   }
 }
