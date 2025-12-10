@@ -304,7 +304,7 @@ const AppHeader = () => {
             HeaderAction({ icon: 'notifications', label: 'Benachrichtigungen', badge: true }),
             HeaderAction({ icon: 'settings', label: 'Einstellungen' }),
             el('div', { className: 'header-divider' }),
-            el('button', { className: 'flex items-center gap-2 p-1 rounded-lg hover\\:bg-slate-100 transition-colors' }, [
+            el('button', { className: 'flex items-center gap-2 p-1 rounded-lg hover\\:bg-slate-100 transition-colors border-none' }, [
                 Avatar({ name: 'David Admin', size: 'md', className: 'bg-slate-200 text-slate-600' })
             ])
         ])
@@ -1317,11 +1317,11 @@ const EvaluationView = () => {
             el('h2', { className: 'text-lg font-semibold text-slate-900' }, ['SNAP Bewertung']),
             el('div', { className: 'flex items-center gap-2' }, [
                 el('button', {
-                    className: 'text-xs text-slate-500 hover\\:text-slate-700 px-2 py-1 hover\\:bg-slate-100 rounded-lg transition-colors border-0',
+                    className: 'text-xs text-slate-500 hover\\:text-slate-700 px-2 py-1 hover\\:bg-slate-100 rounded-lg transition-colors border-none',
                     onclick: () => { store.set('expandedThemes', Object.keys(THEMES)); renderApp(); }
                 }, ['Alle öffnen']),
                 el('button', {
-                    className: 'text-xs text-slate-500 hover\\:text-slate-700 px-2 py-1 hover\\:bg-slate-100 rounded-lg transition-colors border-0',
+                    className: 'text-xs text-slate-500 hover\\:text-slate-700 px-2 py-1 hover\\:bg-slate-100 rounded-lg transition-colors border-none',
                     onclick: () => { store.set('expandedThemes', []); renderApp(); }
                 }, ['Alle schließen'])
             ])
