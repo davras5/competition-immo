@@ -718,13 +718,23 @@ textarea.input {
    COMPONENT: Breadcrumb
    ======================================== */
 .breadcrumb-bar {
+    position: relative;
     height: 44px;
+    isolation: isolate;
+}
+.breadcrumb-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
     background-color: white;
     border-bottom: 1px solid var(--color-slate-200);
+    z-index: -1;
 }
 .breadcrumb-content {
-    max-width: 1200px;
-    margin: 0 auto;
     height: 100%;
     padding: 0 var(--space-6);
     display: flex;
@@ -736,7 +746,6 @@ textarea.input {
     gap: var(--space-1);
     font-size: var(--text-sm);
     list-style: none;
-    margin-left: 98px;
 }
 .breadcrumb-item {
     display: flex;
@@ -783,14 +792,10 @@ textarea.input {
 }
 .breadcrumb-dropdown:hover { background-color: var(--color-slate-200); }
 
-/* Comparison View Mode - content-adaptive width */
-.breadcrumb-bar.comparison-view .breadcrumb-content {
-    max-width: none;
-    width: fit-content;
-}
-.project-layout.comparison-view {
-    max-width: none;
-    width: fit-content;
+/* View Content - max-width for regular views */
+.view-content {
+    max-width: 780px;
+    width: 100%;
 }
 
 /* ========================================
@@ -1702,12 +1707,12 @@ textarea.input {
     margin: 0 auto;
     padding: var(--space-6);
 }
-.project-content {
+.page-container {
     flex: 1;
+    max-width: fit-content;
+    margin: 0 auto;
 }
 .project-layout {
-    max-width: 1200px;
-    margin: 0 auto;
     padding: var(--space-6);
     display: flex;
     gap: var(--space-6);
@@ -2682,7 +2687,6 @@ textarea.input {
 
     /* Breadcrumb responsive */
     .breadcrumb-list {
-        margin-left: 0;
         flex-wrap: wrap;
     }
 
