@@ -723,7 +723,7 @@ textarea.input {
     border-bottom: 1px solid var(--color-slate-200);
 }
 .breadcrumb-content {
-    max-width: 1200px;
+    width: fit-content;
     margin: 0 auto;
     height: 100%;
     padding: 0 var(--space-6);
@@ -811,10 +811,10 @@ textarea.input {
 
 /* Full Width Mode */
 .breadcrumb-bar.full-width .breadcrumb-content {
-    max-width: none;
+    width: 100%;
 }
 .project-layout.full-width {
-    max-width: none;
+    width: 100%;
 }
 
 /* ========================================
@@ -1726,7 +1726,7 @@ textarea.input {
     flex: 1;
 }
 .project-layout {
-    max-width: 1200px;
+    width: fit-content;
     margin: 0 auto;
     padding: var(--space-6);
     display: flex;
