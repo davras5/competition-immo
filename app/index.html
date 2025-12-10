@@ -1373,12 +1373,14 @@ const ComparisonView = () => {
         { id: 6, name: 'Primärenergiebedarf', unit: '%', values: [107, 95, 112, 98, 103, 99], lowerIsBetter: true },
     ];
 
-    return el('div', { className: 'comparison-wrapper overflow-x-auto' }, [
+    return el('div', { className: 'comparison-wrapper overflow-x-auto', style: { width: 'fit-content' } }, [
         el('table', { className: 'comparison-table', style: { tableLayout: 'fixed', width: 'auto' } }, [
             el('thead', {}, [
                 el('tr', {}, [
                     el('th', { className: 'comparison-sticky header text-left text-sm font-medium text-slate-600', style: { width: '256px' } }, ['Kriterium']),
-                    ...filteredVariants.map(v => el('th', { className: 'text-center text-sm font-semibold text-slate-900', style: { width: '140px', minWidth: '140px', maxWidth: '140px' } }, [v.code]))
+                    ...filteredVariants.map(v => el('th', { style: { width: '140px', minWidth: '140px', maxWidth: '140px', textAlign: 'center' } }, [
+                        el('span', { style: { display: 'inline-block', backgroundColor: 'rgba(0, 0, 0, 0.6)', color: 'white', padding: '2px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: '600' } }, [v.code])
+                    ]))
                 ])
             ]),
             el('tbody', {}, [
