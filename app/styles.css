@@ -721,22 +721,9 @@ textarea.input {
     height: 44px;
     background-color: white;
     border-bottom: 1px solid var(--color-slate-200);
-}
-.breadcrumb-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    height: 100%;
     padding: 0 var(--space-6);
     display: flex;
     align-items: center;
-    gap: var(--space-6);
-}
-.breadcrumb-spacer {
-    width: 80px;
-    flex-shrink: 0;
-}
-.breadcrumb-nav {
-    flex: 1;
 }
 .breadcrumb-list {
     display: flex;
@@ -744,6 +731,7 @@ textarea.input {
     gap: var(--space-1);
     font-size: var(--text-sm);
     list-style: none;
+    margin-left: 104px;
 }
 .breadcrumb-item {
     display: flex;
@@ -791,9 +779,8 @@ textarea.input {
 .breadcrumb-dropdown:hover { background-color: var(--color-slate-200); }
 
 /* Comparison View Mode - content-adaptive width */
-.breadcrumb-bar.comparison-view .breadcrumb-content {
-    max-width: none;
-    width: fit-content;
+.breadcrumb-bar.comparison-view .breadcrumb-list {
+    margin-left: 0;
 }
 .project-layout.comparison-view {
     max-width: none;
@@ -2687,11 +2674,9 @@ textarea.input {
         font-size: var(--text-lg);
     }
 
-    /* Breadcrumb responsive - hide spacer when sidebar is hidden */
-    .breadcrumb-spacer {
-        display: none;
-    }
+    /* Breadcrumb responsive - remove left margin when sidebar is hidden */
     .breadcrumb-list {
+        margin-left: 0;
         flex-wrap: wrap;
     }
 
