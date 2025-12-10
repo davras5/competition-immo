@@ -1,6 +1,6 @@
 # Competition Immo
 
-A professional dashboard application for managing and evaluating architecture competitions. Enables structured evaluation of building project variants across multiple sustainability criteria.
+A professional dashboard application for managing and evaluating architecture competitions. Enables structured evaluation of building project variants across multiple frameworks.
 
 **Live Demo**: https://davras5.github.io/competition-immo/
 
