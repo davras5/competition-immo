@@ -861,14 +861,10 @@ textarea.input {
    ======================================== */
 .variant-list {
     width: 240px;
-    height: calc(100vh - 64px - 44px - var(--space-6) - var(--space-6));
     background-color: white;
     border-radius: var(--radius-xl);
     border: 1px solid var(--color-slate-200);
     flex-shrink: 0;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
 }
 .variant-list-header {
     padding: var(--space-4) var(--space-5);
@@ -889,11 +885,6 @@ textarea.input {
     background-color: var(--color-slate-200);
     padding: var(--space-0-5) var(--space-2);
     border-radius: var(--radius-full);
-}
-.variant-list-items {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
 }
 .variant-item {
     width: 100%;
