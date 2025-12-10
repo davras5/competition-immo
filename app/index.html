@@ -466,23 +466,32 @@ const Breadcrumb = () => {
         items.push({ label: viewLabels.comparison, active: true });
     }
 
+    // Check if we are in comparison view for the container class
+    const isComparisonView = sidebarView === 'comparison';
+
+    // HIERARCHY FIX:
+    // 1. "breadcrumb-bar" provides the background/border (full width).
+    // 2. "breadcrumb-container" handles the max-width/centering logic (mirrors project-layout).
+    // 3. "breadcrumb-list" handles the 98px offset relative to the container.
     return el('nav', { className: 'breadcrumb-bar' }, [
-        el('ol', { className: 'breadcrumb-list' }, items.map((item, i) =>
-            el('li', { className: 'breadcrumb-item' }, [
-                i > 0 ? el('span', { className: 'breadcrumb-separator' }, [Icon('chevron_right', { size: 16 })]) : null,
-                item.isDropdown ?
-                    VariantDropdownSelector() :
-                item.onClick ?
-                    el('button', {
-                        className: `breadcrumb-link ${item.active ? 'active' : ''}`,
-                        onclick: item.onClick
-                    }, [
-                        item.icon ? Icon(item.icon, { size: 14 }) : null,
-                        item.label
-                    ]) :
-                    el('span', { className: `breadcrumb-link ${item.active ? 'active' : ''}` }, [item.label])
-            ])
-        ))
+        el('div', { className: `breadcrumb-container ${isComparisonView ? 'comparison-view' : ''}` }, [
+            el('ol', { className: 'breadcrumb-list' }, items.map((item, i) =>
+                el('li', { className: 'breadcrumb-item' }, [
+                    i > 0 ? el('span', { className: 'breadcrumb-separator' }, [Icon('chevron_right', { size: 16 })]) : null,
+                    item.isDropdown ?
+                        VariantDropdownSelector() :
+                    item.onClick ?
+                        el('button', {
+                            className: `breadcrumb-link ${item.active ? 'active' : ''}`,
+                            onclick: item.onClick
+                        }, [
+                            item.icon ? Icon(item.icon, { size: 14 }) : null,
+                            item.label
+                        ]) :
+                        el('span', { className: `breadcrumb-link ${item.active ? 'active' : ''}` }, [item.label])
+                ])
+            ))
+        ])
     ]);
 };
 
