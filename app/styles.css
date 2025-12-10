@@ -1702,6 +1702,7 @@ textarea.input {
 .page-container {
     flex: 1;
     width: auto;
+    max-width: 1200px;
     margin: 0 auto;
 }
 /* Allow comparison view to expand based on number of variants */
