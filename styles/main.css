@@ -945,7 +945,7 @@ a:hover {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-8);
-    margin-bottom: var(--space-12);
+    margin-bottom: var(--space-16);
 }
 
 .concept-card {
