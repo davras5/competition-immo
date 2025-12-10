@@ -2364,8 +2364,8 @@ textarea.input {
     color: var(--color-slate-600);
 }
 .team-role-badge.expert {
-    background-color: var(--color-emerald-100);
-    color: var(--color-emerald-700);
+    background-color: var(--color-violet-100);
+    color: var(--color-violet-700);
 }
 
 /* ========================================
