@@ -720,6 +720,7 @@ textarea.input {
 .breadcrumb-bar {
     position: relative;
     height: 44px;
+    isolation: isolate;
 }
 .breadcrumb-bar::before {
     content: '';
