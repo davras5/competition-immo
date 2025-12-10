@@ -691,17 +691,10 @@ textarea.input {
     background-color: var(--color-slate-100);
 }
 .sidebar-item-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--radius-xl);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all var(--transition-fast);
-    background-color: var(--color-slate-100);
-}
-.sidebar-item.active .sidebar-item-icon {
-    background-color: var(--color-slate-200);
+    transition: color var(--transition-fast);
 }
 .sidebar-item.active .sidebar-item-icon .material-icon {
     color: var(--color-slate-700);
