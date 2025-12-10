@@ -797,6 +797,22 @@
         // Initial render
         renderGallery();
         renderList();
+
+        // Pricing card selection
+        const pricingCards = document.querySelectorAll('.pricing-card');
+
+        pricingCards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                // Don't toggle selection if clicking on a button or link
+                if (e.target.closest('.btn')) return;
+
+                // Remove selection from all cards
+                pricingCards.forEach(c => c.classList.remove('pricing-card--selected'));
+
+                // Add selection to clicked card
+                card.classList.add('pricing-card--selected');
+            });
+        });
     </script>
 </body>
 </html>
