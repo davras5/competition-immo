@@ -783,6 +783,40 @@ textarea.input {
 }
 .breadcrumb-dropdown:hover { background-color: var(--color-slate-200); }
 
+/* Width Toggle Button */
+.width-toggle-btn {
+    margin-left: auto;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-slate-200);
+    background-color: white;
+    color: var(--color-slate-500);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+.width-toggle-btn:hover {
+    background-color: var(--color-slate-50);
+    color: var(--color-slate-700);
+    border-color: var(--color-slate-300);
+}
+.width-toggle-btn.active {
+    background-color: var(--color-slate-100);
+    color: var(--color-slate-700);
+    border-color: var(--color-slate-300);
+}
+
+/* Full Width Mode */
+.breadcrumb-bar.full-width .breadcrumb-content {
+    max-width: none;
+}
+.project-layout.full-width {
+    max-width: none;
+}
+
 /* ========================================
    COMPONENT: Dropdown Menu
    ======================================== */
