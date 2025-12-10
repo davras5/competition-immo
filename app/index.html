@@ -485,7 +485,9 @@ const Breadcrumb = () => {
         items.push({ label: viewLabels.comparison, active: true });
     }
 
-    return el('nav', { className: `breadcrumb-bar ${isFullWidth ? 'full-width' : ''}` }, [
+    const isComparisonView = sidebarView === 'comparison';
+
+    return el('nav', { className: `breadcrumb-bar ${isFullWidth ? 'full-width' : ''} ${isComparisonView ? 'comparison-view' : ''}` }, [
         el('div', { className: 'breadcrumb-content' }, [
             el('ol', { className: 'breadcrumb-list' }, items.map((item, i) =>
                 el('li', { className: 'breadcrumb-item' }, [
@@ -1723,7 +1725,7 @@ const App = () => {
         AppHeader(),
         Breadcrumb(),
         el('div', { className: 'project-content' }, [
-            el('div', { className: `project-layout ${isFullWidth ? 'full-width' : ''}` }, [
+            el('div', { className: `project-layout ${isFullWidth ? 'full-width' : ''} ${sidebarView === 'comparison' ? 'comparison-view' : ''}` }, [
                 MainSidebar(),
                 el('div', { className: 'main-content' }, [
                     showVariantList ? VariantSelector() : null,
