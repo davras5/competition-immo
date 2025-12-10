@@ -2597,6 +2597,10 @@ textarea.input {
         width: 100%;
     }
 
+    .variant-list-items {
+        max-height: calc(100vh - 200px);
+    }
+
     .variant-header {
         flex-direction: column;
     }
@@ -2704,6 +2708,10 @@ textarea.input {
     .variant-list {
         width: 100%;
         max-width: 100vw;
+    }
+
+    .variant-list-items {
+        max-height: calc(100vh - 160px);
     }
 
     .theme-card-header {
