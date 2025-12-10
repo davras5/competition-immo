@@ -1058,7 +1058,7 @@ textarea.input {
     border-color: var(--color-slate-400);
 }
 .project-card-thumbnail {
-    height: 160px;
+    height: 180px;
     position: relative;
     overflow: hidden;
 }
