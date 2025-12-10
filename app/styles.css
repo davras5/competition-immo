@@ -715,55 +715,27 @@ textarea.input {
 }
 
 /* ========================================
-   COMPONENT: Page Layout (Unified Centering)
-   ======================================== */
-.page-body {
-    flex: 1;
-}
-
-.page-centered {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 var(--space-6);
-}
-
-.page-centered.comparison-view {
-    max-width: none;
-}
-
-/* ========================================
    COMPONENT: Breadcrumb
    ======================================== */
 .breadcrumb-bar {
-    position: relative;
     height: 44px;
+    background-color: white;
+    border-bottom: 1px solid var(--color-slate-200);
+}
+.breadcrumb-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 100%;
+    padding: 0 var(--space-6);
     display: flex;
     align-items: center;
 }
-
-/* Full-width background that extends beyond page-centered */
-.breadcrumb-bar::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100vw;
-    background-color: white;
-    border-bottom: 1px solid var(--color-slate-200);
-    z-index: -1;
-}
-
 .breadcrumb-list {
     display: flex;
     align-items: center;
     gap: var(--space-1);
     font-size: var(--text-sm);
     list-style: none;
-    /* ALIGNMENT FIX:
-       98px is now relative to the start of the content area (Sidebar left edge).
-       This ensures alignment persists even when the layout centers on large screens. */
     margin-left: 98px;
 }
 .breadcrumb-item {
@@ -810,6 +782,16 @@ textarea.input {
     transition: background-color var(--transition-fast);
 }
 .breadcrumb-dropdown:hover { background-color: var(--color-slate-200); }
+
+/* Comparison View Mode - content-adaptive width */
+.breadcrumb-bar.comparison-view .breadcrumb-content {
+    max-width: none;
+    width: fit-content;
+}
+.project-layout.comparison-view {
+    max-width: none;
+    width: fit-content;
+}
 
 /* ========================================
    COMPONENT: Dropdown Menu
@@ -1659,10 +1641,7 @@ textarea.input {
 }
 .comparison-table th:not(.comparison-sticky),
 .comparison-table td:not(.comparison-sticky) {
-    /* CONSTRAINT FIX: Ensure strictly 140px width as requested */
     width: 140px;
-    min-width: 140px;
-    max-width: 140px;
 }
 .comparison-sticky {
     position: sticky;
@@ -1723,8 +1702,13 @@ textarea.input {
     margin: 0 auto;
     padding: var(--space-6);
 }
+.project-content {
+    flex: 1;
+}
 .project-layout {
-    padding: var(--space-6) 0;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-6);
     display: flex;
     gap: var(--space-6);
 }
@@ -2696,7 +2680,7 @@ textarea.input {
         font-size: var(--text-lg);
     }
 
-    /* Breadcrumb responsive - remove left margin when sidebar is hidden */
+    /* Breadcrumb responsive */
     .breadcrumb-list {
         margin-left: 0;
         flex-wrap: wrap;
