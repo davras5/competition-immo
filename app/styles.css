@@ -595,6 +595,19 @@ textarea.input {
     border: none;
     cursor: pointer;
     position: relative;
+    min-width: 40px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Mobile touch target size for header actions */
+@media (max-width: 768px) {
+    .header-action {
+        min-width: 44px;
+        min-height: 44px;
+    }
 }
 .header-action:hover {
     color: var(--color-slate-800);
@@ -649,6 +662,7 @@ textarea.input {
     border: none;
     cursor: pointer;
     color: var(--color-slate-500);
+    min-height: 44px;
 }
 .sidebar-item:hover {
     background-color: var(--color-slate-50);
@@ -1308,6 +1322,14 @@ textarea.input {
     cursor: pointer;
     transition: all var(--transition-fast);
 }
+
+/* Ensure minimum 44x44px touch targets on mobile */
+@media (max-width: 768px) {
+    .rating-btn {
+        width: 44px;
+        height: 44px;
+    }
+}
 .rating-btn-negative {
     background-color: var(--color-red-100);
     color: var(--color-red-400);
@@ -1724,6 +1746,18 @@ textarea.input {
     color: var(--color-slate-500);
     transition: all var(--transition-fast);
 }
+
+/* Mobile touch target size */
+@media (max-width: 768px) {
+    .view-toggle-btn {
+        width: 44px;
+        height: 44px;
+    }
+
+    .view-toggle {
+        height: 48px;
+    }
+}
 .view-toggle-btn:hover {
     color: var(--color-slate-700);
     background-color: var(--color-slate-50);
@@ -1744,26 +1778,90 @@ textarea.input {
     text-align: center;
 }
 .empty-state-icon {
-    width: 64px;
-    height: 64px;
-    background-color: var(--color-slate-100);
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--color-slate-100) 0%, var(--color-slate-200) 100%);
     border-radius: var(--radius-full);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: var(--space-4);
+    margin-bottom: var(--space-5);
+    position: relative;
 }
+
+.empty-state-icon::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, var(--color-slate-100) 0%, transparent 100%);
+    opacity: 0.5;
+}
+
+.empty-state-icon .material-icon {
+    font-size: 32px;
+    color: var(--color-slate-400);
+    position: relative;
+    z-index: 1;
+}
+
 .empty-state-title {
     font-size: var(--text-lg);
-    font-weight: var(--font-medium);
+    font-weight: var(--font-semibold);
     color: var(--color-slate-900);
-    margin-bottom: var(--space-1);
+    margin-bottom: var(--space-2);
 }
 .empty-state-desc {
     font-size: var(--text-sm);
     color: var(--color-slate-500);
-    margin-bottom: var(--space-4);
+    margin-bottom: var(--space-5);
     max-width: 384px;
+    line-height: var(--leading-relaxed);
+}
+
+/* Empty State Variants */
+.empty-state--no-results .empty-state-icon {
+    background: linear-gradient(135deg, var(--color-amber-50) 0%, var(--color-amber-100) 100%);
+}
+
+.empty-state--no-results .empty-state-icon .material-icon {
+    color: var(--color-amber-500);
+}
+
+.empty-state--error .empty-state-icon {
+    background: linear-gradient(135deg, var(--color-red-50) 0%, var(--color-red-100) 100%);
+}
+
+.empty-state--error .empty-state-icon .material-icon {
+    color: var(--color-red-500);
+}
+
+.empty-state--success .empty-state-icon {
+    background: linear-gradient(135deg, var(--color-emerald-50) 0%, var(--color-emerald-100) 100%);
+}
+
+.empty-state--success .empty-state-icon .material-icon {
+    color: var(--color-emerald-500);
+}
+
+/* Empty state action link */
+.empty-state-action {
+    margin-top: var(--space-2);
+}
+
+.empty-state-link {
+    color: var(--color-emerald-600);
+    text-decoration: none;
+    font-weight: var(--font-medium);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    transition: color var(--transition-fast);
+}
+
+.empty-state-link:hover {
+    color: var(--color-emerald-700);
+    text-decoration: underline;
 }
 
 /* Spinner */
@@ -1777,6 +1875,213 @@ textarea.input {
 }
 @keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+/* ========================================
+   COMPONENT: Skeleton Loading States
+   ======================================== */
+@keyframes skeleton-shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        var(--color-slate-200) 25%,
+        var(--color-slate-100) 50%,
+        var(--color-slate-200) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+    border-radius: var(--radius-md);
+}
+
+.skeleton-text {
+    height: 14px;
+    border-radius: var(--radius-sm);
+}
+
+.skeleton-text-lg {
+    height: 20px;
+}
+
+.skeleton-text-sm {
+    height: 12px;
+}
+
+.skeleton-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+}
+
+.skeleton-avatar-lg {
+    width: 48px;
+    height: 48px;
+}
+
+.skeleton-image {
+    width: 100%;
+    aspect-ratio: 16/10;
+    border-radius: var(--radius-lg);
+}
+
+.skeleton-button {
+    height: 36px;
+    width: 100px;
+    border-radius: var(--radius-lg);
+}
+
+.skeleton-card {
+    background-color: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-slate-200);
+    overflow: hidden;
+    padding: var(--space-5);
+}
+
+/* Project Card Skeleton */
+.skeleton-project-card {
+    background-color: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-slate-200);
+    overflow: hidden;
+}
+
+.skeleton-project-card .skeleton-image {
+    border-radius: 0;
+    height: 160px;
+}
+
+.skeleton-project-card-body {
+    padding: var(--space-5);
+}
+
+.skeleton-project-card-body .skeleton-text {
+    margin-bottom: var(--space-2);
+}
+
+.skeleton-project-card-body .skeleton-text:last-child {
+    margin-bottom: 0;
+}
+
+/* Theme Card Skeleton */
+.skeleton-theme-card {
+    background-color: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-slate-200);
+    padding: var(--space-4) var(--space-5);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.skeleton-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-lg);
+    flex-shrink: 0;
+}
+
+.skeleton-progress {
+    height: 8px;
+    width: 100px;
+    border-radius: var(--radius-full);
+}
+
+/* Map Skeleton */
+.skeleton-map {
+    width: 100%;
+    height: 256px;
+    border-radius: var(--radius-lg);
+}
+
+/* ========================================
+   COMPONENT: Map Markers
+   ======================================== */
+.map-marker {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform var(--transition-fast);
+}
+
+.map-marker:hover {
+    transform: scale(1.1);
+}
+
+.map-marker--completed {
+    background-color: var(--color-emerald-500);
+}
+
+.map-marker--active {
+    background-color: var(--color-blue-500);
+}
+
+.map-marker--draft {
+    background-color: var(--color-slate-500);
+}
+
+.map-marker__count {
+    color: white;
+    font-size: var(--text-xs);
+    font-weight: var(--font-bold);
+}
+
+/* ========================================
+   COMPONENT: 3D Viewer Building (Placeholder)
+   ======================================== */
+.building-3d {
+    perspective: 1000px;
+}
+
+.building-3d__container {
+    position: relative;
+    width: 256px;
+    height: 320px;
+    transform-style: preserve-3d;
+    transform: rotateX(-15deg) rotateY(-25deg);
+}
+
+.building-3d__floor {
+    position: absolute;
+    width: 100%;
+    background: linear-gradient(to right, var(--color-slate-600), var(--color-slate-700));
+    border: 1px solid var(--color-slate-500);
+    height: 20px;
+    transform: translateZ(20px);
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+}
+
+.building-3d__windows {
+    position: absolute;
+    inset: 4px;
+    display: flex;
+    gap: 4px;
+}
+
+.building-3d__window {
+    flex: 1;
+    background-color: var(--color-amber-200);
+}
+
+.building-3d__window--lit {
+    opacity: 0.7;
+}
+
+.building-3d__window--dark {
+    opacity: 0.2;
 }
 
 /* Timeline */
@@ -2175,15 +2480,15 @@ textarea.input {
    RESPONSIVE: App Layout
    ======================================== */
 
-/* Mobile Sidebar Toggle Button */
+/* Mobile Sidebar Toggle Button - Positioned bottom-right (standard FAB position) */
 .sidebar-toggle {
     display: none;
     position: fixed;
     bottom: var(--space-6);
-    left: var(--space-6);
+    right: var(--space-6);
     width: 56px;
     height: 56px;
-    background-color: var(--color-slate-800);
+    background-color: var(--color-emerald-600);
     color: white;
     border: none;
     border-radius: var(--radius-full);
@@ -2193,16 +2498,22 @@ textarea.input {
     align-items: center;
     justify-content: center;
     transition: all var(--transition-fast);
+    /* iOS safe area support */
+    bottom: calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
 }
 
 .sidebar-toggle:hover {
-    background-color: var(--color-slate-700);
+    background-color: var(--color-emerald-700);
     transform: scale(1.05);
 }
 
 .sidebar-toggle:focus {
     outline: none;
-    box-shadow: var(--shadow-lg), 0 0 0 3px var(--color-emerald-400);
+    box-shadow: var(--shadow-lg), 0 0 0 3px var(--color-emerald-300);
+}
+
+.sidebar-toggle:active {
+    transform: scale(0.95);
 }
 
 /* Mobile Sidebar Overlay */

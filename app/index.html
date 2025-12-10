@@ -633,19 +633,13 @@ const initProjectsMap = (projects) => {
     projects.forEach(project => {
         if (!project.coordinates) return;
 
-        // Create custom marker element
+        // Create custom marker element using CSS classes
         const markerEl = document.createElement('div');
-        markerEl.className = 'project-marker';
-        markerEl.style.cssText = `
-            width: 32px; height: 32px;
-            background: ${project.status === 'completed' ? '#10b981' : project.status === 'active' ? '#3b82f6' : '#6b7280'};
-            border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-        `;
-        markerEl.innerHTML = `<span style="color:white;font-size:12px;font-weight:bold;">${project.variantCount}</span>`;
+        const statusClass = project.status === 'completed' ? 'map-marker--completed'
+            : project.status === 'active' ? 'map-marker--active'
+            : 'map-marker--draft';
+        markerEl.className = `map-marker ${statusClass}`;
+        markerEl.innerHTML = `<span class="map-marker__count">${project.variantCount}</span>`;
 
         // Create popup
         const popup = new mapboxgl.Popup({ offset: 25, closeButton: false })
