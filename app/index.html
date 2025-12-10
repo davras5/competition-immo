@@ -1373,7 +1373,7 @@ const ComparisonView = () => {
         { id: 6, name: 'Primärenergiebedarf', unit: '%', values: [107, 95, 112, 98, 103, 99], lowerIsBetter: true },
     ];
 
-    return el('div', { className: 'comparison-wrapper overflow-x-auto', style: { width: 'fit-content', flex: 'none' } }, [
+    return el('div', { className: 'comparison-wrapper overflow-x-auto', style: { width: 'fit-content', flex: 'none', margin: '0 auto' } }, [
         el('table', { className: 'comparison-table', style: { tableLayout: 'fixed', width: 'auto' } }, [
             el('thead', {}, [
                 el('tr', {}, [
