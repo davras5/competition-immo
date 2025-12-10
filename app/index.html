@@ -1393,10 +1393,7 @@ const ComparisonView = () => {
             el('thead', {}, [
                 el('tr', {}, [
                     el('th', { className: 'comparison-sticky header text-left text-sm font-medium text-slate-600', style: { width: '256px' } }, ['Kriterium']),
-                    ...filteredVariants.map(v => el('th', { className: 'text-center', style: { minWidth: '128px' } }, [
-                        el('div', { className: 'text-sm font-semibold text-slate-900' }, [v.name]),
-                        el('div', { className: 'text-xs text-slate-500 font-normal' }, [v.firm])
-                    ]))
+                    ...filteredVariants.map(v => el('th', { className: 'text-center text-sm font-semibold text-slate-900' }, [v.code]))
                 ])
             ]),
             el('tbody', {}, [
