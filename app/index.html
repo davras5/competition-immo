@@ -1699,8 +1699,8 @@ const App = () => {
 
     return el('div', { className: 'min-h-screen flex flex-col bg-slate-100' }, [
         AppHeader(),
-        Breadcrumb(),
-        el('div', { className: 'project-content' }, [
+        el('div', { className: 'page-container' }, [
+            Breadcrumb(),
             el('div', { className: `project-layout ${sidebarView === 'comparison' ? 'comparison-view' : ''}` }, [
                 MainSidebar(),
                 el('div', { className: 'main-content' }, [
