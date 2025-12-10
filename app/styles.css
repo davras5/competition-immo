@@ -729,6 +729,14 @@ textarea.input {
     padding: 0 var(--space-6);
     display: flex;
     align-items: center;
+    gap: var(--space-6);
+}
+.breadcrumb-spacer {
+    width: 80px;
+    flex-shrink: 0;
+}
+.breadcrumb-nav {
+    flex: 1;
 }
 .breadcrumb-list {
     display: flex;
@@ -736,7 +744,6 @@ textarea.input {
     gap: var(--space-1);
     font-size: var(--text-sm);
     list-style: none;
-    margin-left: 98px;
 }
 .breadcrumb-item {
     display: flex;
@@ -2680,9 +2687,11 @@ textarea.input {
         font-size: var(--text-lg);
     }
 
-    /* Breadcrumb responsive */
+    /* Breadcrumb responsive - hide spacer when sidebar is hidden */
+    .breadcrumb-spacer {
+        display: none;
+    }
     .breadcrumb-list {
-        margin-left: 0;
         flex-wrap: wrap;
     }
 
