@@ -466,9 +466,7 @@ const Breadcrumb = () => {
         items.push({ label: viewLabels.comparison, active: true });
     }
 
-    const isComparisonView = sidebarView === 'comparison';
-
-    return el('nav', { className: `breadcrumb-bar ${isComparisonView ? 'comparison-view' : ''}` }, [
+    return el('nav', { className: 'breadcrumb-bar' }, [
         el('ol', { className: 'breadcrumb-list' }, items.map((item, i) =>
             el('li', { className: 'breadcrumb-item' }, [
                 i > 0 ? el('span', { className: 'breadcrumb-separator' }, [Icon('chevron_right', { size: 16 })]) : null,
