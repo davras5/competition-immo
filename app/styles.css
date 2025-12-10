@@ -715,33 +715,44 @@ textarea.input {
 }
 
 /* ========================================
-   COMPONENT: Breadcrumb
+   COMPONENT: Page Layout (Unified Centering)
    ======================================== */
-.breadcrumb-bar {
-    height: 44px;
-    background-color: white;
-    border-bottom: 1px solid var(--color-slate-200);
-    /* Remove padding here, we move it to the inner container for better alignment */
-    padding: 0;
-    display: flex;
-    align-items: center;
+.page-body {
+    flex: 1;
 }
 
-/* This mimics the .project-layout geometry */
-.breadcrumb-container {
-    width: 100%;
-    /* Default: Centered max-width (Overview, Evaluation, etc.) */
+.page-centered {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--space-6);
+}
+
+.page-centered.comparison-view {
+    max-width: none;
+}
+
+/* ========================================
+   COMPONENT: Breadcrumb
+   ======================================== */
+.breadcrumb-bar {
+    position: relative;
+    height: 44px;
     display: flex;
     align-items: center;
 }
 
-/* Comparison view mode for the breadcrumb container */
-.breadcrumb-container.comparison-view {
-    /* Dynamic width (Comparison view) */
-    max-width: none;
+/* Full-width background that extends beyond page-centered */
+.breadcrumb-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
+    background-color: white;
+    border-bottom: 1px solid var(--color-slate-200);
+    z-index: -1;
 }
 
 .breadcrumb-list {
@@ -799,12 +810,6 @@ textarea.input {
     transition: background-color var(--transition-fast);
 }
 .breadcrumb-dropdown:hover { background-color: var(--color-slate-200); }
-
-/* Comparison View Mode - anchor sidebar to left */
-.project-layout.comparison-view {
-    max-width: none;
-    width: 100%;
-}
 
 /* ========================================
    COMPONENT: Dropdown Menu
@@ -1718,13 +1723,8 @@ textarea.input {
     margin: 0 auto;
     padding: var(--space-6);
 }
-.project-content {
-    flex: 1;
-}
 .project-layout {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: var(--space-6);
+    padding: var(--space-6) 0;
     display: flex;
     gap: var(--space-6);
 }
