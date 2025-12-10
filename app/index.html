@@ -78,8 +78,7 @@ const store = createStore({
     projectImages: [], // Will be populated from data.json or current project
     formErrors: {},
     isSubmitting: false,
-    isMobileSidebarOpen: false,
-    isFullWidth: false
+    isMobileSidebarOpen: false
 });
 
 // ============================================
@@ -441,28 +440,10 @@ const VariantDropdownSelector = () => {
     ]);
 };
 
-const WidthToggleButton = () => {
-    const isFullWidth = store.get('isFullWidth');
-
-    const toggleWidth = () => {
-        store.set('isFullWidth', !isFullWidth);
-        renderApp();
-    };
-
-    return el('button', {
-        className: `width-toggle-btn ${isFullWidth ? 'active' : ''}`,
-        onclick: toggleWidth,
-        title: isFullWidth ? 'Zur festen Breite wechseln' : 'Zur vollen Breite wechseln'
-    }, [
-        Icon(isFullWidth ? 'width' : 'arrow_range', { size: 18 })
-    ]);
-};
-
 const Breadcrumb = () => {
     const currentProject = store.get('currentProject');
     const sidebarView = store.get('sidebarView');
     const selectedVariant = store.get('selectedVariant');
-    const isFullWidth = store.get('isFullWidth');
 
     if (!currentProject) return null;
 
@@ -487,7 +468,7 @@ const Breadcrumb = () => {
 
     const isComparisonView = sidebarView === 'comparison';
 
-    return el('nav', { className: `breadcrumb-bar ${isFullWidth ? 'full-width' : ''} ${isComparisonView ? 'comparison-view' : ''}` }, [
+    return el('nav', { className: `breadcrumb-bar ${isComparisonView ? 'comparison-view' : ''}` }, [
         el('div', { className: 'breadcrumb-content' }, [
             el('ol', { className: 'breadcrumb-list' }, items.map((item, i) =>
                 el('li', { className: 'breadcrumb-item' }, [
@@ -504,8 +485,7 @@ const Breadcrumb = () => {
                         ]) :
                         el('span', { className: `breadcrumb-link ${item.active ? 'active' : ''}` }, [item.label])
                 ])
-            )),
-            WidthToggleButton()
+            ))
         ])
     ]);
 };
@@ -1695,7 +1675,6 @@ const CreateProjectModal = () => {
 const App = () => {
     const currentProject = store.get('currentProject');
     const sidebarView = store.get('sidebarView');
-    const isFullWidth = store.get('isFullWidth');
     const showVariantList = currentProject && sidebarView !== 'overview';
 
     // Gallery view
@@ -1722,7 +1701,7 @@ const App = () => {
         AppHeader(),
         Breadcrumb(),
         el('div', { className: 'project-content' }, [
-            el('div', { className: `project-layout ${isFullWidth ? 'full-width' : ''} ${sidebarView === 'comparison' ? 'comparison-view' : ''}` }, [
+            el('div', { className: `project-layout ${sidebarView === 'comparison' ? 'comparison-view' : ''}` }, [
                 MainSidebar(),
                 el('div', { className: 'main-content' }, [
                     showVariantList ? VariantSelector() : null,
