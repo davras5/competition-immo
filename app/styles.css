@@ -912,6 +912,14 @@ textarea.input {
     border-radius: var(--radius-full);
     font-family: ui-monospace, monospace;
 }
+.variant-code-inline {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: var(--text-xs);
+    padding: var(--space-0-5) var(--space-2);
+    border-radius: var(--radius-full);
+    font-family: ui-monospace, monospace;
+}
 .variant-name {
     font-weight: var(--font-medium);
     font-size: var(--text-sm);
@@ -1020,10 +1028,6 @@ textarea.input {
 .collapsible-header:hover { background-color: var(--color-slate-50); }
 .collapsible.expanded .collapsible-header { background-color: var(--color-slate-50); }
 .collapsible-icon-wrapper {
-    width: 32px;
-    height: 32px;
-    border-radius: var(--radius-lg);
-    background-color: var(--color-slate-100);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1249,10 +1253,6 @@ textarea.input {
     background-color: var(--color-slate-400);
 }
 .theme-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--radius-lg);
-    background-color: var(--color-slate-100);
     display: flex;
     align-items: center;
     justify-content: center;
