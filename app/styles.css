@@ -2303,7 +2303,7 @@ textarea.input {
 }
 .map-container {
     width: 100%;
-    height: 256px;
+    height: 340px;
     border-radius: var(--radius-lg);
 }
 .map-address {
