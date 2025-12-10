@@ -718,9 +718,20 @@ textarea.input {
    COMPONENT: Breadcrumb
    ======================================== */
 .breadcrumb-bar {
+    position: relative;
     height: 44px;
+}
+.breadcrumb-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
     background-color: white;
     border-bottom: 1px solid var(--color-slate-200);
+    z-index: -1;
 }
 .breadcrumb-content {
     height: 100%;
