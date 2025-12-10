@@ -640,16 +640,41 @@ a:hover {
 
 .pricing-card {
     background: var(--color-bg-card);
-    border: 1px solid var(--color-border);
+    border: 2px solid var(--color-border);
     border-radius: var(--radius-lg);
     padding: var(--space-6);
     display: flex;
     flex-direction: column;
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.pricing-card:hover {
+    border-color: var(--color-slate-300);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.pricing-card--selected {
+    border-color: var(--color-slate-900);
+}
+
+.pricing-card--selected:hover {
+    border-color: var(--color-slate-900);
 }
 
 .pricing-card--featured {
     border-color: var(--color-slate-800);
     box-shadow: var(--shadow-lg);
+}
+
+.pricing-card--featured:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+}
+
+.pricing-card--featured.pricing-card--selected {
+    border-color: var(--color-slate-900);
 }
 
 .pricing-card__badge {
