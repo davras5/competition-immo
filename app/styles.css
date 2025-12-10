@@ -734,7 +734,6 @@ textarea.input {
     gap: var(--space-1);
     font-size: var(--text-sm);
     list-style: none;
-    margin-left: 88px; /* sidebar (64px) + gap (24px) */
 }
 .breadcrumb-item {
     display: flex;
@@ -2676,7 +2675,6 @@ textarea.input {
 
     /* Breadcrumb responsive */
     .breadcrumb-list {
-        margin-left: 0;
         flex-wrap: wrap;
     }
 
