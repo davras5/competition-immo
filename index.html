@@ -799,6 +799,7 @@
         renderList();
 
         // Pricing card selection
+        const pricingGrid = document.querySelector('.pricing-grid');
         const pricingCards = document.querySelectorAll('.pricing-card');
 
         pricingCards.forEach(card => {
@@ -811,6 +812,9 @@
 
                 // Add selection to clicked card
                 card.classList.add('pricing-card--selected');
+
+                // Mark grid as having a selection (to reset featured card styling)
+                pricingGrid.classList.add('pricing-grid--has-selection');
             });
         });
     </script>
