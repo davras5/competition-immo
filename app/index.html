@@ -466,23 +466,27 @@ const Breadcrumb = () => {
         items.push({ label: viewLabels.comparison, active: true });
     }
 
-    return el('nav', { className: 'breadcrumb-bar' }, [
-        el('ol', { className: 'breadcrumb-list' }, items.map((item, i) =>
-            el('li', { className: 'breadcrumb-item' }, [
-                i > 0 ? el('span', { className: 'breadcrumb-separator' }, [Icon('chevron_right', { size: 16 })]) : null,
-                item.isDropdown ?
-                    VariantDropdownSelector() :
-                item.onClick ?
-                    el('button', {
-                        className: `breadcrumb-link ${item.active ? 'active' : ''}`,
-                        onclick: item.onClick
-                    }, [
-                        item.icon ? Icon(item.icon, { size: 14 }) : null,
-                        item.label
-                    ]) :
-                    el('span', { className: `breadcrumb-link ${item.active ? 'active' : ''}` }, [item.label])
-            ])
-        ))
+    const isComparisonView = sidebarView === 'comparison';
+
+    return el('nav', { className: `breadcrumb-bar ${isComparisonView ? 'comparison-view' : ''}` }, [
+        el('div', { className: 'breadcrumb-content' }, [
+            el('ol', { className: 'breadcrumb-list' }, items.map((item, i) =>
+                el('li', { className: 'breadcrumb-item' }, [
+                    i > 0 ? el('span', { className: 'breadcrumb-separator' }, [Icon('chevron_right', { size: 16 })]) : null,
+                    item.isDropdown ?
+                        VariantDropdownSelector() :
+                    item.onClick ?
+                        el('button', {
+                            className: `breadcrumb-link ${item.active ? 'active' : ''}`,
+                            onclick: item.onClick
+                        }, [
+                            item.icon ? Icon(item.icon, { size: 14 }) : null,
+                            item.label
+                        ]) :
+                        el('span', { className: `breadcrumb-link ${item.active ? 'active' : ''}` }, [item.label])
+                ])
+            ))
+        ])
     ]);
 };
 
