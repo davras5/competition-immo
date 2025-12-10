@@ -912,6 +912,14 @@ textarea.input {
     border-radius: var(--radius-full);
     font-family: ui-monospace, monospace;
 }
+.variant-code-inline {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: var(--text-xs);
+    padding: var(--space-0-5) var(--space-2);
+    border-radius: var(--radius-full);
+    font-family: ui-monospace, monospace;
+}
 .variant-name {
     font-weight: var(--font-medium);
     font-size: var(--text-sm);
