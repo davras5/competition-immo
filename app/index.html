@@ -1035,7 +1035,7 @@ const ProjectOverviewView = () => {
     const experts = currentProject?.experts || [];
     const milestones = currentProject?.milestones || [];
 
-    return el('div', { className: 'flex-1 space-y-4' }, [
+    return el('div', { className: 'view-content space-y-4' }, [
         // Quick Actions
         el('div', { className: 'card' }, [
             el('div', { className: 'card-body' }, [
@@ -1311,7 +1311,7 @@ const EvaluationView = () => {
         ]);
     };
 
-    return el('div', { className: 'flex-1 space-y-4' }, [
+    return el('div', { className: 'view-content space-y-4' }, [
         VariantHeader(),
         el('div', { className: 'flex items-center justify-between px-1' }, [
             el('h2', { className: 'text-lg font-semibold text-slate-900' }, ['SNAP Bewertung']),
@@ -1466,7 +1466,7 @@ const Model3DView = () => {
     const selectedVariant = store.get('selectedVariant');
     const variant = VARIANTS[selectedVariant];
 
-    return el('div', { className: 'viewer-3d' }, [
+    return el('div', { className: 'view-content viewer-3d' }, [
         el('div', { className: 'viewer-toolbar' }, [
             el('div', { className: 'flex items-center gap-1' }, [
                 el('button', { className: 'viewer-toolbar-btn' }, [Icon('restart_alt', { size: 16 }), 'Reset']),

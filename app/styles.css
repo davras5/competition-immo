@@ -723,8 +723,6 @@ textarea.input {
     border-bottom: 1px solid var(--color-slate-200);
 }
 .breadcrumb-content {
-    max-width: 1200px;
-    margin: 0 auto;
     height: 100%;
     padding: 0 var(--space-6);
     display: flex;
@@ -736,7 +734,7 @@ textarea.input {
     gap: var(--space-1);
     font-size: var(--text-sm);
     list-style: none;
-    margin-left: 98px;
+    margin-left: 88px; /* sidebar (64px) + gap (24px) */
 }
 .breadcrumb-item {
     display: flex;
@@ -783,14 +781,10 @@ textarea.input {
 }
 .breadcrumb-dropdown:hover { background-color: var(--color-slate-200); }
 
-/* Comparison View Mode - content-adaptive width */
-.breadcrumb-bar.comparison-view .breadcrumb-content {
-    max-width: none;
-    width: fit-content;
-}
-.project-layout.comparison-view {
-    max-width: none;
-    width: fit-content;
+/* View Content - max-width for regular views */
+.view-content {
+    max-width: 780px;
+    width: 100%;
 }
 
 /* ========================================
@@ -1706,8 +1700,6 @@ textarea.input {
     flex: 1;
 }
 .project-layout {
-    max-width: 1200px;
-    margin: 0 auto;
     padding: var(--space-6);
     display: flex;
     gap: var(--space-6);
