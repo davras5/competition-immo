@@ -1768,6 +1768,8 @@ textarea.input {
     transform: translateY(-50%);
     color: var(--color-slate-400);
     pointer-events: none;
+    display: flex;
+    align-items: center;
 }
 .search-input {
     width: 100%;
