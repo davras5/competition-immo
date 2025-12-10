@@ -1696,8 +1696,10 @@ textarea.input {
     margin: 0 auto;
     padding: var(--space-6);
 }
-.project-content {
+.page-container {
     flex: 1;
+    max-width: fit-content;
+    margin: 0 auto;
 }
 .project-layout {
     padding: var(--space-6);
