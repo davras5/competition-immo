@@ -1704,7 +1704,7 @@ textarea.input {
 }
 .page-container {
     flex: 1;
-    max-width: fit-content;
+    width: 100%;
     margin: 0 auto;
 }
 .project-layout {
