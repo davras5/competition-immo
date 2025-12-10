@@ -731,7 +731,7 @@ textarea.input {
     gap: var(--space-1);
     font-size: var(--text-sm);
     list-style: none;
-    margin-left: 104px;
+    margin-left: 98px;
 }
 .breadcrumb-item {
     display: flex;
@@ -778,13 +778,10 @@ textarea.input {
 }
 .breadcrumb-dropdown:hover { background-color: var(--color-slate-200); }
 
-/* Comparison View Mode - content-adaptive width */
-.breadcrumb-bar.comparison-view .breadcrumb-list {
-    margin-left: 0;
-}
+/* Comparison View Mode - anchor sidebar to left */
 .project-layout.comparison-view {
     max-width: none;
-    width: fit-content;
+    width: 100%;
 }
 
 /* ========================================
