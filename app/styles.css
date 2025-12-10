@@ -1708,6 +1708,10 @@ textarea.input {
     max-width: 1200px;
     margin: 0 auto;
 }
+/* Allow comparison view to expand based on number of variants */
+.page-container:has(.project-layout.comparison-view) {
+    max-width: fit-content;
+}
 .project-layout {
     padding: var(--space-6);
     display: flex;
